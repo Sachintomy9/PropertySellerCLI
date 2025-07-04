@@ -73,3 +73,51 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+
+# iOS build folders
+ios/build/
+
+# Android specific
+android/app/build/
+android/build/
+android/.gradle/
+
+# iOS Xcode workspace files (just in case)
+ios/*.xcodeproj/project.xcworkspace/xcuserdata/
+ios/*.xcworkspace/xcuserdata/
+
+# JetBrains IDE
+.idea/
+
+# VSCode settings
+.vscode/
+
+# Babel cache
+babel.config.json
+
+# Misc temporary files
+*.bak
+*.tmp
+*.swp
+
+# Watchman
+.watchmanconfig
+
+# Environment files (keep your API keys safe)
+.env
+.env.*
+!.env.example
+
+# Output files
+*.apk
+*.aab
+*.ipa
+
+# Keystore (important for Android signing)
+*.keystore
+!debug.keystore
+
+# npm / yarn
+package-lock.json
+yarn.lock

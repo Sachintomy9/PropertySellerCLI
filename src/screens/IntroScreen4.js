@@ -9,7 +9,7 @@ const IntroScreen4 = () => {
   const navigation = useNavigation();
 
   const handleNextPress = () => {
-    navigation.navigate('Home'); // Navigate to the next intro screen
+    navigation.navigate('Main'); // Navigate to the next intro screen
   }
 
   return (

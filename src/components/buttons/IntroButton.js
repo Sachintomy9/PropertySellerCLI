@@ -2,7 +2,7 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet,View } from 'react-native';
 import { fonts } from '../../../styles/fonts';
-import IntroNextIcon from '../../assets/svg/svgicons/IntroNextIcon';
+import IntroNextIcon from '../../assets/svg/svgicons/Others/IntroNextIcon';
 
 const IntroButton = ({ title, onPress, style = {}, textStyle = {} }) => {
   return (

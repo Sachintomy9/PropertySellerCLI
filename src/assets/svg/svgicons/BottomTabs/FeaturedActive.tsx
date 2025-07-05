@@ -1,6 +1,6 @@
 import * as React from "react";
 import Svg, { Rect, Defs, Pattern, Use, Image } from "react-native-svg";
-const NotiFavActive = (props) => (
+const FeaturedActive = (props) => (
   <Svg
     width={35}
     height={35}
@@ -33,4 +33,4 @@ const NotiFavActive = (props) => (
     </Defs>
   </Svg>
 );
-export default NotiFavActive;
+export default FeaturedActive;

@@ -77,8 +77,8 @@ const MoreScreen = () => {
       case 'Saved':
         navigation.navigate('Saved');
         break;
-      case 'Signin':
-        navigation.navigate('LoginScreen');
+      case 'Login':
+        navigation.navigate('Login');
         break;
       default:
         alert(`No screen configured for: ${screenName}`);
@@ -102,7 +102,7 @@ const MoreScreen = () => {
         {/* Signin/Signup Button */}
         <TouchableOpacity
           style={styles.authButton}
-          onPress={() => handleItemPress('Signin')}
+          onPress={() => handleItemPress('Login')}
         >
           <Text style={styles.authText}>Signin/Signup</Text>
         </TouchableOpacity>

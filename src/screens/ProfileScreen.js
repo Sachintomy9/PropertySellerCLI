@@ -210,11 +210,10 @@ const styles = StyleSheet.create({
   position: 'absolute',
   marginTop: 70,
   left: 20,
-  zIndex: 10,
   backgroundColor: '#fff',
   padding: 6,
-  borderRadius: 20,
   elevation: 2,
+    borderRadius: 20,
 },
 });
 

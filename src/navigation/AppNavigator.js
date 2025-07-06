@@ -19,6 +19,8 @@ const AppNavigator = () => {
             <Stack.Screen name="Intro4" component={require('../screens/IntroScreen4').default} />
             <Stack.Screen name="Main" component={BottomTabs} />
             <Stack.Screen name='Profile' component={require('../screens/ProfileScreen').default} />
+            <Stack.Screen name='Login' component={require('../screens/LoginScreen').default} />
+            <Stack.Screen name='Register' component={require('../screens/RegisterScreen').default} />
      
 
          

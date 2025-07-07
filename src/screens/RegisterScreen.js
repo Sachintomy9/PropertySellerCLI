@@ -11,24 +11,30 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { fonts } from '../../styles/fonts';
+import * as Keychain from 'react-native-keychain';
+import { Alert } from 'react-native';
+import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
+
 import HidePassIcon from '../assets/svg/svgicons/Others/HidePassIcon';
 import ShowPassIcon from '../assets/svg/svgicons/Others/ShowPassIcon';
 import CheckBox from '@react-native-community/checkbox';
-
+const API_URL = 'https://api.propertyseller.com/api/v1';
 
 const RegisterScreen = () => {
   const navigation = useNavigation();
 
   const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
+  const [number, setNumber] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
   const [agree, setAgree]     = useState(false);
   const [isConfirmPasswordHidden, setIsConfirmPasswordHidden] = useState(true);
-
   const [errors, setErrors] = useState({});
+
+  const { loginUser, continueAsGuest } = useAuth();
 
   const validate = () => {
     const newErrors = {};
@@ -39,8 +45,8 @@ const RegisterScreen = () => {
       newErrors.name = 'Name can only contain alphabets';
     }
 
-    if (!/^\d{10}$/.test(phone)) {
-      newErrors.phone = 'Phonenumber must be exactly 10 digits';
+    if (!/^\d{10}$/.test(number)) {
+      newErrors.number = 'Phonenumber must be exactly 10 digits';
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -63,12 +69,61 @@ const RegisterScreen = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     if (validate()) {
-      // Submit the form
-      console.log('Registration successful!');
+      try {
+        console.log('Sending payload:', {
+        email,
+        password,
+        name,
+        number
+      });
+      
+        const response = await axios.post(`${API_URL}/auth/user/registration`, {
+        email,
+        password,
+        name,
+        number,
+      });
+        console.log('Registration successful:', response.data);
+        const {token} = response.data
+        console.log('Temp Token:', token);
+        // Navigate to the next screen or show success message
+        navigation.navigate('Otp', { email,token });
+      } catch (error) {
+        console.error('Registration error:', error.response?.data || error.message);
+        if (error.response && error.response.data) {
+          Alert.alert('Error', error.response.data.message || 'Registration failed');
+        } else {
+          Alert.alert('Error', 'An unexpected error occurred. Please try again.');
+        }
+
     }
   };
+  };
+
+  // Function to handle guest login
+  // This function sets a generic password in Keychain to indicate guest mode
+  const handleGuest = async () => {
+      // navigate to home or guest screen
+      try {
+        await continueAsGuest();
+        console.log('Guest mode enabled');
+        navigation.reset({
+        index: 0,
+        routes: [{ name: 'Main' }],
+      });
+
+      } catch (err) {
+        console.error('Error setting guest mode, Error in LoginScreen', err);
+        Alert.alert('Error', 'Failed to start guest session');
+      }
+    };
+
+
+
+
+
 
   const passwordCriteria = [
     {
@@ -126,10 +181,10 @@ const RegisterScreen = () => {
           placeholder="Enter your Phone Number"
           placeholderTextColor="#999"
           keyboardType="number-pad"
-          value={phone}
-          onChangeText={setPhone}
+          value={number}
+          onChangeText={setNumber}
         />
-        {errors.phone && <Text style={styles.error}>{errors.phone}</Text>}
+        {errors.number && <Text style={styles.error}>{errors.number}</Text>}
 
         {/* Email */}
         <Text style={styles.label}>Email</Text>
@@ -255,7 +310,7 @@ const RegisterScreen = () => {
           <View style={styles.line} />
         </View>
 
-        <TouchableOpacity style={styles.guestContainer}>
+        <TouchableOpacity style={styles.guestContainer} onPress={handleGuest}>
           <Text style={styles.guestText}>Continue as guest →</Text>
         </TouchableOpacity>
 

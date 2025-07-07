@@ -2,20 +2,20 @@
 
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { fonts } from '../../styles/fonts';
+
 import P_logosvg from '../assets/svg/svgimages/P_logosvg'; 
 
 const SplashScreen = () => {
-    const navigation = useNavigation();
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            navigation.navigate('Intro1'); // Navigate to the first intro screen after 3 seconds
-        }, 2000); // 3000 milliseconds = 3 seconds
+  useEffect(() => {
+    // Simulate a loading delay
+    const timer = setTimeout(() => {
+      // Navigate to the next screen after the delay
+      // For example, you can use navigation.navigate('NextScreen');
+      console.log('Splash screen finished');
+    }, 2000); // 2 seconds
 
-        return () => clearTimeout(timer); // Clear the timer on unmount
-    }, [navigation]);
-
+    return () => clearTimeout(timer); // Cleanup the timer on unmount
+  }, []);
   return (
     <View style={styles.container}>
       <P_logosvg />

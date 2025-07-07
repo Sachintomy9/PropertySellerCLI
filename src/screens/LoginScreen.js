@@ -8,9 +8,14 @@ import {
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
+  Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { fonts } from '../../styles/fonts';
+import { login } from '../services/AuthService';
+import { useAuth } from '../context/AuthContext';
+
+
 import ShowPassIcon from '../assets/svg/svgicons/Others/ShowPassIcon';
 import HidePassIcon from '../assets/svg/svgicons/Others/HidePassIcon';
 
@@ -20,12 +25,14 @@ const LoginScreen = () => {
   const [password, setPassword] = useState('');
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
   const [errors, setErrors] = useState({});
+  const { loginUser, continueAsGuest } = useAuth();
+
 
 
   const validateInputs = () => {
     const newErrors = {};
     if (!emailOrPhone) {
-      newErrors.emailOrPhone = 'Email or Phone is required';
+      newErrors.emailOrPhone = 'Email is required';
     }
     if (!password) {
       newErrors.password = 'Password is required';
@@ -36,14 +43,45 @@ const LoginScreen = () => {
 
 
 
-  const handleLogin = () => {
-    // handle login logic here
+  const handleLogin = async () => {
     if (validateInputs()) {
+      try {
+      const { success, error } = await login(emailOrPhone, password);
+      if (success) {
+        console.log('Login success in LoginScreen');
+        Alert.alert('Success', 'Login successful');
+        await loginUser();
+        navigation.reset({
+        index: 0,
+        routes: [{ name: 'Main' }],
+      });
+      } } catch (error) {
+          console.error('Login Failed:', error.response?.data || error.message);
+          
+          if (error.response && error.response.data) {
+            Alert.alert('Error', error.response.data.message || 'Login failed');
+          } else {
+            Alert.alert('Error', 'An unexpected error occurred. Please try again.');
+          }
+
+        }
     }
   };
 
-  const handleGuest = () => {
+  const handleGuest = async () => {
     // navigate to home or guest screen
+    try {
+      await continueAsGuest();
+      console.log('Guest mode enabled');
+      navigation.reset({
+      index: 0,
+      routes: [{ name: 'Main' }],
+    });
+
+    } catch (err) {
+      console.error('Error setting guest mode, Error Coming from LoginScreen', err);
+      Alert.alert('Error', 'Failed to start guest session');
+    }
   };
 
   const handleRegister = () => {
@@ -61,6 +99,8 @@ const LoginScreen = () => {
           style={styles.input}
           placeholder="Enter your Email/Phone"
           placeholderTextColor="#999"
+          autoCapitalize='none'
+          keyboardType='email-address'
           value={emailOrPhone}
           onChangeText={setEmailOrPhone}
         />
@@ -72,6 +112,7 @@ const LoginScreen = () => {
             style={{ flex: 1, color: '#000' }}
             placeholder="Enter your password"
             placeholderTextColor="#999"
+            autoCapitalize='none'
             secureTextEntry={isPasswordHidden}
             value={password}
             onChangeText={setPassword}
@@ -85,7 +126,7 @@ const LoginScreen = () => {
         {/*forgot password */}
         <TouchableOpacity
           style={{ alignSelf: 'flex-end', marginTop: 8 }}
-          onPress={() => alert('Forgot Password?')}
+          onPress={() => navigation.navigate('ForgotVerify')}
         >
           <Text style={{ color: '#FF1645', fontFamily: fonts.PoppinsRegular, }}>
             Forgot Password?
@@ -132,9 +173,10 @@ const styles = StyleSheet.create({
     marginTop: 40,
   },
   heading: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: '700',
     color: '#000',
+    alignSelf: 'center',
     fontFamily: fonts.PoppinsSemiBold,
   },
   subHeading: {
@@ -142,6 +184,7 @@ const styles = StyleSheet.create({
     color: '#666',
     marginTop: 4,
     marginBottom: 24,
+    alignSelf: 'center',
     fontFamily: fonts.PoppinsRegular,
   },
   label: {

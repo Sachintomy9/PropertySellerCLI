@@ -1,4 +1,4 @@
-import React,{useState,useRef} from 'react';
+import React,{useState,useRef,useEffect} from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { fonts } from '../../styles/fonts';
+import { isGuestUser } from '../services/AuthService'; 
+import { useAuth } from '../context/AuthContext';
 
 import ArrowIcon from '../assets/svg/svgicons/MoreScreen/ArrowIcon';
 
@@ -58,12 +60,24 @@ const MoreScreen = () => {
   const scrollY = useRef(new Animated.Value(0)).current;
   const [contentHeight, setContentHeight] = useState(1);
   const [scrollViewHeight, setScrollViewHeight] = useState(0);
+  const {isGuest,loginUser} = useAuth();
 
   const SCROLLBAR_WIDTH = 4;
   const THUMB_MIN_HEIGHT = 30;
 
+  // check if user is in guest mode
+
+
+
+
+
+
+
+
+
+
   // 🚀 Handle press action for any item
-  const handleItemPress = (screenName) => {
+  const handleItemPress = async (screenName) => {
     console.log('Pressed:', screenName);
 
     // Sample logic — update as per your routes
@@ -78,6 +92,7 @@ const MoreScreen = () => {
         navigation.navigate('Saved');
         break;
       case 'Login':
+         await loginUser();
         navigation.navigate('Login');
         break;
       default:
@@ -100,13 +115,14 @@ const MoreScreen = () => {
         )}
       >
         {/* Signin/Signup Button */}
-        <TouchableOpacity
+        {isGuest && (
+          <TouchableOpacity
           style={styles.authButton}
           onPress={() => handleItemPress('Login')}
         >
           <Text style={styles.authText}>Signin/Signup</Text>
         </TouchableOpacity>
-
+      )}
         {/* Sections */}
         <Section
           onItemPress={handleItemPress}

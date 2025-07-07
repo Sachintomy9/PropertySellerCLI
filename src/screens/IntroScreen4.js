@@ -4,12 +4,14 @@ import { fonts } from '../../styles/fonts'
 import IntroButton from '../components/buttons/IntroButton'
 import IntroScreen4svg from '../assets/svg/svgimages/IntroScreen4svg'
 import { useNavigation } from '@react-navigation/native'
-
+import { hasSeenIntro, setIntroSeen } from '../utils/IntroStorage'
 const IntroScreen4 = () => {
   const navigation = useNavigation();
 
-  const handleNextPress = () => {
-    navigation.navigate('Main'); // Navigate to the next intro screen
+  const handleNextPress = async () => {
+    // Mark intro as seen
+    await setIntroSeen();
+    navigation.navigate('Login'); // Navigate to the next intro screen
   }
 
   return (

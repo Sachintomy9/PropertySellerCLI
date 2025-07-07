@@ -5,9 +5,11 @@ import {
   StyleSheet,
   TouchableOpacity,
   TextInput,
-  Image,
+  Alert,
   SafeAreaView,
 } from 'react-native';
+import { logout,isGuestUser } from '../services/AuthService'; // Assuming you have a logout function in AuthService
+
 import LogoutIcon from '../assets/svg/svgicons/ProfileScreen/LogoutIcon';
 import EnqPropIcon from '../assets/svg/svgicons/ProfileScreen/EnqPropIcon';
 import SavedPropIcon from '../assets/svg/svgicons/ProfileScreen/SavedPropIcon';
@@ -17,8 +19,51 @@ import CloseIcon from '../assets/svg/svgicons/ProfileScreen/CloseIcon';
 import { fonts } from '../../styles/fonts';
 import { useNavigation } from '@react-navigation/native';
 const ProfileScreen = () => {
-
     const navigation = useNavigation();
+
+
+  const handleLogout = async () => {
+    // Check if the user is a guest user
+    const isGuest = await isGuestUser();
+    if (isGuest) {
+      Alert.alert(
+        'Guest User', "Guest users cannot log out. Please register or log in to access this feature.",
+        [{ text: 'OK', style: 'default' }],
+        { cancelable: false }
+      );
+      return;
+    }
+    Alert.alert(
+      'Log Out',
+      'Are you sure you want to log out?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Log Out', style: 'destructive',
+          onPress: async () => {
+            try {
+              await logout(); // Call the logout function from AuthService
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'Login' }],
+              });
+              console.log('User logged out successfully');
+            } catch (error) {
+              Alert.alert('Error', 'Failed to log out. Please try again.');
+            }
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  }
+
+
+
+
   return (
     <SafeAreaView style={styles.container}>
         <TouchableOpacity style={styles.crossButton} onPress={() => navigation.goBack()}>
@@ -32,7 +77,7 @@ const ProfileScreen = () => {
         </View>
         <Text style={styles.name}>Jhon Doe</Text>
 
-        <TouchableOpacity style={styles.logoutRow}>
+        <TouchableOpacity style={styles.logoutRow} onPress={handleLogout}>
             <LogoutIcon/>
           <Text style={styles.logoutText}> Logout </Text>
         </TouchableOpacity>

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { refreshToken } from './AuthService';
+import { refreshToken, getTokens } from './AuthService';
 
 const API_URL = 'https://api.propertyseller.com/api/v1/';
 
@@ -7,28 +7,40 @@ const api = axios.create({
   baseURL: API_URL,
 });
 
-// Add accessToken to requests
-api.interceptors.request.use(async (config) => {
-  const tokens = await getTokens();
-  if (tokens?.accessToken) {
-    config.headers.Authorization = `Bearer ${tokens.accessToken}`;
-  }
-  return config;
-});
+// Request Interceptor: Add Authorization header
+api.interceptors.request.use(
+  async (config) => {
+    const tokens = await getTokens();
+    if (tokens?.accessToken) {
+      config.headers.Authorization = `Bearer ${tokens.accessToken}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
-// Auto-refresh token on 401 errors
+// Response Interceptor: Refresh token on 401
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    console.log("Refreshing accessTokens in ApiClient");
+    if (
+                (error.response?.status === 401 || error.response?.status === 403) &&
+                !originalRequest._retry // prevent infinite loops
+            ) {
       originalRequest._retry = true;
+      
       const newAccessToken = await refreshToken();
+
       if (newAccessToken) {
+        console.log("Succesfull used new AcessToken")
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-        return axios(originalRequest);
+        // ⚠️ use `api` not `axios` to preserve interceptors
+        return api(originalRequest);
       }
     }
+
     return Promise.reject(error);
   }
 );

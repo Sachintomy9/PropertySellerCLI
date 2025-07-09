@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState,useEffect, use} from 'react';
 import {
   View,
   Text,
@@ -9,7 +9,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { logout,isGuestUser } from '../services/AuthService'; // Assuming you have a logout function in AuthService
-
+import { useProfile } from '../context/ProfileContext';
 import LogoutIcon from '../assets/svg/svgicons/ProfileScreen/LogoutIcon';
 import EnqPropIcon from '../assets/svg/svgicons/ProfileScreen/EnqPropIcon';
 import SavedPropIcon from '../assets/svg/svgicons/ProfileScreen/SavedPropIcon';
@@ -19,20 +19,29 @@ import CloseIcon from '../assets/svg/svgicons/ProfileScreen/CloseIcon';
 import { fonts } from '../../styles/fonts';
 import { useNavigation } from '@react-navigation/native';
 const ProfileScreen = () => {
-    const navigation = useNavigation();
+  const navigation = useNavigation();
+  const { profile, loadProfile } = useProfile();
+  const [isGuest, setIsGuest] = useState(false);
+
+  useEffect(() => {
+    loadProfile(); // Reload profile when screen is focused
+    const checkGuestStatus = async () => {
+    const guestStatus = await isGuestUser();
+    setIsGuest(guestStatus);
+  };
+
+  checkGuestStatus();
+  }, []);
+
+  
+  const EditProfile = () => {
+    navigation.navigate("EditProfile");
+    console.log("Went to Edit Profile Screen");
+  }
 
 
   const handleLogout = async () => {
     // Check if the user is a guest user
-    const isGuest = await isGuestUser();
-    if (isGuest) {
-      Alert.alert(
-        'Guest User', "Guest users cannot log out. Please register or log in to access this feature.",
-        [{ text: 'OK', style: 'default' }],
-        { cancelable: false }
-      );
-      return;
-    }
     Alert.alert(
       'Log Out',
       'Are you sure you want to log out?',
@@ -73,14 +82,16 @@ const ProfileScreen = () => {
 
       <View style={styles.avatarContainer}>
         <View style={styles.avatar}>
-          <Text style={styles.avatarText}>J</Text>
+          <Text style={styles.avatarText}>{profile?.name?.charAt(0)?.toUpperCase() || 'U'}</Text>
         </View>
-        <Text style={styles.name}>Jhon Doe</Text>
+        <Text style={styles.name}>{profile?.name || 'Unknown User'}</Text>
 
-        <TouchableOpacity style={styles.logoutRow} onPress={handleLogout}>
-            <LogoutIcon/>
-          <Text style={styles.logoutText}> Logout </Text>
-        </TouchableOpacity>
+        {!isGuest && (
+          <TouchableOpacity style={styles.logoutRow} onPress={handleLogout}>
+            <LogoutIcon />
+            <Text style={styles.logoutText}> Logout </Text>
+          </TouchableOpacity>
+        )}
 
       </View>
 
@@ -112,19 +123,19 @@ const ProfileScreen = () => {
         <Text style={styles.label}>Phone</Text>
         <TextInput
           style={styles.input}
-          value="+971 99999 99999"
+          value={profile.phone}
           editable={false}
         />
         <Text style={styles.label}>Email</Text>
         <TextInput
           style={styles.input}
-          value="jhondoe@gmail.com"
+          value={profile.email}
           editable={false}
         />
       </View>
 
       <View style={styles.actionsRow}>
-        <TouchableOpacity style={styles.editButton}>
+        <TouchableOpacity style={styles.editButton} onPress={EditProfile}>
           <Text style={styles.editButtonText}>Edit Profile Details</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.editButton}>
@@ -141,6 +152,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     paddingHorizontal: 20,
     paddingTop: 100,
+
   },
   heading: {
     fontSize: 25,

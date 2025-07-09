@@ -49,6 +49,7 @@ const AppNavigator = () => {
           </>
         )}
         <Stack.Screen name="Profile" component={require('../screens/ProfileScreen').default} />
+        <Stack.Screen name="EditProfile" component={require('../screens/EditProfileScreen').default} />
       </Stack.Navigator>
     </NavigationContainer>
   );

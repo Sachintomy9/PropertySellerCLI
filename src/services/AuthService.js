@@ -4,34 +4,38 @@ import { Alert } from 'react-native';
 
 const API_URL = 'https://api.propertyseller.com/api/v1/';
 
-// Login & Store Tokens
+// LOGIN: Store access + refresh tokens securely
 export const login = async (email, password) => {
   try {
-    const response = await axios.post(`${API_URL}/auth/user/login`, {
+    const response = await axios.post(`${API_URL}auth/user/login`, {
       email,
       password,
     });
 
     const { accessToken, refreshToken } = response.data;
-    console.log('Login successful:', response.data);
-    console.log('Access Token:', accessToken);
-    console.log('Refresh Token:', refreshToken);
 
-    // Securely store tokens
     await Keychain.setGenericPassword('tokens', JSON.stringify({
       accessToken,
       refreshToken,
     }));
 
+    console.log('🔐 Tokens stored after login.');
     return { success: true };
   } catch (error) {
-    console.error('Login error coming from AuthService Screen:', error.response.data.message);
-    Alert.alert('Error', error.response.data.message || 'Login failed');
-    return { success: false, error: error.message };
+    const msg = error?.response?.data?.message || 'Login failed';
+    console.error('❌ Login error:', msg);
+    Alert.alert('Error', msg);
+    return { success: false, error: msg };
   }
 };
 
-// check if user is in guest mode
+// LOGOUT: Clear tokens from secure storage
+export const logout = async () => {
+  await Keychain.resetGenericPassword();
+  console.log('🔒 User logged out. Tokens cleared.');
+};
+
+// CHECK: If user is a guest
 export const isGuestUser = async () => {
   try {
     const credentials = await Keychain.getGenericPassword();
@@ -41,14 +45,12 @@ export const isGuestUser = async () => {
     }
     return false;
   } catch (error) {
-    console.error('Error checking guest mode:', error);
+    console.error('❌ Error checking guest mode:', error);
     return false;
   }
 };
 
-
-
-// Get stored tokens
+// GET TOKENS: From Keychain
 export const getTokens = async () => {
   try {
     const credentials = await Keychain.getGenericPassword();
@@ -57,38 +59,38 @@ export const getTokens = async () => {
     }
     return null;
   } catch (error) {
-    console.error('Keychain error:', error);
+    console.error('❌ Keychain read error:', error);
     return null;
   }
 };
 
-// Refresh Access Token
+// REFRESH ACCESS TOKEN: When JWT expires
 export const refreshToken = async () => {
   try {
     const tokens = await getTokens();
-    if (!tokens?.refreshToken) throw new Error('No refresh token');
+    if (!tokens?.refreshToken) throw new Error('No refresh token found');
 
-    const response = await axios.post(`${API_URL}/auth/user/refresh-token`, {
+    console.log('🔁 Attempting to refresh token...');
+
+    const response = await axios.post(`${API_URL}auth/user/refresh-token`, {
       refreshToken: tokens.refreshToken,
     });
 
-    const { accessToken } = response.data;
-    
-    // Update stored accessToken
+    const { token: accessToken, refreshToken: newRefreshToken } = response.data;
+
+    console.log("New tokens:", response.data);
+    console.log("New Access Token:", accessToken);
     await Keychain.setGenericPassword('tokens', JSON.stringify({
       accessToken,
-      refreshToken: tokens.refreshToken,  // Keep the same refreshToken
+      refreshToken: newRefreshToken,
     }));
 
+
+    console.log('✅ Token refreshed and stored successfully.');
     return accessToken;
   } catch (error) {
-    console.error('Refresh token error:', error);
-    await logout();  // Force logout if refresh fails
+    console.error('❌ Refresh token failed:', error?.response?.data || error.message);
+    await logout();
     return null;
   }
-};
-
-// Logout
-export const logout = async () => {
-  await Keychain.resetGenericPassword();
 };

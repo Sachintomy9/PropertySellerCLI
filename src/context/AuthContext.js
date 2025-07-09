@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
   // Add slight delay to let Keychain finish writing
   setTimeout(async () => {
     await loadAuthState();
-  }, 400);
+  }, 500);
 };
 
 const continueAsGuest = async () => {
@@ -38,7 +38,7 @@ const continueAsGuest = async () => {
   setTimeout(async () => {
     await loadAuthState();
     console.log('Guest mode enabled in AuthContext');
-  }, 400);
+  }, 500);
 };
 
   const logout = async () => {

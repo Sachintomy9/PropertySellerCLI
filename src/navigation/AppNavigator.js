@@ -50,6 +50,9 @@ const AppNavigator = () => {
         )}
         <Stack.Screen name="Profile" component={require('../screens/ProfileScreen').default} />
         <Stack.Screen name="EditProfile" component={require('../screens/EditProfileScreen').default} />
+        <Stack.Screen name="PropDetails" component={require('../screens/PropDetailsScreen').default} />
+        <Stack.Screen name="FloorPlans" component={require('../screens/FloorPlansScreen').default} />
+        <Stack.Screen name="AmenitiesInfo" component={require('../screens/AmenitiesInfoScreen').default} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -1,284 +1,118 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native';
-import { fonts } from '../../styles/fonts';
+import React, { useRef, useState, useEffect } from 'react';
+import { View, Animated, FlatList, StyleSheet } from 'react-native';
+import TopHeader from '../components/TopHeader';
+import FilterBar from '../components/FilterBar';
+import PropertyCard from '../components/PropertyCard';
+import axios from 'axios';
 
-// Your custom SVGs
-import PropertySellerHeader from '../assets/svg/svgimages/PropertySellerHeader';
-import BellIcon from '../assets/svg/svgicons/Others/BellIcon';
-import DropDownIcon from '../assets/svg/svgicons/Others/DropDownIcon';
-import SearchIcon from '../assets/svg/svgicons/Others/SearchIcon';
-import FilterIcon from '../assets/svg/svgicons/Others/FilterIcon';
+const HomeScreen = () => {
+  const [properties, setProperties] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-const TopHeaderScreen = () => {
-  const [selectedCategory, setSelectedCategory] = useState('Offplan Projects');
-  const [selectedType, setSelectedType] = useState('Residential');
+  const translateY = useRef(new Animated.Value(0)).current;
+  const currentOffset = useRef(0);
+  const scrollDirection = useRef('up'); // Track last direction
 
-  const categories = ['Offplan Projects', 'Offplan Resale', 'Secondary', 'Land'];
-  const types = ['Residential', 'Commercial'];
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        const response = await axios.get('https://api.propertyseller.com/api/v1/projects');
+        if (response.data.success) {
+          setProperties(response.data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching properties:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProperties();
+  }, []);
+
+  const handleScroll = (event) => {
+    const offsetY = event.nativeEvent.contentOffset.y;
+    const direction = offsetY > currentOffset.current ? 'down' : 'up';
+
+    if (direction !== scrollDirection.current) {
+      scrollDirection.current = direction;
+
+      Animated.timing(translateY, {
+        toValue: direction === 'down' ? -180 : 0, // Slide up or down
+        duration: 700,
+        useNativeDriver: true,
+      }).start();
+    }
+
+    currentOffset.current = offsetY;
+  };
+
+  const renderItem = ({ item }) => (
+    <PropertyCard
+      title={item.projectTitle}
+      propType={item.propertyTypes}
+      projectType={item.projectType}
+      type={item.type}
+      discount={item.discount}
+      handOverQuarter={item.handOverQuarter}
+      handOverYear={item.handOverYear}
+      paymentPlan={item.paymentPlan}
+      price={item.priceInAED}
+      rooms={item.type}
+      baths="–"
+      area="–"
+      propertyId={item._id}
+      location={item.address}
+      image={item.mainImages[0]?.secure_url}
+    />
+  );
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      {/* Top Header */}
-      <View style={styles.headerRow}>
-        <TouchableOpacity style={styles.currencyButton}>
-          <Text style={styles.currencyText}>AED</Text>
-          <DropDownIcon />
-        </TouchableOpacity>
-
-        <PropertySellerHeader style={styles.logo} />
-
-        <TouchableOpacity style={styles.notification}>
-          <BellIcon />
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>4</Text>
-          </View>
-        </TouchableOpacity>
+    <View style={{ flex: 1, backgroundColor: '#fff' }}>
+      {/* Fixed TopHeader */}
+      <View style={styles.topHeaderWrapper}>
+        <TopHeader />
       </View>
 
-      {/* Search Bar */}
-      <View style={styles.searchBox}>
-        <SearchIcon />
-        <TextInput
-          placeholder="Search.."
-          placeholderTextColor="#aaa"
-          style={styles.searchInput}
-        />
-      </View>
+      {/* Animated FilterBar */}
+      <Animated.View style={[styles.filterBarWrapper, { transform: [{ translateY }] }]}>
+        <FilterBar />
+      </Animated.View>
 
-      {/* Location Filters */}
-      <View style={styles.filterRow}>
-        <TouchableOpacity style={styles.dropdownBtn}>
-          <Text style={styles.dropdownText}>Emirates</Text>
-          <DropDownIcon />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.dropdownBtn}>
-          <Text style={styles.dropdownText}>City</Text>
-          <DropDownIcon />
-        </TouchableOpacity>
-      </View>
-
-      {/* Category Tabs - grouped container */}
-      <View style={styles.categoryContainer}>
-        {categories.map((item) => (
-          <TouchableOpacity
-            key={item}
-            style={[
-              styles.categoryButton,
-              selectedCategory === item && styles.categoryButtonSelected,
-            ]}
-            onPress={() => setSelectedCategory(item)}
-          >
-            <Text
-              style={[
-                styles.categoryText,
-                selectedCategory === item && styles.categoryTextSelected,
-              ]}
-            >
-              {item}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      {/* Type Tabs - grouped container with filter icon */}
-      <View style={styles.typeContainer}>
-        {types.map((type) => (
-          <TouchableOpacity
-            key={type}
-            style={[
-              styles.typeButton,
-              selectedType === type && styles.typeButtonSelected,
-            ]}
-            onPress={() => setSelectedType(type)}
-          >
-            <Text
-              style={[
-                styles.typeText,
-                selectedType === type && styles.typeTextSelected,
-              ]}
-            >
-              {type}
-            </Text>
-          </TouchableOpacity>
-        ))}
-        <TouchableOpacity style={styles.filterIcon}>
-          <FilterIcon />
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+      {/* FlatList */}
+      <FlatList
+        data={properties}
+        keyExtractor={(item) => item._id}
+        renderItem={renderItem}
+        contentContainerStyle={{ paddingTop: 180 }} // 100 (TopHeader) + 80 (FilterBar)
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+      />
+    </View>
   );
 };
 
-export default TopHeaderScreen;
-
 const styles = StyleSheet.create({
-  container: {
+  topHeaderWrapper: {
+    height: 100,
+    backgroundColor: '#fff',
+    paddingTop: 40,
+    zIndex: 20,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  filterBarWrapper: {
+    position: 'absolute',
+    top: 150,// directly below TopHeader
+    left: 0,
+    right: 0,
+    height: 80,
+    zIndex: 10,
     backgroundColor: '#fff',
   },
-  content: {
-    padding: 16,
-    paddingTop: 50,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  currencyButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F6F6F6',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 8,
-  },
-  currencyText: {
-    marginRight: 4,
-    fontSize: 14,
-    fontFamily: fonts.PoppinsMedium,
-  },
-  logo: {
-    alignSelf: 'center',
-    right:20,
-  },
-  notification: {
-    position: 'relative',
-  },
-  badge: {
-    position: 'absolute',
-    top: -6,
-    right: -6,
-    backgroundColor: '#D91E5B',
-    borderRadius: 10,
-    paddingHorizontal: 5,
-    paddingVertical: 1,
-  },
-  badgeText: {
-    color: '#fff',
-    fontSize: 10,
-    fontWeight: 'bold',
-  },
-  searchBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F6F6F6',
-    paddingHorizontal: 12,
-    borderRadius: 10,
-    marginTop: 16,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 6,
-    height: 48,
-  },
-  searchInput: {
-    height: 40,
-    paddingHorizontal: 10,
-    fontSize: 15,
-    color: "#000"
- },
-  filterRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 10,
-    height: 48,
-
-  },
-  dropdownBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F6F6F6',
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 6,
-    height: 48,
-    padding: 10,
-    flex: 0.485,
-  },
-  dropdownText: {
-    fontSize: 14,
-    marginRight: 6,
-    fontFamily: fonts.PoppinsMedium,
-  },
-
-  // CATEGORY TABS STYLES
-  categoryContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    backgroundColor: '#F6F6F6',
-    borderRadius: 8,
-    marginTop: 10,
-    padding: 5,
-    justifyContent: 'space-between',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 6,
-  },
-  categoryButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 3,
-    height: 40,
-    borderRadius: 6,
-    backgroundColor: 'transparent',
-  },
-  categoryButtonSelected: {
-    backgroundColor: '#FFDDE5',
-  },
-  categoryText: {
-    fontSize: 14,
-    color: '#444',
-    fontFamily: fonts.PoppinsMedium,
-  },
-  categoryTextSelected: {
-    color: '#D91E5B',
-    fontSize: 14,
-    fontFamily: fonts.PoppinsMedium,
-  },
-
-  // PROPERTY TYPE TABS
-  typeContainer: {
-    flexDirection: 'row',
-    backgroundColor: '#F6F6F6',
-    marginTop: 10,
-    borderRadius: 6,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 6,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 6,
-    height: 55,
-  },
-  typeButton: {
-    flex: 1,
-    alignItems: 'center',
-    padding: 10,
-    borderRadius: 10,
-    height: 40,
-  },
-  typeButtonSelected: {
-    backgroundColor: '#FFDDE5',
-  },
-  typeText: {
-    fontSize: 14,
-    fontFamily: fonts.PoppinsMedium,
-    color: '#444',
-  },
-  typeTextSelected: {
-    color: '#D91E5B',
-    fontWeight: 'bold',
-  },
-  filterIcon: {
-    padding: 10,
-    backgroundColor: '#FFDDE5',
-    borderRadius: 10,
-    marginLeft: 6,
-  },
 });
+
+export default HomeScreen;

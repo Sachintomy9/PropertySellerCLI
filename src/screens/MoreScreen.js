@@ -103,17 +103,17 @@ const MoreScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ flex: 1, flexDirection: 'row' }}>
-      <Animated.ScrollView
-        contentContainerStyle={{ paddingBottom: 30 }}
-        showsVerticalScrollIndicator={false}
-        scrollEventThrottle={16}
-        onContentSizeChange={(w, h) => setContentHeight(h)}
-        onLayout={(e) => setScrollViewHeight(e.nativeEvent.layout.height)}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: false }
-        )}
-      >
+        <Animated.ScrollView
+          contentContainerStyle={{ paddingBottom: 30 }}
+          showsVerticalScrollIndicator={false}
+          scrollEventThrottle={16}
+          onContentSizeChange={(w, h) => setContentHeight(h)}
+          onLayout={(e) => setScrollViewHeight(e.nativeEvent.layout.height)}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+            { useNativeDriver: false }
+          )}
+        >
         {/* Signin/Signup Button */}
         {isGuest && (
           <TouchableOpacity

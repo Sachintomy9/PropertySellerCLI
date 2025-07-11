@@ -11,10 +11,8 @@ import CloseIcon from '../../assets/svg/svgicons/ProfileScreen/CloseIcon';
 import UserIcon from '../../assets/svg/svgicons/PopUps/UserIcon';
 import { useNavigation} from '@react-navigation/native';
 import { fonts } from '../../../styles/fonts';
-import { useProfile } from '../../context/ProfileContext';
 
 const LoginSuccess = ({ visible, onClose }) => {
-     const { profile} = useProfile();
     const navigation = useNavigation();
 
     const onLogin = async () => {
@@ -41,8 +39,7 @@ const LoginSuccess = ({ visible, onClose }) => {
 
           {/* Content */}
           <Text style={styles.title}>Login Success</Text>
-          <Text style={styles.subtitle}> Welcome
-            {profile?.name}
+          <Text style={styles.subtitle}> Welcome to PropertSeller
           </Text>
 
           {/* Icon */}

@@ -114,7 +114,7 @@ export default PropertyCard;
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#fff',
-    borderRadius: 12,
+    borderRadius: 6,
     marginHorizontal: 16,
     marginBottom: 20,
     overflow: 'hidden',

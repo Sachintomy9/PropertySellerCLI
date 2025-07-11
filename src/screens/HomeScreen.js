@@ -1,11 +1,9 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { useRoute, useNavigation } from '@react-navigation/native';
-import { View, Animated, FlatList, StyleSheet } from 'react-native';
+import { View, Animated, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
+import { useRoute } from '@react-navigation/native';
 import TopHeader from '../components/Headers/TopHeader';
 import FilterBar from '../components/FilterBar';
 import PropertyCard from '../components/PropertyCard';
-import LoginSuccess from '../components/popups/LoginSuccess';
-
 import axios from 'axios';
 
 const HomeScreen = () => {
@@ -13,50 +11,85 @@ const HomeScreen = () => {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
 
-
-  const filterBarTranslateY = useRef(new Animated.Value(0)).current; // controls filterBar movement
+  const filterBarTranslateY = useRef(new Animated.Value(0)).current;
   const lastScrollY = useRef(0);
   const isFilterBarHidden = useRef(false);
-  const fetchProperties = async () => {
-      try {
+
+
+
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const [contentHeight, setContentHeight] = useState(1);
+  const [scrollViewHeight, setScrollViewHeight] = useState(0);
+  const THUMB_MIN_HEIGHT = 30;
+
+  const thumbHeight = scrollY.interpolate({
+    inputRange: [0, Math.max(contentHeight - scrollViewHeight, 1)],
+    outputRange: [
+      THUMB_MIN_HEIGHT,
+      Math.max((scrollViewHeight / contentHeight) * scrollViewHeight, THUMB_MIN_HEIGHT),
+    ],
+    extrapolate: 'clamp',
+  });
+
+  const translateY = scrollY.interpolate({
+    inputRange: [0, Math.max(contentHeight - scrollViewHeight, 1)],
+    outputRange: [0, scrollViewHeight - THUMB_MIN_HEIGHT],
+    extrapolate: 'clamp',
+  });
+
+  const fetchProperties = async (pageNum = 1, isRefreshing = false) => {
+    try {
+      if (isRefreshing) {
         setRefreshing(true);
-        const response = await axios.get('https://api.propertyseller.com/api/v1/projects');
-        if (response.data.success) {
-          setProperties(response.data.data);
-          console.log("From Home Screen",response.data.data);
-        }
-      } catch (error) {
-        console.error('Error fetching properties:', error);
-      } finally {
-        setLoading(false);
-        setRefreshing(false);
+      } else if (pageNum === 1) {
+        setLoading(true);
+      } else {
+        setIsFetchingMore(true);
       }
-    };
+
+      const response = await axios.get(`https://api.propertyseller.com/api/v1/projects?page=${pageNum}&limit=20`);
+      if (response.data.success) {
+        const newProjects = response.data.data;
+        const pagination = response.data.pagination;
+
+        setProperties(prev =>
+          pageNum === 1 || isRefreshing ? newProjects : [...prev, ...newProjects]
+        );
+
+        setPage(pagination.currentPage);
+        setTotalPages(pagination.totalPages);
+      }
+    } catch (error) {
+      console.error('Error fetching properties:', error);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+      setIsFetchingMore(false);
+    }
+  };
 
   useEffect(() => {
-    
-    fetchProperties();
+    fetchProperties(1);
   }, []);
 
   const handleScroll = (event) => {
     const currentY = event.nativeEvent.contentOffset.y;
     const deltaY = currentY - lastScrollY.current;
 
-    // Scroll down → hide filter bar
     if (deltaY > 5 && !isFilterBarHidden.current) {
       Animated.timing(filterBarTranslateY, {
-        toValue: -180, // fully slide out
+        toValue: -180,
         duration: 500,
         useNativeDriver: true,
       }).start();
       isFilterBarHidden.current = true;
-    }
-
-    // Scroll up → show filter bar
-    else if (deltaY < -5 && isFilterBarHidden.current) {
+    } else if (deltaY < -5 && isFilterBarHidden.current) {
       Animated.timing(filterBarTranslateY, {
-        toValue: 0, // slide back in
+        toValue: 0,
         duration: 200,
         useNativeDriver: true,
       }).start();
@@ -66,8 +99,22 @@ const HomeScreen = () => {
     lastScrollY.current = currentY;
   };
 
-  const renderItem = ({ item }) => (
+  const handleLoadMore = () => {
+    if (!isFetchingMore && page < totalPages) {
+      fetchProperties(page + 1);
+    }
+  };
 
+  const renderFooter = () => {
+    if (!isFetchingMore) return null;
+    return (
+      <View style={{ paddingVertical: 20 }}>
+        <ActivityIndicator size="small" />
+      </View>
+    );
+  };
+
+  const renderItem = ({ item }) => (
     <PropertyCard
       title={item.projectTitle}
       propType={item.propertyTypes}
@@ -85,34 +132,53 @@ const HomeScreen = () => {
       sqfeet={item.squareFeet}
       propertyId={item._id}
       location={item.address}
-      image={item.mainImages[0]?.secure_url}
+      image={item.mainImages?.[0]?.secure_url}
     />
   );
 
   return (
     <View style={{ flex: 1, backgroundColor: '#fff' }}>
-
-      {/* Top Header */}
       <View style={styles.topHeaderWrapper}>
         <TopHeader />
       </View>
 
-      {/* Filter Bar with slide animation */}
       <Animated.View style={[styles.filterBarWrapper, { transform: [{ translateY: filterBarTranslateY }] }]}>
         <FilterBar />
       </Animated.View>
 
-      {/* Property List */}
       <FlatList
-        data={properties}
-        keyExtractor={(item) => item._id}
-        renderItem={renderItem}
-        contentContainerStyle={{ paddingTop: 180 }}
-        onScroll={handleScroll}
-        scrollEventThrottle={16}
-        refreshing={refreshing}
-        onRefresh={fetchProperties}
-      />
+  data={properties}
+  keyExtractor={(item) => item._id}
+  renderItem={renderItem}
+  contentContainerStyle={{ paddingTop: 180 }}
+  scrollEventThrottle={16}
+  onScroll={Animated.event(
+    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+    {
+      useNativeDriver: false,
+      listener: handleScroll, // This runs your filterBar animation logic
+    }
+  )}
+  onEndReached={handleLoadMore}
+  onEndReachedThreshold={0.5}
+  ListFooterComponent={renderFooter}
+  refreshing={refreshing}
+  onRefresh={() => fetchProperties(1, true)}
+  onContentSizeChange={(w, h) => setContentHeight(h)}
+  onLayout={e => setScrollViewHeight(e.nativeEvent.layout.height)}
+/>
+
+      <View style={styles.scrollbarTrack}>
+        <Animated.View
+          style={[
+            styles.scrollbarThumb,
+            {
+              height: thumbHeight,
+              transform: [{ translateY }],
+            },
+          ]}
+        />
+      </View>
     </View>
   );
 };
@@ -137,6 +203,21 @@ const styles = StyleSheet.create({
     height: 80,
     zIndex: 10,
     backgroundColor: '#fff',
+    },
+    scrollbarTrack: {
+    position: 'absolute',
+    right: 2,
+    top: 180, // same as paddingTop
+    bottom: 0,
+    width: 4,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 2,
+  },
+  scrollbarThumb: {
+    width: 4,
+    backgroundColor: '#999',
+    borderRadius: 2,
+    backgroundColor: '#FF1645',
   },
 });
 

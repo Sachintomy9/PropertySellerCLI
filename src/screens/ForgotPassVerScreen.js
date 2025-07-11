@@ -18,23 +18,61 @@ const API_URL = 'https://api.propertyseller.com/api/v1/';
 
 const ResetPasswordScreen = () => {
   const [email, setEmail] = useState('');
-
+  const navigation=useNavigation();
   const handleSubmit = async () => {
+
+    console.log("Submit Pressed!")
     if (!email) {
       Alert.alert('Error', 'Please enter your email');
       return;
     }
 
-    try{
-        const response = await axios.post(`${API_URL}/auth/user/forgot-password`, {
-        email,
-        });
-        console.log('Password reset link sent:', response.data);
+   try { 
+      const trimmedEmail = email.trim();
+      
+      // Basic email format validation
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+        Alert.alert('Error', 'Please enter a Valid email');
+      }
+
+      const response = await axios.post(`${API_URL}/auth/user/forgot-password`, {
+        email: trimmedEmail  // Fixed syntax - need to specify key: value
+      });
+
+      console.log('Response:', response.data);
+      
+      if (response.data.message === "mail is eligible for password reset") {
+        console.log("The email is eligible for password reset.");
+        // You might want to navigate to verification screen here
+
+
+
+        navigation.navigate('ForgotPassSet');
+        return { success: true, data: response.data };
+      } else {
+        // Handle other possible success messages
+        return { success: true, data: response.data };
+      }
 
     } catch (error) {
-        console.error('Error sending password reset link:', error);
-        Alert.alert('Error', error.response?.data?.message || 'Failed to send password reset link');
-        return;
+      console.error('Password reset error:', error);
+      
+      // Handle different error types
+      let errorMessage = 'Failed to process password reset';
+      
+      if (error.response) {
+        // Server responded with error status (4xx, 5xx)
+        errorMessage = error.response.data.message || error.response.statusText;
+      } else if (error.request) {
+        // Request was made but no response received
+        errorMessage = 'No response from server';
+      } else {
+        // Something happened in setting up the request
+        errorMessage = error.message;
+      }
+
+      // You might want to show this to the user
+      Alert.alert('Error', errorMessage);
     }
   };
 

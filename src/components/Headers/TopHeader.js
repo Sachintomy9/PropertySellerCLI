@@ -8,12 +8,12 @@ import {
 } from 'react-native';
 
 // Custom SVGs
-import PropertySellerHeader from '../assets/svg/svgimages/PropertySellerHeader';
-import BellIcon from '../assets/svg/svgicons/Others/BellIcon';
-import DropDownIcon2 from '../assets/svg/svgicons/Others/DropDownIcon2';
-import SearchIcon from '../assets/svg/svgicons/Others/SearchIcon';
+import PropertySellerHeader from '../../assets/svg/svgimages/PropertySellerHeader';
+import BellIcon from '../../assets/svg/svgicons/Others/BellIcon';
+import DropDownIcon2 from '../../assets/svg/svgicons/Others/DropDownIcon2';
+import SearchIcon from '../../assets/svg/svgicons/Others/SearchIcon';
 
-const HeaderWithSearch = () => {
+const TopHeader = () => {
   return (
     <View style={styles.container}>
       {/* Top Row */}
@@ -139,4 +139,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HeaderWithSearch;
+export default TopHeader;

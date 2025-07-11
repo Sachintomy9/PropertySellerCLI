@@ -4,7 +4,7 @@ import {
   Text,
   StyleSheet,
   Image,
-  ScrollView,
+  Alert,
   TouchableOpacity,
   ActivityIndicator,
   Linking,
@@ -13,10 +13,12 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import { useRoute, useNavigation } from '@react-navigation/native';
+import { useAuth } from '../context/AuthContext';
+import { useProfile } from '../context/ProfileContext';
 import { Dimensions } from 'react-native';
 import BottomEnquireButton from '../components/buttons/BottomEnquire';
 const { width } = Dimensions.get('window');
-
+import api from '../services/ApiClient';
 import { fonts } from '../../styles/fonts';
 
 // SVG icons (you should create/import these)
@@ -30,13 +32,16 @@ import AreaIcon from '../assets/svg/svgicons/Details/AreaIcon';
 import PlayIcon from '../assets/svg/svgicons/Details/PlayIcon';
 import MapIcon from '../assets/svg/svgicons/Details/LocationIcon';
 import TickIcon from '../assets/svg/svgicons/Details/TickIcon';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import LoginPrompt from '../components/popups/LoginPrompt';
 
 const PropertyDetailScreen = () => {
   const route = useRoute();
+  const {isGuest} = useAuth();
+  const {profile} = useProfile();
   const navigation = useNavigation();
   const { propertyId } = route.params;
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
     const scrollY = useRef(new Animated.Value(0)).current;
     const [contentHeight, setContentHeight] = useState(1);
@@ -73,8 +78,29 @@ const PropertyDetailScreen = () => {
     }).current;
 
 
+  const handleHeartPress = async () => {
+    if (isGuest) {
+      setShowLoginPrompt(true);
+    } else {
+      try{
+        const payload = {
+          userId: profile.id,
+          projectId: propertyId,
+        };
+        const response = await api.post('wishlist',payload);
+        
+          Alert.alert('Success', 'Added to your wishlist.');
+          console.log("Successfully Added to wishlist:",response.data)
+      } catch (error) {
+        console.error('Profile update error:', error.response?.data || error.message);
+        Alert.alert('Error', error.response?.data?.message || 'Profile update failed.');
+      }
+    }
+  };
+
 
   useEffect(() => {
+    console.log('propertyId from route:', propertyId);
     const fetchProperty = async () => {
       try {
         const res = await axios.get(`https://api.propertyseller.com/api/v1/projects/${propertyId}`);
@@ -104,18 +130,8 @@ const PropertyDetailScreen = () => {
 
   return (
     <View style={styles.container} contentContainerStyle={styles.content}>
-        <Animated.ScrollView
-            contentContainerStyle={{ paddingBottom: 100 }}
-            showsVerticalScrollIndicator={false}
-            scrollEventThrottle={16}
-            onContentSizeChange={(w, h) => setContentHeight(h)}
-            onLayout={e => setScrollViewHeight(e.nativeEvent.layout.height)}
-            onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-            { useNativeDriver: false }
-            )}
-        >
-      {/* Top Navigation */}
+
+            {/* Top Navigation */}
       <View style={styles.headerRow}>
         <View style={{backgroundColor:"#FFE8EF",borderRadius:5, width:30,height:35}}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -128,11 +144,31 @@ const PropertyDetailScreen = () => {
             </TouchableOpacity>
         </View>
         <View style={{backgroundColor:"#FFE8EF",borderRadius:5,width:35,height:35}}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={handleHeartPress}>
             <HeartIcon style={{ width: 32, height: 32 }} />
             </TouchableOpacity>
         </View>   
+
+        <LoginPrompt
+          visible={showLoginPrompt}
+          onClose={() => setShowLoginPrompt(false)}
+        />
+
+
+
       </View>
+        <Animated.ScrollView
+            contentContainerStyle={{ paddingBottom: 100 }}
+            showsVerticalScrollIndicator={false}
+            scrollEventThrottle={16}
+            onContentSizeChange={(w, h) => setContentHeight(h)}
+            onLayout={e => setScrollViewHeight(e.nativeEvent.layout.height)}
+            onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+            { useNativeDriver: false }
+            )}
+        >
+
 
       {/* Main Image */}
       <View style={styles.carouselWrapper}>
@@ -197,8 +233,14 @@ const PropertyDetailScreen = () => {
         <Text style={styles.infoText}>Bedrooms: 1    </Text>
         <BathIcon />
         <Text style={styles.infoText}>Bathrooms: 2 </Text>
-        <AreaIcon />
-        <Text style={styles.infoText}>Area: 701 sqft </Text>
+
+        
+        {property.squareFeet && (
+          <>
+            <AreaIcon />
+            <Text style={styles.infoText}>Area: {property.squareFeet} sqft </Text>
+          </>
+  )}
       </View>
 
       {/* Description */}
@@ -288,7 +330,7 @@ const PropertyDetailScreen = () => {
                 navigation.navigate('AmenitiesInfo', {facilitiesAmenitiesDetails: property.facilitiesAmenitiesDetails,})
             }}>
             <Text style={[styles.amenityText, { color: '#D91E5B', fontWeight: '600' }]}>
-            +28 More Amenities
+            +{property.facilitiesAmenitiesDetails.length - 2} More More Amenities
             </Text>
         </TouchableOpacity>
         </View>

@@ -139,7 +139,7 @@ const MoreScreen = () => {
           onItemPress={handleItemPress}
           items={[
             { label: 'Saved', Icon: SavedIcon, screen: 'Saved' },
-            { label: 'Enquired Property', Icon: EnqPropIcon },
+            { label: 'Enquired Properties', Icon: EnqPropIcon },
             { label: 'Purchase History', Icon: PurHistoryIcon },
             { label: 'Rental Income', Icon: RentIncomeIcon },
           ]}

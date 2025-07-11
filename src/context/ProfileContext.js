@@ -29,8 +29,8 @@ const fetchUserProfile = async () => {
     console.log("details",response.data)
 
     if (response.status === 200) {
-      const { name, email, number : phone } = response.data.user;
-      return { name, email, phone };
+      const { name, email, number : phone, _id : id} = response.data.user;
+      return { name, email, phone, id };
     }
   } catch (error) {
     console.error('Error fetching user profile:', error.response?.data || error.message);
@@ -47,6 +47,7 @@ export const ProfileProvider = ({ children }) => {
     name: '',
     email: '',
     phone: '',
+    id: '',
   });
 
   const loadProfile = async () => {

@@ -18,6 +18,7 @@ import { useAuth } from '../context/AuthContext';
 
 import ShowPassIcon from '../assets/svg/svgicons/Others/ShowPassIcon';
 import HidePassIcon from '../assets/svg/svgicons/Others/HidePassIcon';
+import LoginSuccess from '../components/popups/LoginSuccess';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
@@ -26,6 +27,8 @@ const LoginScreen = () => {
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
   const [errors, setErrors] = useState({});
   const { loginUser, continueAsGuest } = useAuth();
+
+  const [showLoginSuccess, setShowLoginSuccess] = useState(false);
 
 
 
@@ -49,12 +52,17 @@ const LoginScreen = () => {
       const { success, error } = await login(emailOrPhone, password);
       if (success) {
         console.log('Login success in LoginScreen');
-        Alert.alert('Success', 'Login successful');
+        setShowLoginSuccess(true);
         await loginUser();
         navigation.reset({
-        index: 0,
-        routes: [{ name: 'Main' }],
-      });
+          index: 0,
+          routes: [{
+            name: 'Main',
+            params: {
+              showLoginSuccess: true,
+            },
+          }],
+        });
       } } catch (error) {
           console.error('Login Failed:', error.response?.data || error.message);
           
@@ -126,7 +134,7 @@ const LoginScreen = () => {
         {/*forgot password */}
         <TouchableOpacity
           style={{ alignSelf: 'flex-end', marginTop: 8 }}
-          onPress={() => navigation.navigate('ForgotVerify')}
+          onPress={() => navigation.navigate('ForgotPassVerify')}
         >
           <Text style={{ color: '#FF1645', fontFamily: fonts.PoppinsRegular, }}>
             Forgot Password?
@@ -145,6 +153,12 @@ const LoginScreen = () => {
         <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
           <Text style={styles.loginText}>Login</Text>
         </TouchableOpacity>
+
+        
+      <LoginSuccess
+        visible={showLoginSuccess}
+        onClose={() => setShowLoginSuccess(false)}
+      />
 
         <View style={styles.orContainer}>
           <View style={styles.line} />

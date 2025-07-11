@@ -1,0 +1,17 @@
+import * as React from "react";
+import Svg, { Path } from "react-native-svg";
+const DetailsIcon = (props) => (
+  <Svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={25}
+    height={25}
+    viewBox="0 0 24 24"
+    {...props}
+  >
+    <Path
+      fill="#fff"
+      d="M16 12a3 3 0 0 1-3-3V5H5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-6zm-2-3a2 2 0 0 0 2 2h3.59L14 5.41zM5 4h9l7 7v7a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3m0 4h6v1H5zm0 4h6v1H5zm0 4h13v1H5z"
+    />
+  </Svg>
+);
+export default DetailsIcon;

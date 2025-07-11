@@ -37,6 +37,7 @@ const ProfileScreen = () => {
   const EditProfile = () => {
     navigation.navigate("EditProfile");
     console.log("Went to Edit Profile Screen");
+    console.log("Profile id",profile.id);
   }
 
 

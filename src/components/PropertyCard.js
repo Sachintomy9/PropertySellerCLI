@@ -2,15 +2,27 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { fonts } from '../../styles/fonts';
 import { useNavigation } from '@react-navigation/native';
+import BedIcon from '../assets/svg/svgicons/Details/BedIcon';
+import BuildingIcon from '../assets/svg/svgicons/Others/BuildingIcon';
+import EnquireIcon from '../assets/svg/svgicons/Others/EnquireIcon';
+import DetailsIcon from '../assets/svg/svgicons/Others/DetailsIcon';
+import SavedActive from '../assets/svg/svgicons/BottomTabs/SavedActive';
+import SavedInactive from '../assets/svg/svgicons/BottomTabs/SavedInactive';
+import { useWishlist } from '../context/WishlistContext';
 
-const PropertyCard = ({ propertyId,propType,projectType,discount,paymentPlan,handOverQuarter,handOverYear, title, price, rooms, baths, area, location,image }) => {
+
+const PropertyCard = ({ propertyId,propType,projectType,sqfeet,floors,discount,paymentPlan,handOverQuarter,handOverYear, title, price, rooms, baths, area, location,image }) => {
   const navigation=useNavigation();
+  const { wishlist } = useWishlist();
+  
 
   const handleDetails = () => {
     navigation.navigate('PropDetails', { propertyId});
 
   }
-
+  const isWishlisted = wishlist.some(
+    item => item.propertyDetails?._id === propertyId
+  );  
 
   return(
     <View style={styles.card}>
@@ -35,21 +47,38 @@ const PropertyCard = ({ propertyId,propType,projectType,discount,paymentPlan,han
         </View>
       )}
 
+
+      {/* Heart Icon */}
+      <TouchableOpacity style={styles.heartIconWrapper}>
+        {isWishlisted ? (
+          <SavedActive width={24} height={24} />
+        ) : (
+          <SavedInactive width={24} height={24} />
+        )}
+      </TouchableOpacity>
+
     </View>
 
     {/* Property Info */}
     <View style={styles.content}>
       <Text style={styles.title}>{title}</Text>
-      <Text style={styles.price}>AED {price}</Text>
-
+      <Text style={styles.price}>
+        <Text style={styles.pricePrefix}>Starting From </Text>
+        <Text style={styles.priceValue}>{price} </Text>
+        <Text style={styles.priceSuffix}>AED</Text>
+      </Text>
       <View style={styles.specsRow}>
         <Text style={styles.specText1}>{propType}</Text>
-        <Text style={styles.dot}>  |  </Text>
-        <Text style={styles.specText}>{rooms} </Text>
-        <Text style={styles.dot}>  |  </Text>
-        <Text style={styles.specText}>{baths} Baths</Text>
-        <Text style={styles.dot}>   |   </Text>
-        <Text style={styles.specText}>{area} sqft</Text>
+        <Text style={styles.dot}>     </Text>
+        <BedIcon style={{ width: 24, height: 24 }}/>
+        <Text style={styles.specText}> {rooms} </Text>
+        {Boolean(floors) && (
+          <>
+            <Text style={styles.dot}>    </Text>
+            <BuildingIcon width={16} height={16} />
+            <Text style={styles.specText}>{floors} {floors === 1 ? 'floor' : 'floors'}</Text>
+          </>
+        )}
       </View>
 
       <Text style={styles.location}>{location}</Text>
@@ -60,10 +89,13 @@ const PropertyCard = ({ propertyId,propType,projectType,discount,paymentPlan,han
 
       {/* Buttons */}
       <View style={styles.actionRow}>
-        <TouchableOpacity style={styles.detailsButton } onPress={handleDetails}>
+        <TouchableOpacity style={styles.detailsButton} onPress={handleDetails}>
+          <DetailsIcon width={20} height={20} fill="#fff" />
           <Text style={styles.buttonText}>Details</Text>
         </TouchableOpacity>
+
         <TouchableOpacity style={styles.enquireButton}>
+          <EnquireIcon width={20} height={20} fill="#fff" />
           <Text style={styles.buttonText}>Enquire Now</Text>
         </TouchableOpacity>
       </View>
@@ -132,17 +164,29 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   title: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: '600',
     marginBottom: 4,
     color: '#333',
-    fontFamily: fonts?.PoppinsMedium || undefined,
+    fontFamily: fonts?.PoppinsSemiBold || undefined,
   },
   price: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#D91E5B',
+    fontSize: 20,
+    color: '#000',
     marginBottom: 6,
+    fontFamily:fonts.PoppinsSemiBold
+  },
+  pricePrefix: {
+  fontSize: 16, // Smaller size for prefix
+  fontFamily: fonts.PoppinsRegular, // Optional different font weight
+  },
+  priceValue: {
+    fontSize: 24, // Larger size for the price
+    fontFamily: fonts.PoppinsSemiBold,
+  },
+  priceSuffix: {
+    fontSize: 16, // Smaller size for suffix
+    fontFamily: fonts.PoppinsRegular,
   },
   specsRow: {
     flexDirection: 'row',
@@ -178,27 +222,46 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   actionRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  detailsButton: {
-    flex: 1,
-    backgroundColor: '#FF1645',
-    paddingVertical: 10,
-    borderRadius: 6,
-    alignItems: 'center',
-    marginRight: 8,
-  },
-  enquireButton: {
-    flex: 1,
-    backgroundColor: '#FF1645',
-    paddingVertical: 10,
-    borderRadius: 6,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 14,
-  },
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  gap: 8,
+},
+detailsButton: {
+  flex: 1,
+  minWidth: '40%', // Ensures minimum width
+  backgroundColor: '#FF1645',
+  flexDirection: 'row',
+  paddingVertical: 10,
+  paddingHorizontal: 12, // Added horizontal padding
+  borderRadius: 6,
+  alignItems: 'center',
+  justifyContent: 'center',
+},
+enquireButton: {
+  flex: 1,
+  minWidth: '40%', // Ensures minimum width
+  backgroundColor: '#FF1645',
+  flexDirection: 'row',
+  paddingVertical: 10,
+  paddingHorizontal: 12, // Added horizontal padding
+  borderRadius: 6,
+  alignItems: 'center',
+  justifyContent: 'center',
+},
+buttonText: {
+  color: '#fff',
+  fontFamily: fonts.PoppinsMedium,
+  fontSize: 14,
+  marginLeft: 10,
+  top: 1, // Allows text to shrink if needed
+},
+heartIconWrapper: {
+  position: 'absolute',
+  marginTop:200,
+  right: 2,
+  backgroundColor: '#fff',
+  padding: 6,
+  borderRadius: 20,
+
+},
 });

@@ -132,6 +132,7 @@ const HomeScreen = () => {
       sqfeet={item.squareFeet}
       propertyId={item._id}
       location={item.address}
+      createdAt={item.createdAt}
       image={item.mainImages?.[0]?.secure_url}
     />
   );

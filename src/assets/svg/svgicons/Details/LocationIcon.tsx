@@ -1,16 +1,21 @@
 import * as React from "react";
 import Svg, { Path, Circle } from "react-native-svg";
-const LocationIcon = (props) => (
+
+const LocationIcon = ({ 
+  size = 32, 
+  color = "#ff1645",
+  ...props 
+}) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
-    width={32}
-    height={32}
+    width={size}
+    height={size}
     viewBox="0 0 512 512"
     {...props}
   >
     <Path
       fill="none"
-      stroke="#FF1645"
+      stroke={color}
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth={32}
@@ -21,11 +26,12 @@ const LocationIcon = (props) => (
       cy={192}
       r={48}
       fill="none"
-      stroke="#111"
+      stroke={color}
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth={32}
     />
   </Svg>
 );
+
 export default LocationIcon;

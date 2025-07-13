@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import { useAuth } from '../../context/AuthContext';
 import CloseIcon from '../../assets/svg/svgicons/ProfileScreen/CloseIcon';
-import UserIcon from '../../assets/svg/svgicons/PopUps/UserIcon';
 import { useNavigation} from '@react-navigation/native';
 import { fonts } from '../../../styles/fonts';
 
@@ -105,7 +104,7 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#D71952',
+    backgroundColor: '#ff1645',
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 10,

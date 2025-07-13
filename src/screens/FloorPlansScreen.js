@@ -6,25 +6,31 @@ import {
   StyleSheet,
   Animated,
   Dimensions,
-  ScrollView
+  TouchableOpacity,
 } from 'react-native';
+import { useSelector } from 'react-redux';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import MultipleButton from '../components/buttons/MultipleButton';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import ImageViewing from 'react-native-image-viewing';
+import HeaderTab from '../components/Headers/HeaderTab';
+import BackIcon from '../assets/svg/svgicons/Details/BackIcon';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const FloorPlansScreen = () => {
-  const route = useRoute();
-  const { layoutImages } = route.params;
+  const property = useSelector((state) => state.property.property);
+  const layoutImages = property?.layoutImages || [];
 
   const scrollY = useRef(new Animated.Value(0)).current;
   const [contentHeight, setContentHeight] = useState(1);
   const [scrollViewHeight, setScrollViewHeight] = useState(0);
 
+  const [visible, setVisible] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
   const THUMB_MIN_HEIGHT = 30;
 
-  // Compute scroll thumb height
   const thumbHeight = scrollY.interpolate({
     inputRange: [0, Math.max(contentHeight - scrollViewHeight, 1)],
     outputRange: [
@@ -34,16 +40,22 @@ const FloorPlansScreen = () => {
     extrapolate: 'clamp',
   });
 
-  // Compute scroll thumb position
   const translateY = scrollY.interpolate({
     inputRange: [0, Math.max(contentHeight - scrollViewHeight, 1)],
     outputRange: [0, scrollViewHeight - THUMB_MIN_HEIGHT],
     extrapolate: 'clamp',
   });
 
+  const openViewer = (index) => {
+    setCurrentIndex(index);
+    setVisible(true);
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <SafeAreaView style={styles.container}>
+        <HeaderTab activeTab="Layout" />
+
         <Animated.ScrollView
           contentContainerStyle={{ paddingBottom: 100 }}
           showsVerticalScrollIndicator={false}
@@ -56,16 +68,18 @@ const FloorPlansScreen = () => {
           )}
         >
           <Text style={styles.title}>Floor Plans and Layouts</Text>
+
           {layoutImages?.map((item, index) => (
-            <Image
-              key={index}
-              source={{ uri: item.secure_url }}
-              style={styles.image}
-            />
+            <TouchableOpacity key={index} onPress={() => openViewer(index)}>
+              <Image
+                source={{ uri: item.secure_url }}
+                style={styles.image}
+                resizeMode="cover"
+              />
+            </TouchableOpacity>
           ))}
         </Animated.ScrollView>
 
-        {/* Custom Scrollbar */}
         <View style={styles.scrollbarTrack}>
           <Animated.View
             style={[
@@ -79,12 +93,20 @@ const FloorPlansScreen = () => {
         </View>
       </SafeAreaView>
 
-      {/* Bottom Buttons */}
       <MultipleButton />
+
+      {/* Image Zoom Modal */}
+      <ImageViewing
+        images={layoutImages.map(img => ({ uri: img.secure_url }))}
+        imageIndex={currentIndex}
+        visible={visible}
+        onRequestClose={() => setVisible(false)}
+        swipeToCloseEnabled
+        doubleTapToZoomEnabled
+      />
     </View>
   );
 };
-
 export default FloorPlansScreen;
 
 const styles = StyleSheet.create({
@@ -92,12 +114,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     paddingHorizontal: 16,
-    paddingTop: 80,
+    paddingTop: 0,
   },
   title: {
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 16,
+    alignSelf: "center",
   },
   image: {
     width: '100%',

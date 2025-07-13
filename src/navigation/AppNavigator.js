@@ -56,6 +56,7 @@ const AppNavigator = () => {
         <Stack.Screen name="EditProfile" component={require('../screens/EditProfileScreen').default} />
         <Stack.Screen name="PropDetails" component={require('../screens/PropDetailsScreen').default} />
         <Stack.Screen name="FloorPlans" component={require('../screens/FloorPlansScreen').default} />
+        <Stack.Screen name="ImageGallery" component={require('../screens/ImageGalleryScreen').default} />
         <Stack.Screen name="AmenitiesInfo" component={require('../screens/AmenitiesInfoScreen').default} />
         <Stack.Screen name="MortgageEdit" component={require('../screens/MortgageEditScreen').default} />
       </Stack.Navigator>

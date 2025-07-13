@@ -2,8 +2,8 @@ import * as React from "react";
 import Svg, { Rect, Defs, Pattern, Use, Image } from "react-native-svg";
 const HomeActive = (props) => (
   <Svg
-    width={35}
-    height={35}
+    width={28}
+    height={28}
     viewBox="0 0 155 155"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"

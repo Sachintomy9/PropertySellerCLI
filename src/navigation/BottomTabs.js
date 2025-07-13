@@ -68,7 +68,7 @@ const TabNavigator = () => {
           );
         },
         tabBarStyle: {
-          height: 70,
+          height: 60,
           paddingBottom: 5,
           
         },

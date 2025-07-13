@@ -12,6 +12,8 @@ import {
   FlatList,
 } from 'react-native';
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { setPropertyRed } from '../redux/slices/PropertySlice';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { useAuth } from '../context/AuthContext';
 import { useProfile } from '../context/ProfileContext';
@@ -46,6 +48,7 @@ const PropertyDetailScreen = () => {
   const {profile} = useProfile();
   const { wishlist,updateWishlist } = useWishlist();
   const { mortgageData, applyCustomValues } = useMortgage();
+  const dispatch = useDispatch();
   
 
   const navigation = useNavigation();
@@ -148,6 +151,7 @@ const PropertyDetailScreen = () => {
       try {
         const res = await axios.get(`https://api.propertyseller.com/api/v1/projects/${propertyId}`);
         setProperty(res.data.data); // adjust if shape is different
+        dispatch(setPropertyRed(res.data.data));
       } catch (err) {
         console.error(err);
       } finally {
@@ -205,6 +209,15 @@ const PropertyDetailScreen = () => {
             })}
           </View>
         );
+      };
+
+      const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric'
+        });
       };
 
 
@@ -265,16 +278,23 @@ const PropertyDetailScreen = () => {
       {/* Main Image */}
       <View style={styles.carouselWrapper}>
         <FlatList
-            data={property.mainImages}
-            keyExtractor={(item, index) => index.toString()}
-            horizontal
-            pagingEnabled
-            showsHorizontalScrollIndicator={false}
-            renderItem={({ item }) => (
-            <Image source={{ uri: item.secure_url }} style={styles.carouselImage} />
-            )}
-            onViewableItemsChanged={onViewableItemsChanged}
-            viewabilityConfig={viewabilityConfig}
+          data={property.mainImages}
+          keyExtractor={(item, index) => index.toString()}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          renderItem={({ item, index }) => (
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() => {
+                navigation.navigate('ImageGallery')
+            }}
+            >
+              <Image source={{ uri: item.secure_url }} style={styles.carouselImage} />
+            </TouchableOpacity>
+          )}
+          onViewableItemsChanged={onViewableItemsChanged}
+          viewabilityConfig={viewabilityConfig}
         />
 
         <View style={styles.pagination}>
@@ -314,17 +334,17 @@ const PropertyDetailScreen = () => {
 
       {/* Address */}
       <View style={styles.row}>
-        <LocationIcon />
+        <LocationIcon color='#000' size={24}/>
         <Text style={styles.address}>{property.address}</Text>
       </View>
 
       {/* Property Info */}
       <View style={styles.infoRow}>
-        <Text style={styles.infoText}>Apartment   |      </Text>
+        <Text style={styles.infoText}>Apartment    </Text>
         <BedIcon />
-        <Text style={styles.infoText}>Bedrooms: 1    </Text>
-        <BathIcon />
-        <Text style={styles.infoText}>Bathrooms: 2 </Text>
+        <Text style={styles.infoText}>Bedrooms: {property.type}</Text>
+        {/*<BathIcon />
+        <Text style={styles.infoText}> Bathrooms: 2 </Text>*/}
 
         
         {property.squareFeet && (
@@ -357,7 +377,7 @@ const PropertyDetailScreen = () => {
         <InfoRow label="Reference no" value="Bayut - NANCY\\102235" />
         <InfoRow label="Completion" value={property.completionType ?? "Offplan"} />
         <InfoRow label="Furnishing" value={property.furnishing} />
-        <InfoRow label="Added on" value="1 March 2024" />
+        <InfoRow label="Added on" value={formatDate(property.createdAt)} />
         <InfoRow label="Handover Date" value={property.handOverQuarter} />
         <InfoRow label="Property ID" value={property.uniqueId} />
       </View>
@@ -370,9 +390,9 @@ const PropertyDetailScreen = () => {
         <TickIcon style={styles.verifiedText} />
       </View>
       <View style={styles.infoBlock}>
-        <InfoRow label="Developer" value="OBJ1 REAL ESTATE DEVELOPM.." />
+        <InfoRow label="Developer" value={property.developerDetails.name} />
         <InfoRow label="Ownership" value="Freehold" />
-        <InfoRow label="Built-up Area" value="708 sqft" />
+        <InfoRow label="Built-up Area" value={property.squareFeet} />
         <InfoRow label="Usage" value="Other" />
         <InfoRow label="Parking Availability" value="Yes" />
       </View>
@@ -394,7 +414,7 @@ const PropertyDetailScreen = () => {
             <TouchableOpacity
             style={styles.moreButton}
             onPress={() => {
-                navigation.navigate('FloorPlans', {layoutImages: property.layoutImages,})
+                navigation.navigate('FloorPlans')
             }}
             >
             <Text style={styles.moreButtonText}>+{property.layoutImages.length - 2} More</Text>
@@ -421,7 +441,7 @@ const PropertyDetailScreen = () => {
         <TouchableOpacity style={styles.amenityCard} onPress={() => {
                 navigation.navigate('AmenitiesInfo', {facilitiesAmenitiesDetails: property.facilitiesAmenitiesDetails,})
             }}>
-            <Text style={[styles.amenityText, { color: '#D91E5B', fontWeight: '600' }]}>
+            <Text style={[styles.amenityText, { color: '#ff1645', fontWeight: '600' }]}>
             +{property.facilitiesAmenitiesDetails.length - 2} More More Amenities
             </Text>
         </TouchableOpacity>
@@ -437,7 +457,7 @@ const PropertyDetailScreen = () => {
           <Text style={styles.mortgageLine}>Down Payment : ({mortgageData.downPayment}%)<Text style={styles.boldText}> AED {(mortgageData.price * mortgageData.downPayment / 100).toLocaleString()}</Text></Text>
           <Text style={styles.mortgageLine}>Interest Rate : <Text style={styles.boldText}>{mortgageData.interestRate}%</Text></Text>
           <TouchableOpacity style={styles.editBtn} onPress={() => navigation.navigate('MortgageEdit')}>
-            <FilterIcon style={{ width: 20, height: 20 , color :"#D91E5B"}}/>
+            <FilterIcon style={{ width: 20, height: 20 , color :"#ff1645"}}/>
             <Text style={styles.editBtnText}>  Edit Values</Text>
           </TouchableOpacity>
         </View>
@@ -450,6 +470,34 @@ const PropertyDetailScreen = () => {
         <View style={styles.infoBlock}>
          <PaymentOptions paymentOptions={property.paymentOptions} />
         </View>
+
+        <Text style={styles.sectionTitle}>Regulatory Information</Text>
+        <View style={styles.infoBlock}>
+          <InfoRow label="Permit Number" value="" />
+          <InfoRow label="DED" value="" />
+          <InfoRow label="ORN" value="" />
+          <InfoRow label="BRN" value="" />
+        </View>
+
+        <View style={{ 
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+          <Image 
+            source={{ uri: property.qrCodeImage.url }} 
+            style={{ 
+              width: 200,  // Set appropriate dimensions
+              height: 200,
+              resizeMode: 'contain'
+            }}
+          />
+        </View>
+
+      <Text style={styles.sectionTitle}>Recommended For You</Text>
+
+
+  
 
 
     </Animated.ScrollView>
@@ -508,7 +556,7 @@ dot: {
   marginHorizontal: 4,
 },
 activeDot: {
-  backgroundColor: '#D91E5B',
+  backgroundColor: '#ff1645',
   width: 10,
   height: 10,
 },
@@ -558,7 +606,7 @@ activeDot: {
     width: "48%",
   },
   actionText: {
-    color: '#D91E5B',
+    color: '#ff1645',
     fontFamily: fonts.PoppinsSemiBold,
   },
   title: {
@@ -618,7 +666,7 @@ activeDot: {
     borderRadius: 6,
   },
   readMoreText: {
-    color: '#D91E5B',
+    color: '#ff1645',
     fontWeight: 'bold',
   },
   infoBlock: {
@@ -677,7 +725,7 @@ moreButton: {
 },
 
 moreButtonText: {
-  color: '#D91E5B',
+  color: '#ff1645',
   fontSize: 16,
   fontWeight: '600',
 },
@@ -788,7 +836,7 @@ editBtn: {
 },
 
 editBtnText: {
-  color: '#D91E5B',
+  color: '#ff1645',
   fontWeight: 'bold',
 },
   

@@ -8,10 +8,11 @@ import EnquireIcon from '../assets/svg/svgicons/Others/EnquireIcon';
 import DetailsIcon from '../assets/svg/svgicons/Others/DetailsIcon';
 import SavedActive from '../assets/svg/svgicons/BottomTabs/SavedActive';
 import SavedInactive from '../assets/svg/svgicons/BottomTabs/SavedInactive';
+import LocationIcon from '../assets/svg/svgicons/Details/LocationIcon';
 import { useWishlist } from '../context/WishlistContext';
 
 
-const PropertyCard = ({ propertyId,propType,projectType,sqfeet,floors,discount,paymentPlan,handOverQuarter,handOverYear, title, price, rooms, baths, area, location,image }) => {
+const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,discount,paymentPlan,handOverQuarter,handOverYear, title, price, rooms, baths, area, location,image }) => {
   const navigation=useNavigation();
   const { wishlist } = useWishlist();
   
@@ -23,6 +24,24 @@ const PropertyCard = ({ propertyId,propType,projectType,sqfeet,floors,discount,p
   const isWishlisted = wishlist.some(
     item => item.propertyDetails?._id === propertyId
   );  
+
+
+  const getDaysAgoText = (createdAt) => {
+    if (!createdAt) return '';
+
+    const createdDate = new Date(createdAt);
+    const today = new Date();
+
+    // Reset time portion for accurate "days ago" calculation
+    const createdUTC = Date.UTC(createdDate.getFullYear(), createdDate.getMonth(), createdDate.getDate());
+    const todayUTC = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
+
+    const daysAgo = Math.floor((todayUTC - createdUTC) / (1000 * 60 * 60 * 24));
+
+    if (daysAgo === 0) return 'This listing was newly introduced today';
+    if (daysAgo === 1) return 'This listing was newly introduced yesterday';
+    return `This listing was newly introduced ${daysAgo} days ago`;
+  };
 
   return(
     <View style={styles.card}>
@@ -80,11 +99,15 @@ const PropertyCard = ({ propertyId,propType,projectType,sqfeet,floors,discount,p
           </>
         )}
       </View>
+        
+        <View style={{flexDirection: "row"}}>
+          <LocationIcon color='#000' size={24}/>
+          <Text style={styles.location}>{location}</Text>
+        </View>
 
-      <Text style={styles.location}>{location}</Text>
 
       <Text style={styles.validated}>
-        ⭐ Property Authenticity Was Validated On May 21
+        ⭐ {getDaysAgoText(createdAt)}
       </Text>
 
       {/* Buttons */}
@@ -214,6 +237,8 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#777',
     marginBottom: 8,
+    top:3,
+    left: 3,
   },
   validated: {
     fontSize: 12,

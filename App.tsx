@@ -1,6 +1,8 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import AppNavigator from './src/navigation/AppNavigator'; 
+import { Provider } from 'react-redux';
+import { store } from './src/redux/store'
 import NetworkProvider from './src/components/NetworkChecker';
 import { AuthProvider } from './src/context/AuthContext';
 import { ProfileProvider } from './src/context/ProfileContext';
@@ -14,7 +16,9 @@ const App = () => {
         <WishlistProvider>
           <AuthProvider>
             <MortgageProvider>
+              <Provider store={store}>
               <AppNavigator />
+              </Provider>
             </MortgageProvider>
           </AuthProvider>
         </WishlistProvider>

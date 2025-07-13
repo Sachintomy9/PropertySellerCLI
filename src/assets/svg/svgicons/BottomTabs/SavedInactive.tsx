@@ -4,7 +4,7 @@ import { StyleSheet } from "react-native";
 
 const SavedInactive = ({ 
   // Direct props
-  width = 40,
+  width = 30,
   height = 40,
   stroke = "#111",
   strokeWidth = 1.2,

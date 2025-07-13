@@ -1,6 +1,9 @@
 import axios from 'axios';
 import * as Keychain from 'react-native-keychain';
 import { Alert } from 'react-native';
+import { useWishlist } from '../context/WishlistContext';
+import api from './ApiClient';
+
 
 const API_URL = 'https://api.propertyseller.com/api/v1/';
 
@@ -92,5 +95,17 @@ export const refreshToken = async () => {
     console.error('❌ Refresh token failed:', error?.response?.data || error.message);
     await logout();
     return null;
+  }
+};
+
+export const collectWishlist = async (profile, updateWishlist) => {
+  try {
+    const response = await api.get(`wishlist/${profile.id}`);
+    if (response.data.success) {
+      console.log("response from AuthService collectWishlist", response.data.data);
+      updateWishlist(response.data.data);
+    }
+  } catch (error) {
+    console.error('Error fetching properties:', error);
   }
 };

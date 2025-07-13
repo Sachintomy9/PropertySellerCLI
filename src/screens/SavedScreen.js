@@ -2,38 +2,31 @@ import { StyleSheet, Text, View,FlatList } from 'react-native'
 import React ,{useState,useEffect}from 'react'
 import TopHeader2 from '../components/Headers/TopHeader2'
 import PropertyCard from '../components/PropertyCard'
+import EmptyState from '../components/EmptyScreen'
 import { useProfile } from '../context/ProfileContext'
+import { useAuth } from '../context/AuthContext'
 import { useWishlist } from '../context/WishlistContext'
+import { collectWishlist } from '../services/AuthService'
 import api from '../services/ApiClient'
 const SavedScreen = () => {
   const { profile } = useProfile();
-  const { updateWishlist } = useWishlist();
-  const [properties, setProperties] = useState([]);
+  const { wishlist, updateWishlist } = useWishlist();
+  const {isGuest} = useAuth();
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-  const fetchProperties = async () => {
+  const refreshWishlist = async () => {
       try {
         setRefreshing(true);
-        const response = await api.get(`wishlist/${profile.id}`);
-        if (response.data.success) {
-            console.log("response",response.data.data);
-            setProperties(response.data.data);
-            updateWishlist(response.data.data);
-        }
+        await collectWishlist(profile, updateWishlist);
       } catch (error) {
-        console.error('Error fetching properties:', error);
+        console.error('Error Reloading wishlist', error);
       } finally {
         setLoading(false);
         setRefreshing(false);
       }
     };
 
-
-  useEffect(() => {
-    
-    fetchProperties();
-  }, []);
 
 
   const renderItem = ({ item }) => {
@@ -65,20 +58,33 @@ const SavedScreen = () => {
   );
 };
   return (
-    <View style={{ flex: 1, backgroundColor: '#fff' }}>
-      <TopHeader2 title="Wishlist" />
-      {/* Property List */}
-            <FlatList
-              data={properties}
-              keyExtractor={(item) => item._id}
-              renderItem={renderItem}
-              contentContainerStyle={{ paddingTop: 10 }}
-              scrollEventThrottle={16}
-              refreshing={refreshing}
-              onRefresh={fetchProperties}
-            />
-    </View>
-  )
+  <View style={{ flex: 1, backgroundColor: '#fff' }}>
+    <TopHeader2 title="Wishlist" />
+
+    {/* Empty State Handling */}
+    {isGuest ? (
+      <EmptyState
+        message="You're Not Logged In"
+        subMessage="To add properties to your wishlist and make your property buying journey easier, please log in."
+      />
+    ) : wishlist.length === 0 && !loading ? (
+      <EmptyState
+        message="Nothing to show here"
+        subMessage="Please add some Properties to your wishlist, and they will be shown here."
+      />
+    ) : (
+      <FlatList
+        data={wishlist}
+        keyExtractor={(item) => item._id}
+        renderItem={renderItem}
+        contentContainerStyle={{ paddingTop: 10 }}
+        scrollEventThrottle={16}
+        refreshing={refreshing}
+        onRefresh={refreshWishlist}
+      />
+    )}
+  </View>
+);
 }
 
 export default SavedScreen

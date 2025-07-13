@@ -10,23 +10,25 @@ const fetchUserProfile = async () => {
     const credentials = await Keychain.getGenericPassword();
     if (!credentials) {
       console.warn('No credentials found in Keychain.');
-      return { name: '', email: '', phone: '' };
+      console.log(' fetchUserProfile case 1');
+      return { name: '', email: '', phone: '', id: '' };
     }
 
     const tokenData = JSON.parse(credentials.password);
     if (tokenData?.isGuest) {
       console.log('Guest user, skipping profile fetch');
-      return { name: 'Guest', email: '', phone: '' };
+      return { name: 'Guest', email: '', phone: '', id: '' };
     }
 
     const accessToken = tokenData.accessToken;
     if (!accessToken) {
       console.warn('Access token missing.');
-      return { name: '', email: '', phone: '' };
+      console.log(' fetchUserProfile case 3');
+      return { name: '', email: '', phone: '', id: '' };
     }
     // Fetching details
     const response = await api.get('auth/user/profile');
-    console.log("details",response.data)
+    console.log("details from ProfilContext",response.data);
 
     if (response.status === 200) {
       const { name, email, number : phone, _id : id} = response.data.user;
@@ -52,8 +54,10 @@ export const ProfileProvider = ({ children }) => {
 
   const loadProfile = async () => {
     const data = await fetchUserProfile();
+    console.log(" loadProfile function run")
     if (data) {
         setProfile(data);
+        return data;
     } else {
         setProfile({ name: 'Unknown', email: '', phone: '' });
   }

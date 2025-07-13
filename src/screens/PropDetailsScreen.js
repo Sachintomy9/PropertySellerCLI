@@ -20,10 +20,14 @@ import BottomEnquireButton from '../components/buttons/BottomEnquire';
 const { width } = Dimensions.get('window');
 import api from '../services/ApiClient';
 import { fonts } from '../../styles/fonts';
+import { collectWishlist } from '../services/AuthService';
+import { useWishlist } from '../context/WishlistContext';
+import { useMortgage } from '../context/MortgageContext';
 
 // SVG icons (you should create/import these)
 import BackIcon from '../assets/svg/svgicons/Details/BackIcon';
-import HeartIcon from '../assets/svg/svgicons/BottomTabs/SavedInactive';
+import SavedInactive from '../assets/svg/svgicons/BottomTabs/SavedInactive';
+import SavedActive from '../assets/svg/svgicons/BottomTabs/SavedActive';
 import ShareIcon from '../assets/svg/svgicons/Others/ShareIcon';
 import LocationIcon from '../assets/svg/svgicons/Details/LocationIcon';
 import BedIcon from '../assets/svg/svgicons/Details/BedIcon';
@@ -32,16 +36,27 @@ import AreaIcon from '../assets/svg/svgicons/Details/AreaIcon';
 import PlayIcon from '../assets/svg/svgicons/Details/PlayIcon';
 import MapIcon from '../assets/svg/svgicons/Details/LocationIcon';
 import TickIcon from '../assets/svg/svgicons/Details/TickIcon';
+import FilterIcon from '../assets/svg/svgicons/Others/FilterIcon';
 import LoginPrompt from '../components/popups/LoginPrompt';
-
+import SavedSuccess from '../components/popups/SavedSuccess';
+import SavedRemoved from '../components/popups/SavedRemoved';
 const PropertyDetailScreen = () => {
   const route = useRoute();
   const {isGuest} = useAuth();
   const {profile} = useProfile();
+  const { wishlist,updateWishlist } = useWishlist();
+  const { mortgageData, applyCustomValues } = useMortgage();
+  
+
   const navigation = useNavigation();
   const { propertyId } = route.params;
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const [showSuccessPrompt, setShowSuccessPrompt] =useState(false);
+  const [showRemovedPrompt, setShowRemovedPrompt] =useState(false);
+
+  const [isWishlistedLocal, setIsWishlistedLocal] = useState(isWishlisted);
+
 
     const scrollY = useRef(new Animated.Value(0)).current;
     const [contentHeight, setContentHeight] = useState(1);
@@ -67,6 +82,23 @@ const PropertyDetailScreen = () => {
   const [loading, setLoading] = useState(true);
   const [readMore, setReadMore] = useState(false);
 
+
+  useEffect(() => {
+  if (property?.priceInAED) {
+    const cleanPrice = (priceStr) => {
+        console.log(" Price value in PropDetailsScreen: ",parseFloat(priceStr.replace(/,/g, '')));
+        return parseFloat(priceStr.replace(/,/g, ''));
+        };
+      const principal = cleanPrice(property.priceInAED);
+    applyCustomValues({
+      price: principal,
+      loanTerm: 25,
+      downPayment: 25,
+      interestRate: 4,
+    });
+  }
+  }, [property]);
+
   const viewabilityConfig = {
     itemVisiblePercentThreshold: 50,
     };
@@ -82,21 +114,32 @@ const PropertyDetailScreen = () => {
     if (isGuest) {
       setShowLoginPrompt(true);
     } else {
-      try{
-        const payload = {
-          userId: profile.id,
-          projectId: propertyId,
-        };
-        const response = await api.post('wishlist',payload);
+      try{  
+          const toggled = !isWishlistedLocal;
+          setIsWishlistedLocal(toggled); // update local state
+
+          // Show corresponding popup
+          if (toggled) {
+            setShowSuccessPrompt(true); // now added
+          } else {
+            setShowRemovedPrompt(true); // now removed
+          }
         
-          Alert.alert('Success', 'Added to your wishlist.');
-          console.log("Successfully Added to wishlist:",response.data)
+
+        const payload = {userId: profile.id, projectId: propertyId,}
+        const response = await api.post('wishlist',payload);
+        await collectWishlist(profile,updateWishlist);
+
+        console.log("Successfully Added to wishlist:",response.data)
       } catch (error) {
         console.error('Profile update error:', error.response?.data || error.message);
         Alert.alert('Error', error.response?.data?.message || 'Profile update failed.');
       }
     }
   };
+  const isWishlisted = wishlist.some(
+    item => item.propertyDetails?._id === propertyId
+  );
 
 
   useEffect(() => {
@@ -126,7 +169,44 @@ const PropertyDetailScreen = () => {
     <Text style={styles.infoLabel}>{label}</Text>
     <Text style={styles.infoValue}>{value}</Text>
   </View>
-);
+  
+    
+    
+
+  );
+      /*payment plan */
+      const PaymentOptions = ({ paymentOptions }) => {
+        // Function to clean and format each payment option
+        const formatPaymentOption = (option) => {
+          // Extract percentage (matches first number in string)
+          const percentage = option.match(/\d+/)?.[0] || '';
+          
+          // Extract label (removes numbers and special characters, then trims)
+          const label = option
+            .replace(/[^a-zA-Z]/g, ' ') // Replace non-letters with space
+            .replace(/\s+/g, ' ')       // Collapse multiple spaces
+            .trim()                     // Trim whitespace
+            .replace(/\b\w/g, char => char.toUpperCase()); // Capitalize first letters
+
+          return { label, percentage };
+        };
+
+        return (
+          <View style={styles.infoBlock}>
+            {paymentOptions?.map((option, index) => {
+              const { label, percentage } = formatPaymentOption(option);
+              return (
+                <InfoRow 
+                  key={index} 
+                  label={label} 
+                  value={`${percentage}%`} 
+                />
+              );
+            })}
+          </View>
+        );
+      };
+
 
   return (
     <View style={styles.container} contentContainerStyle={styles.content}>
@@ -145,7 +225,11 @@ const PropertyDetailScreen = () => {
         </View>
         <View style={{backgroundColor:"#FFE8EF",borderRadius:5,width:35,height:35}}>
             <TouchableOpacity onPress={handleHeartPress}>
-            <HeartIcon style={{ width: 32, height: 32 }} />
+            {isWishlisted ? (
+                <SavedActive width={32} height={32} />
+              ) : (
+                <SavedInactive width={32} height={32} />
+              )}
             </TouchableOpacity>
         </View>   
 
@@ -154,6 +238,14 @@ const PropertyDetailScreen = () => {
           onClose={() => setShowLoginPrompt(false)}
         />
 
+        <SavedSuccess
+          visible={showSuccessPrompt}
+          onClose={() => setShowSuccessPrompt(false)}
+        />
+        <SavedRemoved
+          visible={showRemovedPrompt}
+          onClose={() => setShowRemovedPrompt(false)}
+        />
 
 
       </View>
@@ -263,7 +355,7 @@ const PropertyDetailScreen = () => {
         <InfoRow label="Type" value={property.propertyTypes} />
         <InfoRow label="Purpose" value="For Sale" />
         <InfoRow label="Reference no" value="Bayut - NANCY\\102235" />
-        <InfoRow label="Completion" value="Offplan" />
+        <InfoRow label="Completion" value={property.completionType ?? "Offplan"} />
         <InfoRow label="Furnishing" value={property.furnishing} />
         <InfoRow label="Added on" value="1 March 2024" />
         <InfoRow label="Handover Date" value={property.handOverQuarter} />
@@ -333,6 +425,30 @@ const PropertyDetailScreen = () => {
             +{property.facilitiesAmenitiesDetails.length - 2} More More Amenities
             </Text>
         </TouchableOpacity>
+        </View>
+
+        {/* Mortgage Section */}
+        <Text style={styles.sectionTitle}>Mortgage</Text>
+        <Text style={styles.subText}>Calculate and view the monthly mortgage on this apartment</Text>
+
+        <View style={styles.mortgageCard}>
+          <Text style={styles.mortgagePrice}><Text style={styles.aed}>AED</Text> {mortgageData.monthlyPayment || '0'} <Text style={styles.perMonth}>Per Month</Text></Text>
+          <Text style={styles.mortgageLine}>Loan Period : <Text style={styles.boldText}>{mortgageData.loanTerm} Years</Text></Text>
+          <Text style={styles.mortgageLine}>Down Payment : ({mortgageData.downPayment}%)<Text style={styles.boldText}> AED {(mortgageData.price * mortgageData.downPayment / 100).toLocaleString()}</Text></Text>
+          <Text style={styles.mortgageLine}>Interest Rate : <Text style={styles.boldText}>{mortgageData.interestRate}%</Text></Text>
+          <TouchableOpacity style={styles.editBtn} onPress={() => navigation.navigate('MortgageEdit')}>
+            <FilterIcon style={{ width: 20, height: 20 , color :"#D91E5B"}}/>
+            <Text style={styles.editBtnText}>  Edit Values</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Mortgage Banner */}
+        
+
+        {/* Payment Plan */}
+        <Text style={styles.sectionTitle}>Payment Plan</Text>
+        <View style={styles.infoBlock}>
+         <PaymentOptions paymentOptions={property.paymentOptions} />
         </View>
 
 
@@ -616,6 +732,64 @@ amenityText: {
   textAlign: 'center',
   color: '#333',
   
+},
+subText: {
+  fontSize: 13,
+  color: '#666',
+  marginTop: 4,
+  marginBottom: 10,
+},
+
+mortgageCard: {
+  borderWidth: 1,
+  borderColor: '#e2e2e2',
+  borderRadius: 10,
+  padding: 16,
+  marginBottom: 12,
+  backgroundColor: '#fff',
+},
+
+mortgagePrice: {
+  fontSize: 24,
+  fontWeight: 'bold',
+  marginBottom: 10,
+},
+
+aed: {
+  fontSize: 14,
+  fontWeight: '600',
+},
+
+perMonth: {
+  fontSize: 14,
+  fontWeight: '400',
+  color: '#888',
+},
+
+mortgageLine: {
+  fontSize: 14,
+  marginVertical: 2,
+  color: '#333',
+},
+
+boldText: {
+  fontWeight: '600',
+  color: '#111',
+},
+
+editBtn: {
+  marginTop: 10,
+  flexDirection: "row",
+  alignSelf: "center",
+  paddingHorizontal: 12,
+  paddingVertical: 6,
+  backgroundColor: '#fff0f6',
+  borderRadius: 6,
+},
+
+editBtnText: {
+  color: '#D91E5B',
+  fontWeight: 'bold',
 },
   
 });

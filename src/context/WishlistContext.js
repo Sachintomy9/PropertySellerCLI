@@ -6,6 +6,7 @@ const WishlistContext = createContext();
 export const WishlistProvider = ({ children }) => {
   const [wishlist, setWishlist] = useState([]); // full wishlist items
 
+
   const updateWishlist = (items) => {
     setWishlist(items);
   };

@@ -31,7 +31,7 @@ const EditProfileScreen = () => {
       const response = await api.put('auth/user/profile',payload);
       if (response.status === 200 || response.status === 204) {
         Alert.alert('Success', 'Profile updated successfully.');
-        navigation.canGoBack;
+        navigation.goBack();
       } else {
         Alert.alert('Update Failed', 'Something went wrong.');
       }

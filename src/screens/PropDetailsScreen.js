@@ -118,11 +118,8 @@ const PropertyDetailScreen = () => {
       setShowLoginPrompt(true);
     } else {
       try{  
-          const toggled = !isWishlistedLocal;
-          setIsWishlistedLocal(toggled); // update local state
-
           // Show corresponding popup
-          if (toggled) {
+          if (!isWishlisted) {
             setShowSuccessPrompt(true); // now added
           } else {
             setShowRemovedPrompt(true); // now removed

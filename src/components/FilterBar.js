@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
         fontFamily: fonts.PoppinsMedium,
       },
       categoryTextSelected: {
-        color: '#D91E5B',
+        color: '#ff1645',
         fontSize: 14,
         fontFamily: fonts.PoppinsMedium,
       },
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         padding: 10,
-        borderRadius: 10,
+        borderRadius: 6,
         height: 40,
       },
       typeButtonSelected: {
@@ -170,13 +170,13 @@ const styles = StyleSheet.create({
         color: '#444',
       },
       typeTextSelected: {
-        color: '#D91E5B',
+        color: '#ff1645',
         fontWeight: 'bold',
       },
       filterIcon: {
         padding: 10,
         backgroundColor: '#FFDDE5',
-        borderRadius: 10,
+        borderRadius: 6,
         marginLeft: 6,
       },
 

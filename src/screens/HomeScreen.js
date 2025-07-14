@@ -5,20 +5,28 @@ import TopHeader from '../components/Headers/TopHeader';
 import FilterBar from '../components/FilterBar';
 import PropertyCard from '../components/PropertyCard';
 import axios from 'axios';
+import AdCard from '../components/AdCard';
 
 const HomeScreen = () => {
-  const route = useRoute();
   const [properties, setProperties] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
 
+ 
+  const [ adPage, setAdPage] = useState(1);
+  const [totalAdPages, setTotalAdPages] = useState(1);
+  const [isFetchingAdMore, setIsFetchingAdMore] = useState(false);
+
   const filterBarTranslateY = useRef(new Animated.Value(0)).current;
   const lastScrollY = useRef(0);
   const isFilterBarHidden = useRef(false);
-
+  const [ads, setAds] = useState([]);
+  const [adIndex, setAdIndex] = useState(0);  
+  const [combinedData, setCombinedData] = useState([]);
 
 
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -52,15 +60,18 @@ const HomeScreen = () => {
         setIsFetchingMore(true);
       }
 
-      const response = await axios.get(`https://api.propertyseller.com/api/v1/projects?page=${pageNum}&limit=20`);
+      const response = await axios.get(`https://api.propertyseller.com/api/v1/projects?page=${pageNum}&limit=10`);
       if (response.data.success) {
         const newProjects = response.data.data;
         const pagination = response.data.pagination;
+        console.log("Number of Property listing fetched: ",newProjects.length);
 
-        setProperties(prev =>
-          pageNum === 1 || isRefreshing ? newProjects : [...prev, ...newProjects]
-        );
+        const updatedProps = pageNum === 1 || isRefreshing
+          ? newProjects
+          : [...properties, ...newProjects];
 
+        setProperties(updatedProps);
+        setCombinedData(mergeAdsIntoProperties(updatedProps));
         setPage(pagination.currentPage);
         setTotalPages(pagination.totalPages);
       }
@@ -73,9 +84,56 @@ const HomeScreen = () => {
     }
   };
 
+  const fetchAds = async (pageNum = 1, isRefreshing = false) => {
+    try {
+        if (isRefreshing) {
+        setRefreshing(true);
+      } else if (pageNum === 1) {
+        setLoading(true);
+      } else {
+        setIsFetchingAdMore(true);
+      }
+
+      const res = await axios.get(`https://api.propertyseller.com/api/v1/banners?page=${pageNum}&limit=10`); // Replace with real endpoint
+      if (res.data.success) {
+        const newAds = res.data.data;
+        const pagination = res.data.pagination;
+        console.log("ads fetched in fetchAds", newAds.length);
+        setAds(prev =>
+          pageNum === 1 || isRefreshing ? newAds : [...prev, ...newAds]
+        );
+
+        setCombinedData(mergeAdsIntoProperties(properties));
+        setAdPage(pagination.currentPage);
+        setTotalAdPages(pagination.totalAdPages);
+      }
+    } catch (err) {
+      console.error('Error fetching ads:', err);
+    }finally {
+      setLoading(false);
+      setRefreshing(false);
+      setIsFetchingAdMore(false);
+    }
+  };
+
   useEffect(() => {
     fetchProperties(1);
+    fetchAds(1);
   }, []);
+
+  const mergeAdsIntoProperties = (propertyList) => {
+    const mixedList = [];
+
+    for (let i = 0; i < propertyList.length; i++) {
+      mixedList.push({ type: 'property', data: propertyList[i] });
+
+      if ((i + 1) % 5 === 0) {
+        mixedList.push({ type: 'ad' }); // Single placeholder
+      }
+    }
+
+  return mixedList;
+};
 
   const handleScroll = (event) => {
     const currentY = event.nativeEvent.contentOffset.y;
@@ -103,11 +161,14 @@ const HomeScreen = () => {
   const handleLoadMore = () => {
     if (!isFetchingMore && page < totalPages) {
       fetchProperties(page + 1);
+      console.log("Page:",page);
+      fetchAds(adPage + 1);
+      console.log("adPage",adPage);
     }
   };
 
   const renderFooter = () => {
-    if (!isFetchingMore) return null;
+    if (!isFetchingMore || !isFetchingAdMore) return null;
     return (
       <View style={{ paddingVertical: 20 }}>
         <ActivityIndicator size="small" />
@@ -115,28 +176,36 @@ const HomeScreen = () => {
     );
   };
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item }) => {
+  if (item.type === 'ad') {
+    return <AdCard ads={ads} />;
+  }
+
+  const property = item.data;
+  return (
     <PropertyCard
-      title={item.projectTitle}
-      propType={item.propertyTypes}
-      projectType={item.projectType}
-      type={item.type}
-      discount={item.discount}
-      handOverQuarter={item.handOverQuarter}
-      handOverYear={item.handOverYear}
-      paymentPlan={item.paymentPlan}
-      price={item.priceInAED}
-      rooms={item.type}
-      floors={item.totalFloors}
+      title={property.projectTitle}
+      propType={property.propertyTypes}
+      projectType={property.projectType}
+      type={property.type}
+      discount={property.discount}
+      handOverQuarter={property.handOverQuarter}
+      handOverYear={property.handOverYear}
+      paymentPlan={property.paymentPlan}
+      price={property.priceInAED}
+      rooms={property.type}
+      floors={property.totalFloors}
       baths="–"
       area="–"
-      sqfeet={item.squareFeet}
-      propertyId={item._id}
-      location={item.address}
-      createdAt={item.createdAt}
-      image={item.mainImages?.[0]?.secure_url}
+      sqfeet={property.squareFeet}
+      propertyId={property._id}
+      location={property.address}
+      createdAt={property.createdAt}
+      image={property.mainImages?.[0]?.secure_url}
     />
   );
+};
+
 
   return (
     <View style={{ flex: 1, backgroundColor: '#fff' }}>
@@ -149,26 +218,30 @@ const HomeScreen = () => {
       </Animated.View>
 
       <FlatList
-  data={properties}
-  keyExtractor={(item) => item._id}
-  renderItem={renderItem}
-  contentContainerStyle={{ paddingTop: 180 }}
-  scrollEventThrottle={16}
-  onScroll={Animated.event(
-    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-    {
-      useNativeDriver: false,
-      listener: handleScroll, // This runs your filterBar animation logic
-    }
-  )}
-  onEndReached={handleLoadMore}
-  onEndReachedThreshold={0.5}
-  ListFooterComponent={renderFooter}
-  refreshing={refreshing}
-  onRefresh={() => fetchProperties(1, true)}
-  onContentSizeChange={(w, h) => setContentHeight(h)}
-  onLayout={e => setScrollViewHeight(e.nativeEvent.layout.height)}
-/>
+        data={combinedData}
+        keyExtractor={(item, index) =>
+          item.type === 'ad'
+            ? `ad-${item.data?._id || index}-${index}`
+            : `property-${item.data?._id || index}-${index}`
+}
+        renderItem={renderItem}
+        contentContainerStyle={{ paddingTop: 180 }}
+        scrollEventThrottle={16}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          {
+            useNativeDriver: false,
+            listener: handleScroll, // This runs your filterBar animation logic
+          }
+        )}
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={renderFooter}
+        refreshing={refreshing}
+        onRefresh={() => fetchProperties(1, true)}
+        onContentSizeChange={(w, h) => setContentHeight(h)}
+        onLayout={e => setScrollViewHeight(e.nativeEvent.layout.height)}
+      />
 
       <View style={styles.scrollbarTrack}>
         <Animated.View

@@ -18,7 +18,7 @@ const FilterBar = () => {
   const types = ['Residential', 'Commercial'];
 
   return (
-    <View style={{ backgroundColor: '#fff', paddingHorizontal: 8,paddingBottom:5, paddingTop:2 }}>
+    <View style={{ backgroundColor: '#fff', paddingHorizontal: 8,paddingBottom:67, paddingTop:2 }}>
         <View style={styles.filterRow}>
             <TouchableOpacity style={styles.dropdownBtn}>
                 <Text style={styles.dropdownText}>Emirates</Text>

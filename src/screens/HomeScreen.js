@@ -41,6 +41,7 @@ const HomeScreen = () => {
     extrapolate: 'clamp',
   });
 
+
   const fetchProperties = async (pageNum = 1, isRefreshing = false) => {
     try {
       if (isRefreshing) {

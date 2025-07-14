@@ -13,20 +13,6 @@ import { useNavigation} from '@react-navigation/native';
 import { fonts } from '../../../styles/fonts';
 
 const SavedRemoved = ({ visible, onClose }) => {
-    const {loginUser} = useAuth();
-    const navigation = useNavigation();
-
-    const onLogin = async () => {
-        try {
-            await loginUser();
-            navigation.navigate('Login');
-            // Optional: Add any post-login logic here
-        } catch (error) {
-            console.error('Login failed:', error);
-            // Handle login failure (show error message, etc.)
-        }
-    };
-
 
   return (
     <Modal

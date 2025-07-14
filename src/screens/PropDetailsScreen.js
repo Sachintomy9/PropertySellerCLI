@@ -42,6 +42,7 @@ import FilterIcon from '../assets/svg/svgicons/Others/FilterIcon';
 import LoginPrompt from '../components/popups/LoginPrompt';
 import SavedSuccess from '../components/popups/SavedSuccess';
 import SavedRemoved from '../components/popups/SavedRemoved';
+import EnquirySubmitted from '../components/popups/EnquirySubmitted';
 const PropertyDetailScreen = () => {
   const route = useRoute();
   const {isGuest} = useAuth();
@@ -57,8 +58,6 @@ const PropertyDetailScreen = () => {
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [showSuccessPrompt, setShowSuccessPrompt] =useState(false);
   const [showRemovedPrompt, setShowRemovedPrompt] =useState(false);
-
-  const [isWishlistedLocal, setIsWishlistedLocal] = useState(isWishlisted);
 
 
     const scrollY = useRef(new Animated.Value(0)).current;
@@ -84,6 +83,7 @@ const PropertyDetailScreen = () => {
   const [property, setProperty] = useState(null);
   const [loading, setLoading] = useState(true);
   const [readMore, setReadMore] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
 
   useEffect(() => {
@@ -256,6 +256,10 @@ const PropertyDetailScreen = () => {
           visible={showRemovedPrompt}
           onClose={() => setShowRemovedPrompt(false)}
         />
+        <EnquirySubmitted
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          />
 
 
       </View>

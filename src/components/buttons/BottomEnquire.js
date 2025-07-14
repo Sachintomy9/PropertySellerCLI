@@ -1,16 +1,23 @@
 // components/BottomEnquireButton.js
 
-import React from 'react';
+import React,{useState} from 'react';
 import { View, Text, TouchableOpacity,StyleSheet } from 'react-native';
 import EnquireIcon from '../../assets/svg/svgicons/Others/EnquireIcon'; // Replace with your actual SVG path
 import { fonts } from '../../../styles/fonts';
-const BottomEnquireButton = ({ onPress }) => {
+import EnquiryPrompt from '../popups/EnquiryPrompt';
+const BottomEnquireButton = () => {
+  const [modalVisible, setModalVisible] = useState(false);
+
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.button} onPress={onPress}>
+      <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
         <EnquireIcon style={{ fill: "#fff", width: 24, height: 24,}}/>
         <Text style={styles.text}>Enquire Now</Text>
       </TouchableOpacity>
+      <EnquiryPrompt
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+      />
     </View>
   );
 };
@@ -25,7 +32,7 @@ const styles = StyleSheet.create({
   },
   button: {
     flexDirection: 'row',
-    backgroundColor: '#FF0A46',
+    backgroundColor: '#ff1645',
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',

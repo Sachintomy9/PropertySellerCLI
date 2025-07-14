@@ -1,4 +1,4 @@
-import React from 'react';
+import React ,{useState} from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { fonts } from '../../styles/fonts';
 import { useNavigation } from '@react-navigation/native';
@@ -10,11 +10,12 @@ import SavedActive from '../assets/svg/svgicons/BottomTabs/SavedActive';
 import SavedInactive from '../assets/svg/svgicons/BottomTabs/SavedInactive';
 import LocationIcon from '../assets/svg/svgicons/Details/LocationIcon';
 import { useWishlist } from '../context/WishlistContext';
-
+import EnquiryPrompt from './popups/EnquiryPrompt';
 
 const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,discount,paymentPlan,handOverQuarter,handOverYear, title, price, rooms, baths, area, location,image }) => {
   const navigation=useNavigation();
   const { wishlist } = useWishlist();
+  const [modalVisible, setModalVisible] = useState(false);
   
 
   const handleDetails = () => {
@@ -117,10 +118,14 @@ const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,
           <Text style={styles.buttonText}>Details</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.enquireButton}>
+        <TouchableOpacity style={styles.enquireButton} onPress={() => setModalVisible(true)}>
           <EnquireIcon width={20} height={20} fill="#fff" />
           <Text style={styles.buttonText}>Enquire Now</Text>
         </TouchableOpacity>
+        <EnquiryPrompt
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+      />
       </View>
     </View>
   </View>
@@ -137,7 +142,7 @@ export default PropertyCard;
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#fff',
-    borderRadius: 6,
+    borderRadius: 4,
     marginHorizontal: 9,
     marginBottom: 20,
     overflow: 'hidden',
@@ -161,7 +166,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     paddingVertical: 4,
     paddingHorizontal: 8,
-    borderRadius: 6,
+    borderRadius: 4,
     elevation: 2,
   },
   overlay1: {
@@ -171,7 +176,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#37f73d',
     paddingVertical: 4,
     paddingHorizontal: 8,
-    borderRadius: 6,
+    borderRadius: 4,
     elevation: 2,
   },
   overlayText: {
@@ -258,7 +263,7 @@ detailsButton: {
   flexDirection: 'row',
   paddingVertical: 10,
   paddingHorizontal: 12, // Added horizontal padding
-  borderRadius: 6,
+  borderRadius: 4,
   alignItems: 'center',
   justifyContent: 'center',
 },
@@ -269,7 +274,7 @@ enquireButton: {
   flexDirection: 'row',
   paddingVertical: 10,
   paddingHorizontal: 12, // Added horizontal padding
-  borderRadius: 6,
+  borderRadius: 4,
   alignItems: 'center',
   justifyContent: 'center',
 },

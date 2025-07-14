@@ -18,7 +18,7 @@ const FilterBar = () => {
   const types = ['Residential', 'Commercial'];
 
   return (
-    <View style={{ backgroundColor: '#fff', paddingHorizontal: 8 }}>
+    <View style={{ backgroundColor: '#fff', paddingHorizontal: 8,paddingBottom:5, paddingTop:2 }}>
         <View style={styles.filterRow}>
             <TouchableOpacity style={styles.dropdownBtn}>
                 <Text style={styles.dropdownText}>Emirates</Text>
@@ -52,6 +52,8 @@ const FilterBar = () => {
         </View>
 
       {/* Type Tabs - grouped container with filter icon */}
+
+      <View style={{flex:1 ,flexDirection: "row"}}>
       <View style={styles.typeContainer}>
         {types.map((type) => (
           <TouchableOpacity
@@ -72,10 +74,14 @@ const FilterBar = () => {
             </Text>
           </TouchableOpacity>
         ))}
-        <TouchableOpacity style={styles.filterIcon}>
-          <FilterIcon />
-        </TouchableOpacity>
       </View>
+      <TouchableOpacity style={styles.filterIcon}>
+        <View style={{alignSelf: "center", top:4}}>
+        <FilterIcon />
+        </View>
+      </TouchableOpacity>
+      </View>
+
     </View>
   );
 };
@@ -97,7 +103,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderWidth: 1,
     borderColor: '#ddd',
-    borderRadius: 6,
+    borderRadius: 4,
     height: 48,
     padding: 10,
     flex: 0.485,
@@ -111,19 +117,18 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
         backgroundColor: '#fff',
-        borderRadius: 8,
         marginTop: 10,
         padding: 5,
         justifyContent: 'space-between',
         borderWidth: 1,
         borderColor: '#ddd',
-        borderRadius: 6,
+        borderRadius: 4,
       },
       categoryButton: {
         paddingVertical: 8,
         paddingHorizontal: 3,
         height: 40,
-        borderRadius: 6,
+        borderRadius: 4,
         backgroundColor: 'transparent',
       },
       categoryButtonSelected: {
@@ -142,23 +147,22 @@ const styles = StyleSheet.create({
     
       // PROPERTY TYPE TABS
       typeContainer: {
-        flexDirection: 'row',
+        flexDirection: "row",
         backgroundColor: '#fff',
         marginTop: 10,
-        borderRadius: 6,
-        alignItems: 'center',
-        justifyContent: 'space-between',
+        borderRadius: 4,
         padding: 6,
         borderWidth: 1,
         borderColor: '#ddd',
-        borderRadius: 6,
-        height: 55,
+        borderRadius: 4,
+        height: 54,
+        width: "85%",
       },
       typeButton: {
         flex: 1,
         alignItems: 'center',
         padding: 10,
-        borderRadius: 6,
+        borderRadius: 4,
         height: 40,
       },
       typeButtonSelected: {
@@ -176,8 +180,14 @@ const styles = StyleSheet.create({
       filterIcon: {
         padding: 10,
         backgroundColor: '#FFDDE5',
-        borderRadius: 6,
+        borderRadius: 4,
         marginLeft: 6,
+        width: "13%",
+        height: 54,
+        top:10,
+        borderWidth: 1,
+        borderColor: '#ddd',
+
       },
 
 });

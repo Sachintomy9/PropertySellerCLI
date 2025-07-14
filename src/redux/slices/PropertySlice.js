@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   property: null,
-};
+}; 
 
 const propertySliceRed = createSlice({
   name: 'property',

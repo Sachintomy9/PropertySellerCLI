@@ -13,7 +13,7 @@ const TopHeader2 = ({ title, showBack = true, onRightPress }) => {
       {/* Back Button */}
       {showBack ? (
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.leftIcon}>
-          < BackIcon/>
+          < BackIcon color="#ff1645"/>
         </TouchableOpacity>
       ) : (
         <View style={styles.leftIcon} /> // Empty space to align title

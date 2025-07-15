@@ -59,6 +59,11 @@ const AppNavigator = () => {
         <Stack.Screen name="ImageGallery" component={require('../screens/ImageGalleryScreen').default} />
         <Stack.Screen name="AmenitiesInfo" component={require('../screens/AmenitiesInfoScreen').default} />
         <Stack.Screen name="MortgageEdit" component={require('../screens/MortgageEditScreen').default} />
+        <Stack.Screen name="City" component={require('../screens/CityScreen').default} />
+        <Stack.Screen name="Developer" component={require('../screens/DeveloperScreen').default} />
+        <Stack.Screen name="Blogs" component={require('../screens/BlogScreen').default} />
+        <Stack.Screen name="BlogRead" component={require('../screens/BlogReadScreen').default} />
+        <Stack.Screen name="WhyDubai" component={require('../screens/WhyDubaiScreen').default} />
       </Stack.Navigator>
     </NavigationContainer>
   );

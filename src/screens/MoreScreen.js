@@ -88,8 +88,17 @@ const MoreScreen = () => {
       case 'About':
         navigation.navigate('AboutScreen');
         break;
-      case 'Saved':
-        navigation.navigate('Saved');
+      case 'Why Dubai':
+        navigation.navigate('WhyDubai');
+        break;
+      case 'Cities':
+        navigation.navigate('City');
+        break;
+      case 'Developers':
+        navigation.navigate('Developer');
+        break;
+      case 'Blog':
+        navigation.navigate('Blogs');
         break;
       case 'Login':
          await loginUser();

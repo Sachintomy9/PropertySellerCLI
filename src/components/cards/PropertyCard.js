@@ -1,16 +1,16 @@
 import React ,{useState} from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import { fonts } from '../../styles/fonts';
+import { fonts } from '../../../styles/fonts';
 import { useNavigation } from '@react-navigation/native';
-import BedIcon from '../assets/svg/svgicons/Details/BedIcon';
-import BuildingIcon from '../assets/svg/svgicons/Others/BuildingIcon';
-import EnquireIcon from '../assets/svg/svgicons/Others/EnquireIcon';
-import DetailsIcon from '../assets/svg/svgicons/Others/DetailsIcon';
-import SavedActive from '../assets/svg/svgicons/BottomTabs/SavedActive';
-import SavedInactive from '../assets/svg/svgicons/BottomTabs/SavedInactive';
-import LocationIcon from '../assets/svg/svgicons/Details/LocationIcon';
-import { useWishlist } from '../context/WishlistContext';
-import EnquiryPrompt from './popups/EnquiryPrompt';
+import BedIcon from '../../assets/svg/svgicons/Details/BedIcon';
+import BuildingIcon from '../../assets/svg/svgicons/Others/BuildingIcon';
+import EnquireIcon from '../../assets/svg/svgicons/Others/EnquireIcon';
+import DetailsIcon from '../../assets/svg/svgicons/Others/DetailsIcon';
+import SavedActive from '../../assets/svg/svgicons/BottomTabs/SavedActive';
+import SavedInactive from '../../assets/svg/svgicons/BottomTabs/SavedInactive';
+import LocationIcon from '../../assets/svg/svgicons/Details/LocationIcon';
+import { useWishlist } from '../../context/WishlistContext';
+import EnquiryPrompt from '../popups/EnquiryPrompt';
 
 const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,discount,paymentPlan,handOverQuarter,handOverYear, title, price, rooms, baths, area, location,image }) => {
   const navigation=useNavigation();
@@ -90,8 +90,14 @@ const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,
       <View style={styles.specsRow}>
         <Text style={styles.specText1}>{propType}</Text>
         <Text style={styles.dot}>     </Text>
-        <BedIcon style={{ width: 24, height: 24 }}/>
-        <Text style={styles.specText}> {rooms} </Text>
+        {Boolean(rooms) && (
+          <>
+            <BedIcon style={{ width: 24, height: 24 }}/>
+            <Text style={styles.specText}> {rooms} </Text>
+          </>
+        )}
+
+        
         {Boolean(floors) && (
           <>
             <Text style={styles.dot}>    </Text>

@@ -7,9 +7,9 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import { fonts } from '../../styles/fonts';
-import DropDownIcon from '../assets/svg/svgicons/Others/DropDownIcon';
-import FilterIcon from '../assets/svg/svgicons/Others/FilterIcon';
+import { fonts } from '../../../styles/fonts';
+import DropDownIcon from '../../assets/svg/svgicons/Others/DropDownIcon';
+import FilterIcon from '../../assets/svg/svgicons/Others/FilterIcon';
 
 const FilterBar = () => {
   const [selectedCategory, setSelectedCategory] = useState('Offplan Projects');

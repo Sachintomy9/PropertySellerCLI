@@ -1,11 +1,10 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { View, Animated, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
-import { useRoute } from '@react-navigation/native';
 import TopHeader from '../components/Headers/TopHeader';
-import FilterBar from '../components/FilterBar';
-import PropertyCard from '../components/PropertyCard';
+import FilterBar from '../components/others/FilterBar';
+import PropertyCard from '../components/cards/PropertyCard';
 import axios from 'axios';
-import AdCard from '../components/AdCard';
+import AdCard from '../components/cards/AdCard';
 
 const HomeScreen = () => {
   const [properties, setProperties] = useState([]);

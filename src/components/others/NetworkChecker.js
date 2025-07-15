@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import NetInfo from '@react-native-community/netinfo';
 import { View, StyleSheet, Text, Image, TouchableOpacity } from 'react-native';
-import NoInternetImage from '../assets/svg/svgimages/NoInternetImage';
+import NoInternetImage from '../../assets/svg/svgimages/NoInternetImage';
 
 const NoInternetScreen = ({ onRetry }) => (
   <View style={styles.container}>

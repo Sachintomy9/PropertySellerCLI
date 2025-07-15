@@ -15,6 +15,7 @@ import EnqPropIcon from '../assets/svg/svgicons/ProfileScreen/EnqPropIcon';
 import SavedPropIcon from '../assets/svg/svgicons/ProfileScreen/SavedPropIcon';
 import PurHistoryIcon from '../assets/svg/svgicons/ProfileScreen/PurHistoryIcon';
 import CloseIcon from '../assets/svg/svgicons/ProfileScreen/CloseIcon';
+import BackIcon from '../assets/svg/svgicons/Details/BackIcon';
 
 import { fonts } from '../../styles/fonts';
 import { useNavigation } from '@react-navigation/native';
@@ -77,7 +78,7 @@ const ProfileScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
         <TouchableOpacity style={styles.crossButton} onPress={() => navigation.goBack()}>
-            <CloseIcon />
+            <BackIcon />
         </TouchableOpacity>
       <Text style={styles.heading}>Your Profile</Text>
 
@@ -267,11 +268,8 @@ const styles = StyleSheet.create({
   crossButton: {
   position: 'absolute',
   marginTop: 70,
-  left: 20,
+  left: 30,
   backgroundColor: '#fff',
-  padding: 6,
-  elevation: 2,
-    borderRadius: 20,
 },
 });
 

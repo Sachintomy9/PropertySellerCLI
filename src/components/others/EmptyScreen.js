@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
-import EmptyImage from '../assets/svg/svgimages/EmptyImage';
+import EmptyImage from '../../assets/svg/svgimages/EmptyImage';
 const EmptyState = ({ message, subMessage }) => {
   return (
     <View style={styles.container}>

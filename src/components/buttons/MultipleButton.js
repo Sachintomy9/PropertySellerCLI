@@ -1,10 +1,13 @@
-import React from 'react';
+import React,{useState} from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import HeartIcon from '../../assets/svg/svgicons/Others/HeartIcon';
 import ShareIcon from '../../assets/svg/svgicons/Others/ShareIcon';
 import EnquireIcon from '../../assets/svg/svgicons/Others/EnquireIcon';
+import EnquiryPrompt from '../popups/EnquiryPrompt';
 
 const MultipleButton = ({ onSave, onShare, onEnquire }) => {
+    const [modalVisible, setModalVisible] = useState(false);
+
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.button} onPress={onSave}>
@@ -15,12 +18,16 @@ const MultipleButton = ({ onSave, onShare, onEnquire }) => {
         <ShareIcon />
         <Text style={styles.text}>Share</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={onEnquire}>
+      <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
         <View style={styles.Icon}>
         <EnquireIcon style={{ width: 24, height: 24 }} />
         </View>
         <Text style={styles.text}>Enquire</Text>
       </TouchableOpacity>
+      <EnquiryPrompt
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+      />
     </View>
   );
 };

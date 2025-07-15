@@ -10,8 +10,7 @@ import {
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import MultipleButton from '../components/buttons/MultipleButton';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
+import TopHeader2 from '../components/Headers/TopHeader2';
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const AmenitiesInfoScreen = () => {
@@ -43,7 +42,8 @@ const AmenitiesInfoScreen = () => {
 
   return (
     <View style={{ flex: 1 }}>
-      <SafeAreaView style={styles.container}>
+      <TopHeader2 title={"Features / Amenities"}/>
+      <View style={styles.container}>
         <Animated.ScrollView
           contentContainerStyle={{ paddingBottom: 100 }}
           showsVerticalScrollIndicator={false}
@@ -55,7 +55,7 @@ const AmenitiesInfoScreen = () => {
             { useNativeDriver: false }
           )}
         >
-          <Text style={styles.title}>Features / Amenities</Text>
+          
                   <View style={styles.amenitiesRow}>
                   {facilitiesAmenitiesDetails.map((item, index) => (
                       <View key={index} style={styles.amenityCard}>
@@ -78,10 +78,11 @@ const AmenitiesInfoScreen = () => {
             ]}
           />
         </View>
-      </SafeAreaView>
+      </View>
 
       {/* Bottom Buttons */}
       <MultipleButton />
+      
     </View>
   );
 };
@@ -92,8 +93,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingHorizontal: 16,
-    paddingTop: 80,
+    paddingLeft:10,
   },
   title: {
     fontSize: 22,
@@ -130,7 +130,7 @@ amenityIcon: {
   scrollbarTrack: {
     position: 'absolute',
     top: 40,
-    right: 6,
+    right: 3,
     bottom: 100, // leave space for buttons
     width: 4,
     backgroundColor: 'transparent',

@@ -1,12 +1,17 @@
-import React from 'react';
+// TopHeader.js
+import React, { useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  Modal,
+  FlatList,
 } from 'react-native';
-
+import { useSelector, useDispatch } from 'react-redux';
+import { setCurrency } from '../../redux/slices/CurrencySlice';
+import countries from 'world-countries';
 // Custom SVGs
 import PropertySellerHeader from '../../assets/svg/svgimages/PropertySellerHeader';
 import BellIcon from '../../assets/svg/svgicons/Others/BellIcon';
@@ -14,20 +19,54 @@ import DropDownIcon2 from '../../assets/svg/svgicons/Others/DropDownIcon2';
 import SearchIcon from '../../assets/svg/svgicons/Others/SearchIcon';
 
 const TopHeader = () => {
+  const dispatch = useDispatch();
+  const { selectedCurrency, rates } = useSelector((state) => state.currency);
+
+  const [showPicker, setShowPicker] = useState(false);
+  const [searchTerm, setSearchTerm] = useState(''); 
+
+  const handleCurrencySelect = (currencyCode) => {
+    dispatch(setCurrency(currencyCode));
+    setShowPicker(false);
+    setSearchTerm('');
+  };
+
+  const countryCurrencyList = countries
+  .map((country) => {
+    const currencyCode = Object.keys(country.currencies || {})[0];
+    return {
+      name: country.name.common,
+      flag: country.flag,
+      currency: currencyCode,
+    };
+  })
+  .filter(item => item.currency)  // Remove ones without currency
+  .sort((a, b) => a.name.localeCompare(b.name));
+
+  const filteredList = countryCurrencyList.filter((item) =>
+    item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item.currency.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+
   return (
     <View style={styles.container}>
       {/* Top Row */}
       <View style={styles.topRow}>
         {/* Currency Button */}
-        <TouchableOpacity style={styles.currencyButton}>
-          <Text style={styles.currencyText}>AED</Text>
+        <TouchableOpacity
+          style={styles.currencyButton}
+          onPress={() => setShowPicker(true)}
+        >
+          <Text style={styles.currencyText}>
+            {selectedCurrency ? selectedCurrency.toUpperCase() : 'AED'}
+          </Text>
           <DropDownIcon2 />
         </TouchableOpacity>
 
         <View style={styles.logo}>
-            <PropertySellerHeader/>
+          <PropertySellerHeader />
         </View>
-       
 
         {/* Notification Icon with Badge */}
         <TouchableOpacity style={styles.notificationWrapper}>
@@ -47,6 +86,39 @@ const TopHeader = () => {
           placeholderTextColor="#999"
         />
       </View>
+
+      {/* Modal Dropdown */}
+      <Modal visible={showPicker} animationType="slide" transparent>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <TextInput
+              style={styles.searchInput1}
+              placeholder="Search currency or country here"
+              placeholderTextColor="#999"
+              value={searchTerm}
+              onChangeText={setSearchTerm}
+            />
+
+            <FlatList
+              data={filteredList}
+              keyExtractor={(item) => `${item.currency}_${item.name}`}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.modalItem}
+                  onPress={() => handleCurrencySelect(item.currency)}
+                >
+                  <Text style={styles.modalText}>
+                    {item.flag}  {item.name} ({item.currency})
+                  </Text>
+                </TouchableOpacity>
+              )}
+            />
+            <TouchableOpacity onPress={() => setShowPicker(false)} style={styles.closeBtn}>
+              <Text style={styles.closeText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -75,29 +147,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
   },
-  greyDropDown:{
-    color: "#000"
-  },
   currencyText: {
     fontSize: 14,
     color: '#000',
     marginRight: 6,
   },
   logo: {
-    alignSelf: "center",
+    alignSelf: 'center',
     right: 12,
-  },
-  logoBold: {
-    fontWeight: 'bold',
-    color: '#000',
-  },
-  logoLight: {
-    fontWeight: '500',
-    color: '#000',
-  },
-  logoDot: {
-    fontWeight: '900',
-    color: '#000',
   },
   notificationWrapper: {
     position: 'relative',
@@ -136,6 +193,42 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 14,
     color: '#000',
+  },
+  searchInput1: {
+    fontSize: 14,
+    color: '#000',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    borderRadius: 6,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    paddingHorizontal: 30,
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    maxHeight: '60%',
+    padding: 12,
+  },
+  modalItem: {
+    paddingVertical: 10,
+    borderBottomColor: '#eee',
+    borderBottomWidth: 1,
+  },
+  modalText: {
+    fontSize: 16,
+    color: '#333',
+  },
+  closeBtn: {
+    marginTop: 10,
+    alignItems: 'center',
+  },
+  closeText: {
+    color: '#ff1645',
+    fontWeight: 'bold',
   },
 });
 

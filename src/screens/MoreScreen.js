@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { fonts } from '../../styles/fonts';
-import { isGuestUser } from '../services/AuthService'; 
 import { useAuth } from '../context/AuthContext';
 
 import ArrowIcon from '../assets/svg/svgicons/MoreScreen/ArrowIcon';
@@ -36,6 +35,7 @@ import PrivacyIcon from '../assets/svg/svgicons/MoreScreen/PrivacyIcon';
 import TermsCondIcon from '../assets/svg/svgicons/MoreScreen/TermsCondIcon';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+
 const Section = ({ items, onItemPress }) => (
   <View style={styles.section}>
     {items.map(({ label, Icon, screen }, index) => (
@@ -55,7 +55,6 @@ const Section = ({ items, onItemPress }) => (
 
 const MoreScreen = () => {
   const navigation = useNavigation();
-
 
   const scrollY = useRef(new Animated.Value(0)).current;
   const [contentHeight, setContentHeight] = useState(1);
@@ -97,6 +96,13 @@ const MoreScreen = () => {
       case 'Developers':
         navigation.navigate('Developer');
         break;
+
+      case 'Freelance Registration':
+        navigation.navigate('FreelanceReg');
+        break;
+      case 'Seller Registration':
+        navigation.navigate('SellerReg');
+        break;
       case 'Blog':
         navigation.navigate('Blogs');
         break;
@@ -112,6 +118,7 @@ const MoreScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ flex: 1, flexDirection: 'row' }}>
+        
         <Animated.ScrollView
           contentContainerStyle={{ paddingBottom: 30 }}
           showsVerticalScrollIndicator={false}
@@ -166,6 +173,7 @@ const MoreScreen = () => {
           onItemPress={handleItemPress}
           items={[
             { label: 'Freelance Registration', Icon: FreelanceRegIcon },
+            { label: 'Seller Registration', Icon: FreelanceRegIcon },
             { label: 'Open House', Icon: OpenHouseIcon },
           ]}
         />

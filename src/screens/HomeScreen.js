@@ -63,7 +63,6 @@ const HomeScreen = () => {
       if (response.data.success) {
         const newProjects = response.data.data;
         const pagination = response.data.pagination;
-        console.log("Number of Property listing fetched: ",newProjects.length);
 
         const updatedProps = pageNum === 1 || isRefreshing
           ? newProjects
@@ -97,7 +96,6 @@ const HomeScreen = () => {
       if (res.data.success) {
         const newAds = res.data.data;
         const pagination = res.data.pagination;
-        console.log("ads fetched in fetchAds", newAds.length);
         setAds(prev =>
           pageNum === 1 || isRefreshing ? newAds : [...prev, ...newAds]
         );
@@ -160,9 +158,7 @@ const HomeScreen = () => {
   const handleLoadMore = () => {
     if (!isFetchingMore && page < totalPages) {
       fetchProperties(page + 1);
-      console.log("Page:",page);
       fetchAds(adPage + 1);
-      console.log("adPage",adPage);
     }
   };
 

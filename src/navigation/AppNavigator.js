@@ -4,11 +4,14 @@ import { createStackNavigator } from '@react-navigation/stack';
 import SplashScreen from '../screens/SplashScreen';
 import { useAuth } from '../context/AuthContext';
 import { hasSeenIntro } from '../utils/IntroStorage';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchCurrencyRates } from '../redux/slices/CurrencySlice';
 import BottomTabs from './BottomTabs';
 
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
+  const dispatch = useDispatch();
   const { isAuthenticated, initializing } = useAuth();
   const [showIntro, setShowIntro] = useState(false);
 
@@ -17,6 +20,7 @@ const AppNavigator = () => {
       const seen = await hasSeenIntro();
       setShowIntro(!seen);
     };
+    dispatch(fetchCurrencyRates());
     checkIntro();
   }, []);
 
@@ -61,6 +65,8 @@ const AppNavigator = () => {
         <Stack.Screen name="MortgageEdit" component={require('../screens/MortgageEditScreen').default} />
         <Stack.Screen name="City" component={require('../screens/CityScreen').default} />
         <Stack.Screen name="Developer" component={require('../screens/DeveloperScreen').default} />
+        <Stack.Screen name="SellerReg" component={require('../screens/SellerRegScreen').default} />
+        <Stack.Screen name="FreelanceReg" component={require('../screens/FreelanceRegScreen').default} />
         <Stack.Screen name="Blogs" component={require('../screens/BlogScreen').default} />
         <Stack.Screen name="BlogRead" component={require('../screens/BlogReadScreen').default} />
         <Stack.Screen name="WhyDubai" component={require('../screens/WhyDubaiScreen').default} />

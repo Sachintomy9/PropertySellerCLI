@@ -12,7 +12,7 @@ import {
   FlatList,
 } from 'react-native';
 import axios from 'axios';
-import { useDispatch } from 'react-redux';
+import { useDispatch,useSelector } from 'react-redux';
 import { setPropertyRed } from '../redux/slices/PropertySlice';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { useAuth } from '../context/AuthContext';
@@ -50,6 +50,7 @@ const PropertyDetailScreen = () => {
   const { wishlist,updateWishlist } = useWishlist();
   const { mortgageData, applyCustomValues } = useMortgage();
   const dispatch = useDispatch();
+  const { selectedCurrency, conversionRate } = useSelector((state) => state.currency);
   
 
   const navigation = useNavigation();
@@ -84,6 +85,22 @@ const PropertyDetailScreen = () => {
   const [loading, setLoading] = useState(true);
   const [readMore, setReadMore] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+
+
+  const displayPrice = (aedPrice) => {
+      // Step 1: Remove ALL non-digit characters (commas, periods, spaces)
+      const cleanedPrice = String(aedPrice).replace(/[^\d]/g, '');
+
+      // Step 2: Convert to number (now it won't stop at commas/periods)
+      const numericPrice = parseFloat(cleanedPrice);
+
+      const converted = numericPrice * conversionRate;
+
+      return `${converted.toLocaleString(undefined, {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 2,
+      })}`;
+  };
 
 
   useEffect(() => {
@@ -223,9 +240,11 @@ const PropertyDetailScreen = () => {
 
             {/* Top Navigation */}
       <View style={styles.headerRow}>
-        <View style={{backgroundColor:"#FFE8EF",borderRadius:5, width:30,height:35}}>
+        <View style={{backgroundColor:"#FFE8EF",borderRadius:5, width:35,height:35}}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
-            <BackIcon />
+              <View style={{left:10}}>
+                <BackIcon />
+              </View>
             </TouchableOpacity>
         </View>
         <View style={{marginLeft:250,backgroundColor:"#FFE8EF",borderRadius:5,width:35,height:35}}>
@@ -331,7 +350,7 @@ const PropertyDetailScreen = () => {
 
       {/* Title & Price */}
       <Text style={styles.title}>{property.projectTitle}</Text>
-      <Text style={styles.priceLabel}>AED <Text style={styles.price}>{property.priceInAED}</Text></Text>
+      <Text style={styles.priceLabel}>{selectedCurrency} <Text style={styles.price}>{displayPrice(property.priceInAED)}</Text></Text>
 
       {/* Address */}
       <View style={styles.row}>

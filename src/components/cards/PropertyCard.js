@@ -2,6 +2,7 @@ import React ,{useState} from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { fonts } from '../../../styles/fonts';
 import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
 import BedIcon from '../../assets/svg/svgicons/Details/BedIcon';
 import BuildingIcon from '../../assets/svg/svgicons/Others/BuildingIcon';
 import EnquireIcon from '../../assets/svg/svgicons/Others/EnquireIcon';
@@ -9,23 +10,77 @@ import DetailsIcon from '../../assets/svg/svgicons/Others/DetailsIcon';
 import SavedActive from '../../assets/svg/svgicons/BottomTabs/SavedActive';
 import SavedInactive from '../../assets/svg/svgicons/BottomTabs/SavedInactive';
 import LocationIcon from '../../assets/svg/svgicons/Details/LocationIcon';
+import { useAuth } from '../../context/AuthContext';
 import { useWishlist } from '../../context/WishlistContext';
+import { useProfile } from '../../context/ProfileContext';
+import { collectWishlist } from '../../services/AuthService';
 import EnquiryPrompt from '../popups/EnquiryPrompt';
-
+import LoginPrompt from '../popups/LoginPrompt';
+import SavedRemoved from '../popups/SavedRemoved';
+import SavedSuccess from '../popups/SavedSuccess';
+import api from '../../services/ApiClient';
 const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,discount,paymentPlan,handOverQuarter,handOverYear, title, price, rooms, baths, area, location,image }) => {
   const navigation=useNavigation();
-  const { wishlist } = useWishlist();
+  const { wishlist,updateWishlist } = useWishlist();
   const [modalVisible, setModalVisible] = useState(false);
-  
+  const { selectedCurrency, conversionRate } = useSelector((state) => state.currency);
+  const {isGuest} = useAuth();
+  const {profile} = useProfile();
+
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const [showSuccessPrompt, setShowSuccessPrompt] =useState(false);
+  const [showRemovedPrompt, setShowRemovedPrompt] =useState(false);
+
 
   const handleDetails = () => {
     navigation.navigate('PropDetails', { propertyId});
 
   }
+
+  const handleHeartPress = async () => {
+    if (isGuest) {
+      setShowLoginPrompt(true);
+    } else {
+      try{  
+          // Show corresponding popup
+          if (!isWishlisted) {
+            setShowSuccessPrompt(true); // now added
+          } else {
+            setShowRemovedPrompt(true); // now removed
+          }
+        
+
+        const payload = {userId: profile.id, projectId: propertyId,}
+        const response = await api.post('wishlist',payload);
+        await collectWishlist(profile,updateWishlist);
+
+        console.log("Successfully Added to wishlist:",response.data)
+      } catch (error) {
+        console.error('Profile update error:', error.response?.data || error.message);
+        Alert.alert('Error', error.response?.data?.message || 'Profile update failed.');
+      }
+    }
+  };
+
+
   const isWishlisted = wishlist.some(
     item => item.propertyDetails?._id === propertyId
   );  
 
+  const displayPrice = (aedPrice) => {
+    // Step 1: Remove ALL non-digit characters (commas, periods, spaces)
+    const cleanedPrice = String(aedPrice).replace(/[^\d]/g, '');
+
+    // Step 2: Convert to number (now it won't stop at commas/periods)
+    const numericPrice = parseFloat(cleanedPrice);
+
+    const converted = numericPrice * conversionRate;
+
+    return `${converted.toLocaleString(undefined, {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2,
+    })}`;
+};
 
   const getDaysAgoText = (createdAt) => {
     if (!createdAt) return '';
@@ -53,7 +108,6 @@ const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,
         style={styles.image}
         resizeMode="cover"
       />
-
  
         <View style={styles.overlay}>
           <Text style={styles.overlayText}>Handover Date : {handOverQuarter} {handOverYear}</Text>
@@ -69,7 +123,7 @@ const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,
 
 
       {/* Heart Icon */}
-      <TouchableOpacity style={styles.heartIconWrapper}>
+      <TouchableOpacity style={styles.heartIconWrapper} onPress={handleHeartPress}>
         {isWishlisted ? (
           <SavedActive width={24} height={24} />
         ) : (
@@ -79,13 +133,28 @@ const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,
 
     </View>
 
+
+    <LoginPrompt
+          visible={showLoginPrompt}
+          onClose={() => setShowLoginPrompt(false)}
+        />
+
+        <SavedSuccess
+          visible={showSuccessPrompt}
+          onClose={() => setShowSuccessPrompt(false)}
+        />
+        <SavedRemoved
+          visible={showRemovedPrompt}
+          onClose={() => setShowRemovedPrompt(false)}
+        />
+
     {/* Property Info */}
     <View style={styles.content}>
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.price}>
         <Text style={styles.pricePrefix}>Starting From </Text>
-        <Text style={styles.priceValue}>{price} </Text>
-        <Text style={styles.priceSuffix}>AED</Text>
+        <Text style={styles.priceValue}>{displayPrice(price)} </Text>
+        <Text style={styles.priceSuffix}>{selectedCurrency}</Text>
       </Text>
       <View style={styles.specsRow}>
         <Text style={styles.specText1}>{propType}</Text>
@@ -129,6 +198,7 @@ const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,
           <Text style={styles.buttonText}>Enquire Now</Text>
         </TouchableOpacity>
         <EnquiryPrompt
+        projectId={propertyId}
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
       />

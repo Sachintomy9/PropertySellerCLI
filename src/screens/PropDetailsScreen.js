@@ -532,7 +532,7 @@ const PropertyDetailScreen = () => {
         ]}
         />
     </View>
-        <BottomEnquireButton/>
+        <BottomEnquireButton propertyId={propertyId}/>
     </View>
   );
 };

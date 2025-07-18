@@ -85,7 +85,7 @@ const MoreScreen = () => {
         navigation.navigate('Profile');
         break;
       case 'About':
-        navigation.navigate('AboutScreen');
+        navigation.navigate('About');
         break;
       case 'Why Dubai':
         navigation.navigate('WhyDubai');
@@ -103,12 +103,25 @@ const MoreScreen = () => {
       case 'Seller Registration':
         navigation.navigate('SellerReg');
         break;
+      case 'Careers':
+        navigation.navigate('Careers');
+        break;
       case 'Blog':
         navigation.navigate('Blogs');
         break;
       case 'Login':
          await loginUser();
         navigation.navigate('Login');
+        break;
+      case 'Rental Income':
+         await loginUser();
+        navigation.navigate('Rental');
+        break;
+      case 'Privacy Policy':
+        navigation.navigate('Privacy');
+        break;
+      case 'Terms & Conditions':
+        navigation.navigate('Terms');
         break;
       default:
         alert(`No screen configured for: ${screenName}`);
@@ -144,7 +157,7 @@ const MoreScreen = () => {
           onItemPress={handleItemPress}
           items={[
             { label: 'Profile', Icon: ProfileIcon, screen: 'Profile' },
-            { label: 'About', Icon: AboutIcon, screen: 'AboutScreen' },
+            { label: 'About', Icon: AboutIcon, screen: 'About' },
             { label: 'Why Dubai', Icon: WhyDubaiIcon },
             { label: 'Cities', Icon: CitiesIcon },
             { label: 'Developers', Icon: DevelopersIcon },
@@ -154,7 +167,6 @@ const MoreScreen = () => {
         <Section
           onItemPress={handleItemPress}
           items={[
-            { label: 'Saved', Icon: SavedIcon, screen: 'Saved' },
             { label: 'Enquired Properties', Icon: EnqPropIcon },
             { label: 'Purchase History', Icon: PurHistoryIcon },
             { label: 'Rental Income', Icon: RentIncomeIcon },
@@ -175,6 +187,7 @@ const MoreScreen = () => {
             { label: 'Freelance Registration', Icon: FreelanceRegIcon },
             { label: 'Seller Registration', Icon: FreelanceRegIcon },
             { label: 'Open House', Icon: OpenHouseIcon },
+            { label: 'Careers', Icon: OpenHouseIcon },
           ]}
         />
 

@@ -282,7 +282,7 @@ const RegisterScreen = () => {
                 I agree to the{' '}
                 <Text
                 style={styles.linkText}
-                onPress={() => Linking.openURL('https://yourapp.com/terms')}
+                onPress={() => navigation.navigate("Terms")}
                 >
                 Terms & Conditions
                 </Text>

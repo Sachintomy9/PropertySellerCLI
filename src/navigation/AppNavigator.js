@@ -47,6 +47,7 @@ const AppNavigator = () => {
             <Stack.Screen name="Register" component={require('../screens/RegisterScreen').default} />
             <Stack.Screen name="Otp" component={require('../screens/OtpScreen').default} />
             <Stack.Screen name="ForgotPassVerify" component={require('../screens/ForgotPassSetScreen').default} />
+            <Stack.Screen name="TermsCondi" component={require('../screens/TermsCondiScreen').default} />
           </>
         ) : (
           <>
@@ -54,6 +55,7 @@ const AppNavigator = () => {
             <Stack.Screen name="Register" component={require('../screens/RegisterScreen').default} />
             <Stack.Screen name="Otp" component={require('../screens/OtpScreen').default} />
             <Stack.Screen name="ForgotPassVerify" component={require('../screens/ForgotPassSetScreen').default} />
+            <Stack.Screen name="TermsCondi" component={require('../screens/TermsCondiScreen').default} />
           </>
         )}
         <Stack.Screen name="Profile" component={require('../screens/ProfileScreen').default} />
@@ -64,12 +66,19 @@ const AppNavigator = () => {
         <Stack.Screen name="AmenitiesInfo" component={require('../screens/AmenitiesInfoScreen').default} />
         <Stack.Screen name="MortgageEdit" component={require('../screens/MortgageEditScreen').default} />
         <Stack.Screen name="City" component={require('../screens/CityScreen').default} />
+        <Stack.Screen name="About" component={require('../screens/AboutUsScreen').default} />
         <Stack.Screen name="Developer" component={require('../screens/DeveloperScreen').default} />
         <Stack.Screen name="SellerReg" component={require('../screens/SellerRegScreen').default} />
-        <Stack.Screen name="FreelanceReg" component={require('../screens/FreelanceRegScreen').default} />
+        <Stack.Screen name="Terms" component={require('../screens/TermsScreen').default} />
         <Stack.Screen name="Blogs" component={require('../screens/BlogScreen').default} />
         <Stack.Screen name="BlogRead" component={require('../screens/BlogReadScreen').default} />
+        <Stack.Screen name="Rental" component={require('../screens/RentalIncomeScreen').default} />
+        <Stack.Screen name="Careers" component={require('../screens/CareersScreen').default} />
         <Stack.Screen name="WhyDubai" component={require('../screens/WhyDubaiScreen').default} />
+        <Stack.Screen name="FreelanceReg" component={require('../screens/FreelanceRegScreen').default} />
+        <Stack.Screen name="Privacy" component={require('../screens/PrivacyPolicyScreen').default} />
+        <Stack.Screen name="AiAgentIntro" component={require('../screens/AiAgentIntroScreen').default} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

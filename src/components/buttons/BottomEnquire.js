@@ -5,7 +5,7 @@ import { View, Text, TouchableOpacity,StyleSheet } from 'react-native';
 import EnquireIcon from '../../assets/svg/svgicons/Others/EnquireIcon'; // Replace with your actual SVG path
 import { fonts } from '../../../styles/fonts';
 import EnquiryPrompt from '../popups/EnquiryPrompt';
-const BottomEnquireButton = () => {
+const BottomEnquireButton = ({propertyId}) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
@@ -15,6 +15,7 @@ const BottomEnquireButton = () => {
         <Text style={styles.text}>Enquire Now</Text>
       </TouchableOpacity>
       <EnquiryPrompt
+        projectId={propertyId}
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
       />

@@ -18,7 +18,7 @@ const EditProfileScreen = () => {
   const navigation = useNavigation();
   const { profile } = useProfile();
   const [name, setName] = useState(profile.name || '');
-  const [nationality, setNationality] = useState('American'); // still static
+  const [nationality, setNationality] = useState(''); // still static
   const [phone, setPhone] = useState(profile.phone || '');
   const [email, setEmail] = useState(profile.email || '');
 

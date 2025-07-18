@@ -25,9 +25,9 @@ const EnquiryPrompt = ({ projectId, visible, onClose }) => {
   const [errors, setErrors] = useState({});
   const [ showSuccessPrompt, setShowSuccessPrompt] = useState(false);
 
-  const [countryCode, setCountryCode] = useState('IN');
-  const [callingCode, setCallingCode] = useState('91');
-  const [selectedFlag, setSelectedFlag] = useState('🇮🇳');
+  const [countryCode, setCountryCode] = useState('AE');
+  const [callingCode, setCallingCode] = useState('971');
+  const [selectedFlag, setSelectedFlag] = useState('🇦🇪');
 
   const [showCountryPicker, setShowCountryPicker] = useState(false);
   const [searchText, setSearchText] = useState('');
@@ -68,7 +68,7 @@ const EnquiryPrompt = ({ projectId, visible, onClose }) => {
         onClose();
         setShowSuccessPrompt(true);
         setName('');
-        setNumber('');
+        setPhone('');
         setAssignedTo('');
         
       }catch{
@@ -80,12 +80,6 @@ const EnquiryPrompt = ({ projectId, visible, onClose }) => {
             }
       }
     }
-  };
-
-  const onSubmit = (name, phone) => {
-    console.log('Enquiry submitted:');
-    console.log('Name:', name);
-    console.log('Phone:', phone);
   };
 
   const handleCountrySelect = (country) => {

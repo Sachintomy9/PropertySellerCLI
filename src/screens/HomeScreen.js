@@ -1,10 +1,13 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { View, Animated, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Animated, FlatList, StyleSheet, ActivityIndicator,TextInput,TouchableOpacity } from 'react-native';
 import TopHeader from '../components/Headers/TopHeader';
 import FilterBar from '../components/others/FilterBar';
 import PropertyCard from '../components/cards/PropertyCard';
 import axios from 'axios';
 import AdCard from '../components/cards/AdCard';
+import SearchIcon from '../assets/svg/svgicons/Others/SearchIcon';
+import EmptyState from '../components/others/EmptyScreen';
+import CloseIcon from '../assets/svg/svgicons/ProfileScreen/CloseIcon';
 
 const HomeScreen = () => {
   const [properties, setProperties] = useState([]);
@@ -14,6 +17,8 @@ const HomeScreen = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
 
  
   const [ adPage, setAdPage] = useState(1);
@@ -58,8 +63,8 @@ const HomeScreen = () => {
       } else {
         setIsFetchingMore(true);
       }
-
-      const response = await axios.get(`https://api.propertyseller.com/api/v1/projects?page=${pageNum}&limit=10`);
+      const searchParam = searchQuery ? `&search=${searchQuery}` : '';
+      const response = await axios.get(`https://api.propertyseller.com/api/v1/projects?page=${pageNum}&limit=10${searchParam}`);
       if (response.data.success) {
         const newProjects = response.data.data;
         const pagination = response.data.pagination;
@@ -117,6 +122,14 @@ const HomeScreen = () => {
     fetchProperties(1);
     fetchAds(1);
   }, []);
+
+  useEffect(() => {
+  const delayDebounce = setTimeout(() => {
+    fetchProperties(1); // Trigger a fresh search
+  }, 500); // debounce delay
+
+  return () => clearTimeout(delayDebounce); // cleanup timeout
+}, [searchQuery]);
 
   const mergeAdsIntoProperties = (propertyList) => {
     const mixedList = [];
@@ -206,7 +219,29 @@ const HomeScreen = () => {
     <View style={{ flex: 1, backgroundColor: '#fff' }}>
       <View style={styles.topHeaderWrapper}>
         <TopHeader />
+        <View style={styles.searchBar}>
+          <SearchIcon width={18} height={18} style={styles.searchIcon} />
+
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search.."
+            placeholderTextColor="#999"
+            value={searchQuery}
+            onChangeText={text => setSearchQuery(text)}
+          />
+
+          {searchQuery.length > 0 && (
+            <TouchableOpacity onPress={() => {
+              setSearchQuery('');
+              fetchProperties(1); // Reset to original data
+            }}>
+              <CloseIcon width={18} height={18} style={styles.clearIcon} />
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
+      {/* Search Bar */}
+      
 
       <Animated.View style={[styles.filterBarWrapper, { transform: [{ translateY: filterBarTranslateY }] }]}>
         <FilterBar />
@@ -220,7 +255,7 @@ const HomeScreen = () => {
             : `property-${item.data?._id || index}-${index}`
 }
         renderItem={renderItem}
-        contentContainerStyle={{ paddingTop: 180 }}
+        contentContainerStyle={{ paddingTop: 176 }}
         scrollEventThrottle={16}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
@@ -236,6 +271,9 @@ const HomeScreen = () => {
         onRefresh={() => fetchProperties(1, true)}
         onContentSizeChange={(w, h) => setContentHeight(h)}
         onLayout={e => setScrollViewHeight(e.nativeEvent.layout.height)}
+        ListEmptyComponent={
+          !loading && !refreshing ? <EmptyState /> : null
+        }
       />
 
       <View style={styles.scrollbarTrack}>
@@ -255,19 +293,19 @@ const HomeScreen = () => {
 
 const styles = StyleSheet.create({
   topHeaderWrapper: {
-    height: 100,
+    height: 155,
     backgroundColor: '#fff',
     paddingTop: 40,
     zIndex: 20,
     elevation: 5,
-    shadowColor: '#000',
+    shadowColor: '#fff',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
   filterBarWrapper: {
     position: 'absolute',
-    top: 150,
+    top: 145,
     left: 0,
     right: 0,
     height: 80,
@@ -289,6 +327,36 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     backgroundColor: '#FF1645',
   },
+  searchBar: {
+    flexDirection: 'row',
+    alignSelf: 'center',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    borderRadius: 6,
+    paddingHorizontal: 12,
+    width:"96%",
+    height: 50,
+    zIndex:22,
+    backgroundColor:"#fff",
+    top:-5,
+  },
+  searchIcon: {
+    marginRight: 8,
+    top:15,
+  },
+  searchInput: {
+    flex: 1,
+    alignSelf:"center",
+    fontSize: 14,
+    color: '#000',
+    width:"96%",
+    paddingHorizontal:10,
+  },
+  clearIcon: {
+  marginLeft: 8,
+  alignSelf: 'center',
+  top:12,
+},
 });
 
 export default HomeScreen;

@@ -77,15 +77,6 @@ const TopHeader = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Search Bar */}
-      <View style={styles.searchBar}>
-        <SearchIcon width={18} height={18} style={styles.searchIcon} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search.."
-          placeholderTextColor="#999"
-        />
-      </View>
 
       {/* Modal Dropdown */}
       <Modal visible={showPicker} animationType="slide" transparent>
@@ -126,17 +117,18 @@ const TopHeader = () => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
-    paddingTop: 12,
+    paddingTop: 20,
     paddingHorizontal: 8,
-    paddingBottom: 8,
-    borderBottomWidth: 0.5,
+    paddingBottom: 0,
+    borderBottomWidth: 0,
     borderBottomColor: '#e0e0e0',
   },
   topRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 12,
+    marginBottom: 8,
+    top: -2.5,
   },
   currencyButton: {
     flexDirection: 'row',

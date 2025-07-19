@@ -25,6 +25,7 @@ import { fonts } from '../../styles/fonts';
 import { collectWishlist } from '../services/AuthService';
 import { useWishlist } from '../context/WishlistContext';
 import { useMortgage } from '../context/MortgageContext';
+import { formatPropType } from '../utils/formatPropType';
 
 // SVG icons (you should create/import these)
 import BackIcon from '../assets/svg/svgicons/Details/BackIcon';
@@ -360,7 +361,7 @@ const PropertyDetailScreen = () => {
 
       {/* Property Info */}
       <View style={styles.infoRow}>
-        <Text style={styles.infoText}>Apartment    </Text>
+        <Text style={styles.infoText}>{formatPropType(property.propertyTypes)}   </Text>
         <BedIcon />
         <Text style={styles.infoText}>Bedrooms: {property.type}</Text>
         {/*<BathIcon />

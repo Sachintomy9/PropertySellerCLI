@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { fonts } from '../../styles/fonts';
 import AiAgentIntro from '../assets/svg/svgimages/AiAgentIntro';
 import IntroButton from '../components/buttons/IntroButton';
+import BackIcon from '../assets/svg/svgicons/Details/BackIcon';
 import IntroNextIcon from '../assets/svg/svgicons/Others/IntroNextIcon';
 
 const AiAgentIntroScreen = () => {
@@ -18,6 +19,11 @@ const AiAgentIntroScreen = () => {
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" />
       <View style={styles.container}>
+        <View style={{top:50}}>
+            <TouchableOpacity onPress={() => navigation.goBack()} >
+                < BackIcon color="#000"/>
+            </TouchableOpacity>
+            </View>
         {/* This content container takes up all available space and centers its content */}
         <View style={styles.contentContainer}>
           <Text style={styles.heading}>

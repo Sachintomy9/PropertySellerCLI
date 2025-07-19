@@ -31,6 +31,7 @@ const SavedScreen = () => {
 
   const renderItem = ({ item }) => {
   const details = item.propertyDetails || {};
+  console.log("createdd at: ",item);
 
   return (
     <PropertyCard
@@ -48,8 +49,9 @@ const SavedScreen = () => {
       baths="–"
       area="–"
       propertyId={item.propertyDetails?._id}
+      createdAt={details.createdAt}
       location={details.address}
-      image={
+      image={ 
         Array.isArray(details.mainImages) && details.mainImages.length > 0
           ? details.mainImages[0].secure_url
           : null

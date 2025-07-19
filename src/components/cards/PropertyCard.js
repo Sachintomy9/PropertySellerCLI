@@ -10,6 +10,7 @@ import DetailsIcon from '../../assets/svg/svgicons/Others/DetailsIcon';
 import SavedActive from '../../assets/svg/svgicons/BottomTabs/SavedActive';
 import SavedInactive from '../../assets/svg/svgicons/BottomTabs/SavedInactive';
 import LocationIcon from '../../assets/svg/svgicons/Details/LocationIcon';
+import StarsIcon from '../../assets/svg/svgicons/Others/StarsIcon';
 import { useAuth } from '../../context/AuthContext';
 import { useWishlist } from '../../context/WishlistContext';
 import { useProfile } from '../../context/ProfileContext';
@@ -18,6 +19,7 @@ import EnquiryPrompt from '../popups/EnquiryPrompt';
 import LoginPrompt from '../popups/LoginPrompt';
 import SavedRemoved from '../popups/SavedRemoved';
 import SavedSuccess from '../popups/SavedSuccess';
+import { formatPropType } from '../../utils/formatPropType';
 import api from '../../services/ApiClient';
 const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,discount,paymentPlan,handOverQuarter,handOverYear, title, price, rooms, baths, area, location,image }) => {
   const navigation=useNavigation();
@@ -96,8 +98,12 @@ const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,
 
     if (daysAgo === 0) return 'This listing was newly introduced today';
     if (daysAgo === 1) return 'This listing was newly introduced yesterday';
-    return `This listing was newly introduced ${daysAgo} days ago`;
+    return `  This listing was newly introduced ${daysAgo} days ago`;
   };
+
+
+
+
 
   return(
     <View style={styles.card}>
@@ -110,8 +116,11 @@ const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,
       />
  
         <View style={styles.overlay}>
-          <Text style={styles.overlayText}>Handover Date : {handOverQuarter} {handOverYear}</Text>
-          <Text style={styles.overlaySubText}>{projectType}</Text>
+            <Text style={styles.overlayText}>Handover Date : {handOverQuarter} {handOverYear}</Text>
+        </View>
+
+        <View style={styles.overlayZ}>
+            <Text style={styles.overlaySubText}>{projectType}</Text>
         </View>
 
 
@@ -157,8 +166,8 @@ const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,
         <Text style={styles.priceSuffix}>{selectedCurrency}</Text>
       </Text>
       <View style={styles.specsRow}>
-        <Text style={styles.specText1}>{propType}</Text>
-        <Text style={styles.dot}>     </Text>
+        <Text style={styles.specText1}>{formatPropType(propType)}</Text>
+        <Text style={styles.dot}>  </Text>
         {Boolean(rooms) && (
           <>
             <BedIcon style={{ width: 24, height: 24 }}/>
@@ -169,7 +178,7 @@ const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,
         
         {Boolean(floors) && (
           <>
-            <Text style={styles.dot}>    </Text>
+            <Text style={styles.dot}>  </Text>
             <BuildingIcon width={16} height={16} />
             <Text style={styles.specText}>{floors} {floors === 1 ? 'floor' : 'floors'}</Text>
           </>
@@ -181,11 +190,16 @@ const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,
           <Text style={styles.location}>{location}</Text>
         </View>
 
-
-      <Text style={styles.validated}>
-        ⭐ {getDaysAgoText(createdAt)}
-      </Text>
-
+          {Boolean(createdAt) && (
+          <View style={{backgroundColor:"#FFDDE5", marginBottom:10, marginTop:5, borderRadius:3, height:30}}>
+            <View style={{top: 5, marginLeft:20}}>
+              <StarsIcon/> 
+            </View>
+            <View style={{bottom: 10, left:20}}>
+              <Text style={styles.validated}>{getDaysAgoText(createdAt)}</Text>
+            </View>
+          </View>
+        )}
       {/* Buttons */}
       <View style={styles.actionRow}>
         <TouchableOpacity style={styles.detailsButton} onPress={handleDetails}>
@@ -242,8 +256,25 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     paddingVertical: 4,
     paddingHorizontal: 8,
-    borderRadius: 4,
+    borderRadius: 2,
     elevation: 2,
+    flexDirection: "column",
+    gap: 10,
+    fontFamily: fonts.PoppinsRegular
+  },
+  overlayZ: {
+    position: 'absolute',
+    top: 40,
+    left: 10,
+    backgroundColor: '#fff',
+    paddingVertical: 2,
+    paddingHorizontal: 8,
+    borderRadius: 2,
+    elevation: 2,
+    flexDirection: "column",
+    gap: 10,
+    color: "#000",
+    fontFamily: fonts.PoppinsRegular
   },
   overlay1: {
     position: 'absolute',
@@ -322,10 +353,12 @@ const styles = StyleSheet.create({
     left: 3,
   },
   validated: {
-    fontSize: 12,
+    fontSize: 13,
     color: '#D91E5B',
     marginBottom: 10,
+    marginLeft:20,
     fontWeight: '600',
+    fontFamily: fonts.PoppinsRegular,
   },
   actionRow: {
   flexDirection: 'row',

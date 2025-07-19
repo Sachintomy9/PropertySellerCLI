@@ -50,7 +50,7 @@ const FilterBar = () => {
             placeholderStyle={styles.dropdownPlaceholder}
             selectedTextStyle={styles.dropdownSelectedText}
           />
-          <View style={{zIndex:2,bottom:35, left:158 }}>
+          <View style={{zIndex:2,bottom:35, left:162 }}>
             <DropDownIcon/>
           </View>
         </TouchableOpacity>
@@ -69,7 +69,7 @@ const FilterBar = () => {
             placeholderStyle={styles.dropdownPlaceholder}
             selectedTextStyle={styles.dropdownSelectedText}
           />
-          <View style={{zIndex:2,bottom:35, left:158 }}>
+          <View style={{zIndex:2,bottom:35, left:162 }}>
             <DropDownIcon/>
           </View>
 
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     height: 48,
   },
   dropdownWrapper: {
-    flex: 0.485,
+    flex: 0.493,
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 4,
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     backgroundColor: '#fff',
-    marginTop: 10,
+    marginTop: 5,
     padding: 5,
     justifyContent: 'space-between',
     borderWidth: 1,
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
   typeContainer: {
     flexDirection: "row",
     backgroundColor: '#fff',
-    marginTop: 10,
+    marginTop: 5,
     borderRadius: 4,
     padding: 6,
     borderWidth: 1,
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
     marginLeft: 6,
     width: "13%",
     height: 54,
-    top: 10,
+    top: 5,
     borderWidth: 1,
     borderColor: '#ddd',
   },

@@ -120,6 +120,8 @@ const PropertyDetailScreen = () => {
   }
   }, [property]);
 
+  
+  {/* Flatlist images settings*/}
   const viewabilityConfig = {
     itemVisiblePercentThreshold: 50,
     };
@@ -391,32 +393,31 @@ const PropertyDetailScreen = () => {
 
 
       {/* Property Information */}
-      <Text style={styles.sectionTitle}>Property Information</Text>
+      <View style={styles.verifiedRow}>
+        <Text style={styles.sectionTitle}>Property Information</Text>
+        <View style={{alignSelf: "center", top:9}}>
+          <TickIcon size={25} />
+        </View>
+      </View>
       <View style={styles.infoBlock}>
-        <InfoRow label="Type" value={formatPropType(property.propertyTypes)} />
-        <InfoRow label="Purpose" value="For Sale" />
-        <InfoRow label="Reference no" value="Bayut - NANCY\\102235" />
+        <InfoRow label="Type" value={formatPropType(property.propertyTypes) ?? "NOT PROVIDED"} />
+        <InfoRow label="Furnishing" value={property.furnishing ?? "NOT PROVIDED"} />
+        <InfoRow label="Added on" value={formatDate(property.createdAt) ?? "NOT PROVIDED"} />
+        <InfoRow label="Handover Date" value={property.handOverQuarter ?? "NOT PROVIDED"} />
         <InfoRow label="Completion" value={property.completionType ?? "Offplan"} />
-        <InfoRow label="Furnishing" value={property.furnishing} />
-        <InfoRow label="Added on" value={formatDate(property.createdAt)} />
-        <InfoRow label="Handover Date" value={property.handOverQuarter} />
-        <InfoRow label="Property ID" value={property.uniqueId} />
+        <InfoRow label="Developer" value={property.developerDetails.name ?? "NOT PROVIDED"} />
+        <InfoRow label="Ownership" value="Freehold" />
+        <InfoRow label="Built-up Area" value={property.squareFeet ?? "NOT PROVIDED"} /> 
+        <InfoRow label="Total Parking Spaces" value={property.parking ?? "NOT PROVIDED"} />
+        <InfoRow label="Total Floors" value={property.totalFloors ?? "NOT PROVIDED"} /> 
+        <InfoRow label="Retail Centres" value={property.retailCentres ?? "NOT PROVIDED"} /> 
+        <InfoRow label="Total Building Area" value={property.squareFeet ?? "NOT PROVIDED"} /> 
+        <InfoRow label="Elevators" value={property.elevators ?? "NOT PROVIDED"} />
+        <InfoRow label="Swimming pools" value={property.squareFeet ?? "NOT PROVIDED"} />  
+        <InfoRow label="Unique ID" value={property.uniqueId ?? "NOT PROVIDED"} />
+        <InfoRow label="Project No" value={property.projectNo ?? "NOT PROVIDED"} />
       </View>
 
-      {/* Validated Information */}
-      
-      <View style={styles.verifiedRow}>
-        <Text style={styles.sectionTitle}>Validated Information</Text>
-        <Text style={styles.verifiedText}>Verified  </Text>
-        <TickIcon style={styles.verifiedText} />
-      </View>
-      <View style={styles.infoBlock}>
-        <InfoRow label="Developer" value={property.developerDetails.name} />
-        <InfoRow label="Ownership" value="Freehold" />
-        <InfoRow label="Built-up Area" value={property.squareFeet} />
-        <InfoRow label="Usage" value="Other" />
-        <InfoRow label="Parking Availability" value="Yes" />
-      </View>
 
       {/* Floor Plans */}
      <Text style={styles.sectionTitle}>Floor Plans and Layouts</Text>
@@ -577,7 +578,7 @@ dot: {
   marginHorizontal: 4,
 },
 activeDot: {
-  backgroundColor: '#ff1645',
+  backgroundColor: '#fff',
   width: 10,
   height: 10,
 },
@@ -720,12 +721,7 @@ activeDot: {
     marginTop: 4,
     width: "60%"
   },
-  verifiedText: {
-    color: '#28a745',
-    fontWeight: 'bold',
-    top:10,
-    left: 10,
-  },
+
   floorPlanImageStyled: {
   width: '100%',
   height: 200,

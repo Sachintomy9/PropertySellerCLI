@@ -53,7 +53,7 @@ const SavedScreen = () => {
       location={details.address}
       image={ 
         Array.isArray(details.mainImages) && details.mainImages.length > 0
-          ? details.mainImages[0].secure_url
+          ? details.mainImages
           : null
       }
     />

@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import {
   View,
+  Modal,
+  FlatList,
   Text,
   TextInput,
   TouchableOpacity,
@@ -8,14 +10,16 @@ import {
   SafeAreaView,
   ScrollView,
   Linking,
+  ActivityIndicator,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { fonts } from '../../styles/fonts';
-import * as Keychain from 'react-native-keychain';
+import * as RNLocalize from 'react-native-localize';
+import countries from 'world-countries';
 import { Alert } from 'react-native';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-
+import DropDownIcon2 from '../assets/svg/svgicons/Others/DropDownIcon2';
 import HidePassIcon from '../assets/svg/svgicons/Others/HidePassIcon';
 import ShowPassIcon from '../assets/svg/svgicons/Others/ShowPassIcon';
 import CheckBox from '@react-native-community/checkbox';
@@ -23,6 +27,40 @@ const API_URL = 'https://api.propertyseller.com/api/v1';
 
 const RegisterScreen = () => {
   const navigation = useNavigation();
+  const [countryCode, setCountryCode] = useState('');
+  const [callingCode, setCallingCode] = useState('');
+  const [selectedFlag, setSelectedFlag] = useState('');
+  useEffect(() => {
+      const deviceCountry = RNLocalize.getCountry(); // e.g., "AE", "IN"
+      const countryData = countries.find(
+        (country) => country.cca2 === deviceCountry
+      );
+
+      if (countryData) {
+        setCountryCode(countryData.cca2);
+        setCallingCode(`${countryData.idd.root}${countryData.idd.suffixes?.[0] || ''}`);
+        setSelectedFlag(countryData.flag);
+      } else {
+        // fallback to AE if not found
+        setCountryCode('AE');
+        setCallingCode('971');
+        setSelectedFlag('🇦🇪');
+      }
+      }, []);
+
+  const [showCountryPicker, setShowCountryPicker] = useState(false);
+  const [searchText, setSearchText] = useState('');
+
+  const handleCountrySelect = (country) => {
+    setCountryCode(country.cca2);
+    setCallingCode(`${country.idd.root}${country.idd.suffixes?.[0] || ''}`);
+    setSelectedFlag(country.flag);
+    setShowCountryPicker(false);
+  };
+
+  const filteredCountries = countries.filter((country) =>
+    country.name.common.toLowerCase().includes(searchText.toLowerCase())
+  );
 
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
@@ -30,10 +68,10 @@ const RegisterScreen = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [agree, setAgree]     = useState(false);
   const [isConfirmPasswordHidden, setIsConfirmPasswordHidden] = useState(true);
   const [errors, setErrors] = useState({});
-
   const { loginUser, continueAsGuest } = useAuth();
 
   const validate = () => {
@@ -45,8 +83,8 @@ const RegisterScreen = () => {
       newErrors.name = 'Name can only contain alphabets';
     }
 
-    if (!/^\d{10}$/.test(number)) {
-      newErrors.number = 'Phonenumber must be exactly 10 digits';
+    if (!/^\d{6}$/.test(number)) {
+      newErrors.number = 'Phonenumber must be atleast 6 digits';
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -71,6 +109,7 @@ const RegisterScreen = () => {
 
   const handleSignUp = async () => {
     if (validate()) {
+      setIsLoading(true); // show loader
       try {
         console.log('Sending payload:', {
         email,
@@ -97,7 +136,8 @@ const RegisterScreen = () => {
         } else {
           Alert.alert('Error', 'An unexpected error occurred. Please try again.');
         }
-
+    } finally {
+      setIsLoading(false); // hide loader regardless of success or failure
     }
   };
   };
@@ -105,6 +145,7 @@ const RegisterScreen = () => {
   // Function to handle guest login
   // This function sets a generic password in Keychain to indicate guest mode
   const handleGuest = async () => {
+    setIsLoading(true); // show loader
       // navigate to home or guest screen
       try {
         await continueAsGuest();
@@ -117,7 +158,9 @@ const RegisterScreen = () => {
       } catch (err) {
         console.error('Error setting guest mode, Error in LoginScreen', err);
         Alert.alert('Error', 'Failed to start guest session');
-      }
+      } finally {
+      setIsLoading(false); // hide loader regardless of success or failure
+    }
     };
 
 
@@ -158,6 +201,11 @@ const RegisterScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      {isLoading && (
+              <View style={styles.loadingOverlay}>
+                <ActivityIndicator size="large" color="#FF1645" />
+              </View>
+            )}
       <ScrollView contentContainerStyle={styles.innerContainer}>
 
         <Text style={styles.heading}>Sign up</Text>
@@ -176,15 +224,61 @@ const RegisterScreen = () => {
 
         {/* Phone */}
         <Text style={styles.label}>Phone</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your Phone Number"
-          placeholderTextColor="#999"
-          keyboardType="number-pad"
-          value={number}
-          onChangeText={setNumber}
-        />
-        {errors.number && <Text style={styles.error}>{errors.number}</Text>}
+        <View style={styles.phoneInputContainer}>
+            <TouchableOpacity
+              onPress={() => setShowCountryPicker(true)}
+              style={styles.countryCodeWrapper}
+            >
+              <Text style={styles.flagText}>{selectedFlag}</Text>
+              <DropDownIcon2 width={16} height={16} style={styles.dropdownIcon} />
+            </TouchableOpacity>
+            <Text style={styles.callingCodeText}>{callingCode}</Text>
+            <TextInput
+              placeholder="Enter your Phone Number"
+              placeholderTextColor="#999"
+              keyboardType="phone-pad"
+              value={number}
+              onChangeText={setNumber}
+              style={styles.phoneTextInput}
+              maxLength={10}
+            />
+          </View>
+          {errors.number && <Text style={styles.error}>{errors.number}</Text>}
+
+            {showCountryPicker && (
+              <Modal transparent animationType="slide">
+                <View style={styles.modalOverlay}>
+                  <View style={styles.modalContainer}>
+                    <TextInput
+                      placeholder="Search country"
+                      placeholderTextColor="#999"
+                      value={searchText}
+                      onChangeText={setSearchText}
+                      style={styles.searchInput}
+                    />
+                    <FlatList
+                      data={filteredCountries}
+                      keyExtractor={(item) => item.cca2}
+                      renderItem={({ item }) => (
+                        <TouchableOpacity
+                          style={styles.countryItem}
+                          onPress={() => handleCountrySelect(item)}
+                        >
+                          <Text style={styles.countryText}>
+                            {item.flag} {item.name.common} ({item.idd.root}
+                            {item.idd.suffixes?.[0]})
+                          </Text>
+                        </TouchableOpacity>
+                      )}
+                    />
+                    <TouchableOpacity onPress={() => setShowCountryPicker(false)} style={styles.closeBtn}>
+                      <Text style={styles.closeText}>Close</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </Modal>
+            )}
+
 
         {/* Email */}
         <Text style={styles.label}>Email</Text>
@@ -388,5 +482,85 @@ linkText: {
   color: '#1E90FF',
   textDecorationLine: 'underline',
   fontWeight: '500',
+},
+  phoneInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    marginBottom: 20,
+    height: 45,
+  },
+  countryCodeWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    right: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    height: '100%',
+    width: 45,
+    backgroundColor: '#f5f5f5',
+    justifyContent: 'center',
+  },
+  flagText: {
+    fontSize: 18,
+  },
+  dropdownIcon: {
+    position: 'absolute',
+    right: -3,
+  },
+  callingCodeText: {
+    fontSize: 16,
+    right: 5,
+  },
+  phoneTextInput: {
+    flex: 1,
+    fontSize: 16,
+  },
+modalOverlay: {
+    flex: 1,
+    backgroundColor: '#00000066',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    backgroundColor: '#fff',
+    width: '90%',
+    maxHeight: '80%',
+    borderRadius: 8,
+    padding: 15,
+  },
+  searchInput: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+    height: 40,
+  },
+  countryItem: {
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  countryText: {
+    fontSize: 16,
+  },
+  closeBtn: {
+    marginTop: 10,
+    alignItems: 'center',
+  },
+  closeText: {
+    color: '#ff1645',
+    fontFamily: fonts.PoppinsSemiBold,
+  },
+  loadingOverlay: {
+  ...StyleSheet.absoluteFillObject,
+  backgroundColor: 'rgba(255,255,255,0.7)',
+  justifyContent: 'center',
+  alignItems: 'center',
+  zIndex: 10,
 },
 });

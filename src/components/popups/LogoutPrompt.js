@@ -1,26 +1,25 @@
-import React from 'react';
+import React,{useState} from 'react';
 import {
   Modal,
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
-  Alert,
+  ActivityIndicator,
   Pressable,
 } from 'react-native';
-import { useAuth } from '../../context/AuthContext';
-import { logout,isGuestUser } from '../services/AuthService';
 import CloseIcon from '../../assets/svg/svgicons/ProfileScreen/CloseIcon';
+import UserIcon from '../../assets/svg/svgicons/PopUps/UserIcon';
 import { useNavigation} from '@react-navigation/native';
 import { fonts } from '../../../styles/fonts';
-import CheckMark from '../../assets/svg/svgicons/PopUps/CheckMark';
-import LogoutIcon from '../../assets/svg/svgicons/ProfileScreen/LogoutIcon';
+import { logout } from '../../services/AuthService';
 
 const LogoutPrompt = ({ visible, onClose }) => {
-    const navigation=useNavigation();
-    
-    const handleLogout = async () => {
+    const navigation = useNavigation();
+    const [isLoading, setIsLoading] = useState(false);
 
+    const handleLogout = async () => {
+      setIsLoading(true); // show loader
         try {
             await logout(); // Call the logout function from AuthService
             navigation.reset({
@@ -28,10 +27,14 @@ const LogoutPrompt = ({ visible, onClose }) => {
             routes: [{ name: 'Login' }],
             });
             console.log('User logged out successfully');
+            onClose();
         } catch (error) {
             Alert.alert('Error', 'Failed to log out. Please try again.');
+        } finally {
+          setIsLoading(false); // hide loader regardless of success or failure
         }
         };
+            
 
 
   return (
@@ -41,6 +44,11 @@ const LogoutPrompt = ({ visible, onClose }) => {
       visible={visible}
       onRequestClose={onClose}
     >
+      {isLoading && (
+          <View style={styles.loadingOverlay}>
+            <ActivityIndicator size="large" color="#FF1645" />
+          </View>
+        )}
       <View style={styles.overlay}>
         <View style={styles.container}>
           {/* Close Icon */}
@@ -51,24 +59,19 @@ const LogoutPrompt = ({ visible, onClose }) => {
           {/* Content */}
           <Text style={styles.title}>Logout</Text>
           <Text style={styles.subtitle}>
-            Do you really want to logout?
+            Do you really want to Logout?
           </Text>
-          <View style={styles.CheckMark}>
-            <CheckMark/>
-          </View>
 
-        <View style={{flex:1, flexDirection:"row"}}>
+
+          {/* Login/Signup Button */}
+          <View style={{flex:1, flexDirection: "row",gap:10}}>
             <TouchableOpacity style={styles.button} onPress={handleLogout}>
-                <Text style={styles.buttonText}>Logout</Text>
-                {/* The icon is absolutely positioned within the button */}
+                <Text style={styles.buttonText}>Yes</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={onClose}>
                 <Text style={styles.buttonText}>Cancel</Text>
-                {/* The icon is absolutely positioned within the button */}
             </TouchableOpacity>
-        </View>
-
-          {/* Login/Signup Button */}
+          </View>
         </View>
       </View>
     </Modal>
@@ -79,7 +82,7 @@ export default LogoutPrompt;
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.1)', // dim background
+    backgroundColor: 'rgba(0,0,0,0.4)', // dim background
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20,
@@ -91,12 +94,13 @@ const styles = StyleSheet.create({
     paddingVertical: 24,
     paddingHorizontal: 20,
     alignItems: 'center',
+    height:180,
     position: 'relative',
   },
   closeIcon: {
     position: 'absolute',
-    top: 5,
-    right: 5,
+    top: 14,
+    right: 14,
     padding: 5,
   },
   title: {
@@ -117,29 +121,25 @@ const styles = StyleSheet.create({
   icon: {
     marginBottom: 24,
   },
+  button: {
+    backgroundColor: '#ff1645',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 6,
+    width: "48%",
+    height: 50
+  },
   buttonText: {
     color: '#fff',
     fontSize: 16,
+    alignSelf: "center",
     fontFamily: fonts.PoppinsMedium
   },
-  CheckMark: {
-    alignSelf: "center",
-  },
-  button: {
-    backgroundColor: '#ff1645',
-    height:50,
-    borderRadius: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center', // This centers the buttonText
-    width: '49%', // Make button take full width within padding
-    alignSelf: 'center',
-    marginTop:30,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18, // Increased font size
-    fontWeight: '600',
-    fontFamily: fonts?.PoppinsMedium,
-  },
+  loadingOverlay: {
+  ...StyleSheet.absoluteFillObject,
+  backgroundColor: 'rgba(255,255,255,0.7)',
+  justifyContent: 'center',
+  alignItems: 'center',
+  zIndex: 10,
+},
 });

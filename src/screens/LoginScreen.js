@@ -9,13 +9,14 @@ import {
   StyleSheet,
   SafeAreaView,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { fonts } from '../../styles/fonts';
 import { login } from '../services/AuthService';
 import { useAuth } from '../context/AuthContext';
 
-
+import InvalidOtp from '../components/popups/InvalidOtp';
 import ShowPassIcon from '../assets/svg/svgicons/Others/ShowPassIcon';
 import HidePassIcon from '../assets/svg/svgicons/Others/HidePassIcon';
 import LoginSuccess from '../components/popups/LoginSuccess';
@@ -24,11 +25,13 @@ const LoginScreen = () => {
   const navigation = useNavigation();
   const [emailOrPhone, setEmailOrPhone] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
   const [errors, setErrors] = useState({});
   const { loginUser, continueAsGuest } = useAuth();
 
   const [showLoginSuccess, setShowLoginSuccess] = useState(false);
+  const [showInvalid, setShowInvalid] = useState(false);
 
 
 
@@ -48,6 +51,7 @@ const LoginScreen = () => {
 
   const handleLogin = async () => {
     if (validateInputs()) {
+       setIsLoading(true); // show loader
       try {
       const { success, error } = await login(emailOrPhone, password);
       if (success) {
@@ -63,7 +67,11 @@ const LoginScreen = () => {
             },
           }],
         });
-      } } catch (error) {
+      } 
+      if(error){
+        setShowInvalid(true);
+      }
+    } catch (error) {
           console.error('Login Failed:', error.response?.data || error.message);
           
           if (error.response && error.response.data) {
@@ -73,11 +81,15 @@ const LoginScreen = () => {
           }
 
         }
+        finally {
+      setIsLoading(false); // hide loader regardless of success or failure
+    }
     }
   };
 
   const handleGuest = async () => {
     // navigate to home or guest screen
+    setIsLoading(true); // show loader
     try {
       await continueAsGuest();
       console.log('Guest mode enabled');
@@ -90,6 +102,9 @@ const LoginScreen = () => {
       console.error('Error setting guest mode, Error Coming from LoginScreen', err);
       Alert.alert('Error', 'Failed to start guest session');
     }
+    finally {
+      setIsLoading(false); // hide loader regardless of success or failure
+    }
   };
 
   const handleRegister = () => {
@@ -98,14 +113,32 @@ const LoginScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      {isLoading && (
+        <View style={styles.loadingOverlay}>
+          <ActivityIndicator size="large" color="#FF1645" />
+        </View>
+      )}
+
+      <LoginSuccess
+        visible={showLoginSuccess}
+        onClose={() => setShowLoginSuccess(false)}
+      />
+
+      <InvalidOtp
+       visible={showInvalid}
+       onClose={() => setShowInvalid(false)}
+       heading={"Invalid Credentials"}
+       subheading={"Email or Password is Incorrect"}
+       />
+
       <View style={styles.innerContainer}>
         <Text style={styles.heading}>Log In</Text>
         <Text style={styles.subHeading}>Fill in the details to log back</Text>
 
-        <Text style={styles.label}>Email/Phone</Text>
+        <Text style={styles.label}>Email</Text>
         <TextInput
           style={styles.input}
-          placeholder="Enter your Email/Phone"
+          placeholder="Enter your Email"
           placeholderTextColor="#999"
           autoCapitalize='none'
           keyboardType='email-address'
@@ -155,10 +188,7 @@ const LoginScreen = () => {
         </TouchableOpacity>
 
         
-      <LoginSuccess
-        visible={showLoginSuccess}
-        onClose={() => setShowLoginSuccess(false)}
-      />
+      
 
         <View style={styles.orContainer}>
           <View style={styles.line} />
@@ -286,5 +316,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12, // horizontal padding only
     paddingVertical: 0,    // no vertical padding here
     height: 48,            // fixed height for consistency
+},
+loadingOverlay: {
+  ...StyleSheet.absoluteFillObject,
+  backgroundColor: 'rgba(255,255,255,0.7)',
+  justifyContent: 'center',
+  alignItems: 'center',
+  zIndex: 10,
 },
 });

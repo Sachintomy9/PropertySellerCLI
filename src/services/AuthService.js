@@ -27,7 +27,6 @@ export const login = async (email, password) => {
   } catch (error) {
     const msg = error?.response?.data?.message || 'Login failed';
     console.error('❌ Login error:', msg);
-    Alert.alert('Error', msg);
     return { success: false, error: msg };
   }
 };

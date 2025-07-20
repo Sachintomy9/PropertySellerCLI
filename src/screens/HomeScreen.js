@@ -209,7 +209,7 @@ const HomeScreen = () => {
       propertyId={property._id}
       location={property.address}
       createdAt={property.createdAt}
-      image={property.mainImages?.[0]?.secure_url}
+      image={property.mainImages}
     />
   );
 };

@@ -8,7 +8,8 @@ import {
   SafeAreaView,
   Alert,
   KeyboardAvoidingView,
-  Platform
+  Platform,
+  ActivityIndicator,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { fonts } from '../../styles/fonts'; // Adjust the path as necessary
@@ -19,14 +20,24 @@ const API_URL = 'https://api.propertyseller.com/api/v1/';
 const ResetPasswordScreen = () => {
   const [email, setEmail] = useState('');
   const navigation=useNavigation();
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+
+   const validate = () => {
+      const newErrors = {};
+
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        newErrors.email = 'Invalid email address';
+      }
+      
+      setErrors(newErrors);
+      return Object.keys(newErrors).length === 0;
+    };
+
   const handleSubmit = async () => {
 
-    console.log("Submit Pressed!")
-    if (!email) {
-      Alert.alert('Error', 'Please enter your email');
-      return;
-    }
-
+    if(validate()){
+      setIsLoading(true); // show loader
    try { 
       const trimmedEmail = email.trim();
       
@@ -47,7 +58,7 @@ const ResetPasswordScreen = () => {
 
 
 
-        navigation.navigate('ForgotPassSet');
+        navigation.navigate('ForgotPassSet',{email});
         return { success: true, data: response.data };
       } else {
         // Handle other possible success messages
@@ -73,11 +84,20 @@ const ResetPasswordScreen = () => {
 
       // You might want to show this to the user
       Alert.alert('Error', errorMessage);
+    } finally {
+      setIsLoading(false); // hide loader regardless of success or failure
     }
+  }
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      {isLoading && (
+                <View style={styles.loadingOverlay}>
+                  <ActivityIndicator size="large" color="#FF1645" />
+                </View>
+              )}
+
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={styles.container}
@@ -91,10 +111,16 @@ const ResetPasswordScreen = () => {
             placeholder="Enter your Email"
             placeholderTextColor="#999"
             value={email}
-            onChangeText={setEmail}
+            onChangeText={(text) => {
+              setEmail(text);
+              if (errors.email) {
+                setErrors((prev) => ({ ...prev, email: undefined }));
+              }
+            }}
             keyboardType="email-address"
             autoCapitalize="none"
           />
+          {errors.email && <Text style={styles.error}>{errors.email}</Text>}
 
           <TouchableOpacity style={styles.button} onPress={handleSubmit}>
             <Text style={styles.buttonText}>Submit</Text>
@@ -154,5 +180,17 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 16,
     fontFamily: fonts.PoppinsSemiBold
-  }
+  },
+  error: { 
+    color: 'red', 
+    fontSize: 12, 
+    marginBottom:20, 
+  },
+  loadingOverlay: {
+  ...StyleSheet.absoluteFillObject,
+  backgroundColor: 'rgba(255,255,255,0.7)',
+  justifyContent: 'center',
+  alignItems: 'center',
+  zIndex: 10,
+},
 });

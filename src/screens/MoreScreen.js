@@ -39,16 +39,22 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 const Section = ({ items, onItemPress }) => (
   <View style={styles.section}>
     {items.map(({ label, Icon, screen }, index) => (
-      <TouchableOpacity
-        key={index}
-        style={styles.row}
-        onPress={() => onItemPress(screen || label)}
-      >
-        <Icon width={20} height={20} style={styles.icon} />
-        <Text style={styles.label}>{label}</Text>
-        <View style={styles.spacer} />
-        <ArrowIcon  />
-      </TouchableOpacity>
+      <React.Fragment key={index}>
+        <TouchableOpacity
+          style={styles.row}
+          onPress={() => onItemPress(screen || label)}
+        >
+          <Icon width={20} height={20} style={styles.icon} />
+          <Text style={styles.label}>{label}</Text>
+          <View style={styles.spacer} />
+          <ArrowIcon />
+        </TouchableOpacity>
+        
+        {/* Add divider between items (except last one) */}
+        {index < items.length - 1 && (
+          <View style={styles.divider} />
+        )}
+      </React.Fragment>
     ))}
   </View>
 );
@@ -159,7 +165,7 @@ const MoreScreen = () => {
         <Section
           onItemPress={handleItemPress}
           items={[
-            { label: 'Profile', Icon: ProfileIcon, screen: 'Profile' },
+            ...(!isGuest ? [{ label: 'Profile', Icon: ProfileIcon, screen: 'Profile' }] : []),
             { label: 'About', Icon: AboutIcon, screen: 'About' },
             { label: 'Why Dubai', Icon: WhyDubaiIcon },
             { label: 'Cities', Icon: CitiesIcon },
@@ -266,7 +272,7 @@ const styles = StyleSheet.create({
     color: '#FF1645',
     fontFamily: fonts.PoppinsBold,
   },
-  section: {
+section: {
     backgroundColor: '#fff',
     marginVertical: 10,
     marginHorizontal: 20,
@@ -278,16 +284,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 15,
-    borderBottomColor: '#EEE',
-    borderBottomWidth: 1,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#EEE',
+    marginLeft: 20,  // Space from left edge
+    marginRight: 20, // Space from right edge
+  },
+  icon: {
+    marginRight: 10,
   },
   label: {
     fontSize: 16,
-    color: '#333',
-    fontFamily: fonts.PoppinsRegular
-  },
-  icon: {
-    marginRight: 15,
+    marginLeft:10,
   },
   spacer: {
     flex: 1,

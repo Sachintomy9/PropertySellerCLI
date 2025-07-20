@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import {
   Modal,
   View,
@@ -12,6 +12,7 @@ import { useProfile } from '../../context/ProfileContext';
 import { useDispatch,useSelector } from 'react-redux';
 import { setEnquiry,setIsSubmitted } from '../../redux/slices/EnquirySlice';
 import { fonts } from '../../../styles/fonts';
+import * as RNLocalize from 'react-native-localize';
 import DropDownIcon2 from '../../assets/svg/svgicons/Others/DropDownIcon2';
 import CloseIcon from '../../assets/svg/svgicons/ProfileScreen/CloseIcon';
 import countries from 'world-countries';
@@ -27,9 +28,26 @@ const EnquiryPrompt = ({ projectId, visible, onClose }) => {
   const [errors, setErrors] = useState({});
   const [ showSuccessPrompt, setShowSuccessPrompt] = useState(false);
 
-  const [countryCode, setCountryCode] = useState('AE');
-  const [callingCode, setCallingCode] = useState('971');
-  const [selectedFlag, setSelectedFlag] = useState('🇦🇪');
+  const [countryCode, setCountryCode] = useState('');
+  const [callingCode, setCallingCode] = useState('');
+  const [selectedFlag, setSelectedFlag] = useState('');
+  useEffect(() => {
+      const deviceCountry = RNLocalize.getCountry(); // e.g., "AE", "IN"
+      const countryData = countries.find(
+        (country) => country.cca2 === deviceCountry
+      );
+
+      if (countryData) {
+        setCountryCode(countryData.cca2);
+        setCallingCode(`${countryData.idd.root}${countryData.idd.suffixes?.[0] || ''}`);
+        setSelectedFlag(countryData.flag);
+      } else {
+        // fallback to AE if not found
+        setCountryCode('AE');
+        setCallingCode('971');
+        setSelectedFlag('🇦🇪');
+      }
+      }, []);
 
   const [showCountryPicker, setShowCountryPicker] = useState(false);
   const [searchText, setSearchText] = useState('');
@@ -44,9 +62,6 @@ const EnquiryPrompt = ({ projectId, visible, onClose }) => {
       newErrors.name = 'Guest name is not valid';
     }
 
-    if (!/^\d{10}$/.test(phone)) {
-      newErrors.phone = 'Phonenumber must be exactly 10 digits';
-    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -149,7 +164,6 @@ const EnquiryPrompt = ({ projectId, visible, onClose }) => {
               maxLength={10}
             />
           </View>
-          {errors.phone && <Text style={styles.error}>{errors.phone}</Text>}
 
           <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
             <Text style={styles.submitText}>Submit</Text>

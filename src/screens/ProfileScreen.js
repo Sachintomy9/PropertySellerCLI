@@ -1,4 +1,4 @@
-import React,{useState,useEffect, use} from 'react';
+import React,{useState,useEffect} from 'react';
 import {
   View,
   Text,
@@ -16,13 +16,14 @@ import SavedPropIcon from '../assets/svg/svgicons/ProfileScreen/SavedPropIcon';
 import PurHistoryIcon from '../assets/svg/svgicons/ProfileScreen/PurHistoryIcon';
 import CloseIcon from '../assets/svg/svgicons/ProfileScreen/CloseIcon';
 import BackIcon from '../assets/svg/svgicons/Details/BackIcon';
-
+import LogoutPrompt from '../components/popups/LogoutPrompt';
 import { fonts } from '../../styles/fonts';
 import { useNavigation } from '@react-navigation/native';
 const ProfileScreen = () => {
   const navigation = useNavigation();
   const { profile, loadProfile } = useProfile();
   const [isGuest, setIsGuest] = useState(false);
+  const [showLogout, setShowLogout] = useState(false);
 
   useEffect(() => {
     loadProfile(); // Reload profile when screen is focused
@@ -42,41 +43,16 @@ const ProfileScreen = () => {
   }
 
 
-  const handleLogout = async () => {
-    // Check if the user is a guest user
-    Alert.alert(
-      'Log Out',
-      'Are you sure you want to log out?',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'Log Out', style: 'destructive',
-          onPress: async () => {
-            try {
-              await logout(); // Call the logout function from AuthService
-              navigation.reset({
-                index: 0,
-                routes: [{ name: 'Login' }],
-              });
-              console.log('User logged out successfully');
-            } catch (error) {
-              Alert.alert('Error', 'Failed to log out. Please try again.');
-            }
-          },
-        },
-      ],
-      { cancelable: false }
-    );
-  }
-
 
 
 
   return (
     <SafeAreaView style={styles.container}>
+
+      <LogoutPrompt
+        visible={showLogout}
+        onClose={() => setShowLogout(false)}
+        />
         <TouchableOpacity style={styles.crossButton} onPress={() => navigation.goBack()}>
             <BackIcon />
         </TouchableOpacity>
@@ -89,7 +65,7 @@ const ProfileScreen = () => {
         <Text style={styles.name}>{profile?.name || 'Unknown User'}</Text>
 
         {!isGuest && (
-          <TouchableOpacity style={styles.logoutRow} onPress={handleLogout}>
+          <TouchableOpacity style={styles.logoutRow} onPress={() => setShowLogout(true)}>
             <LogoutIcon />
             <Text style={styles.logoutText}> Logout </Text>
           </TouchableOpacity>

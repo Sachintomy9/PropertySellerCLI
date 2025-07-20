@@ -6,11 +6,13 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { useNavigation,useRoute} from '@react-navigation/native';
 import { CodeField, Cursor, useBlurOnFulfill, useClearByFocusCell } from 'react-native-confirmation-code-field';
 import { fonts } from '../../styles/fonts';
 import axios from 'axios';
+import InvalidOtp from '../components/popups/InvalidOtp';
 const CELL_COUNT = 6;
 const API_URL = 'https://api.propertyseller.com/api/v1';
 
@@ -19,6 +21,10 @@ const OtpScreen = () => {
   const route = useRoute();
   const { email,token } = route.params;
   const [value, setValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [showInvalid, setShowInvalid] = useState(false);
+  const [showResendPop, setShowResendPop] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({
     value,
@@ -49,6 +55,7 @@ const OtpScreen = () => {
 
   // Function to handle OTP submission
   const handleSubmitOtp = async () => {
+    setIsLoading(true); // show loader
   try {
     const response = await axios.post(`${API_URL}/auth/user/registration-otp`, {
       email,
@@ -57,18 +64,21 @@ const OtpScreen = () => {
     });
     console.log('OTP verification response:', response.data);
     if (response.data.success) {  
-      Alert.alert('Success', 'OTP verified successfully');
+      setShowSuccess(true);
       navigation.reset({
       index: 0,
       routes: [{ name: 'Login' }],
     }); // Navigate to Login screen after successful OTP verification
-    } else {
+    }
+    else {   
       Alert.alert('Error', response.data.message || 'OTP verification failed');
     }
   } catch (error) { 
-    console.error('Error verifying OTP:', error);
-    Alert.alert('Error', error.response?.data?.message || 'An error occurred while verifying OTP');
-  }
+    console.error('Error verifying OTP:', error.response?.data?.message);
+    setShowInvalid(true);
+  } finally {
+      setIsLoading(false); // hide loader regardless of success or failure
+    }
 };
 
 
@@ -87,6 +97,7 @@ const OtpScreen = () => {
     }, [value]);
 
   const handleResendCode = async () => {
+    setIsLoading(true); // show loader
     try{
       const response = await axios.post(`${API_URL}/auth/user/registration/resent-otp`, {
       email,
@@ -95,10 +106,12 @@ const OtpScreen = () => {
     setResendTimer(60);
     setIsResendDisabled(true);
     console.log('OTP resent successfully');
-    Alert.alert('OTP resent');
+    setShowResendPop(true);
     }catch (error) {
         console.error('Error resending OTP:', error);
-      }
+      } finally {
+      setIsLoading(false); // hide loader regardless of success or failure
+    }
     
     // Trigger resend logic here
   };
@@ -109,6 +122,32 @@ const OtpScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      {isLoading && (
+          <View style={styles.loadingOverlay}>
+            <ActivityIndicator size="large" color="#FF1645" />
+          </View>
+        )}
+      <InvalidOtp
+        visible={showInvalid}
+        onClose={() => setShowInvalid(false)}
+        heading={"Invalid OTP"}
+        subheading={"Please Enter the Correct OTP"}
+        />
+
+        <InvalidOtp
+        visible={showResendPop}
+        onClose={() => setShowResendPop(false)}
+        heading={"OTP Resend"}
+        subheading={"New OTP has been sent. Check email."}
+        />
+
+        <InvalidOtp
+        visible={showSuccess}
+        onClose={() => setShowSuccess(false)}
+        heading={"OTP verifed successfully."}
+        subheading={"OTP has been verified, Now please Log In."}
+        />
+
       <Text style={styles.title}>Enter OTP To Continue</Text>
       <Text style={styles.subtitle}>
         Enter the code sent to <Text style={styles.email}>{email}</Text>
@@ -255,4 +294,11 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontFamily: fonts.PoppinsSemiBold,
   },
+  loadingOverlay: {
+  ...StyleSheet.absoluteFillObject,
+  backgroundColor: 'rgba(255,255,255,0.7)',
+  justifyContent: 'center',
+  alignItems: 'center',
+  zIndex: 10,
+},
 });

@@ -1,5 +1,5 @@
-import React ,{useState} from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import React ,{useState, useEffect,useRef} from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity, FlatList, Dimensions } from 'react-native';
 import { fonts } from '../../../styles/fonts';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch,useSelector } from 'react-redux';
@@ -24,6 +24,7 @@ import EnquirySubmitted from '../popups/EnquirySubmitted';
 import EnquiryExists from '../popups/EnquiryExists';
 import { formatPropType } from '../../utils/formatPropType';
 import api from '../../services/ApiClient';
+const { width } = Dimensions.get('window');
 const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,discount,paymentPlan,handOverQuarter,handOverYear, title, price, rooms, baths, area, location,image }) => {
   const navigation=useNavigation();
   const dispatch = useDispatch();
@@ -38,6 +39,7 @@ const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [showSuccessPrompt, setShowSuccessPrompt] =useState(false);
   const [showRemovedPrompt, setShowRemovedPrompt] =useState(false);
+  const [activeImageIndex, setActiveImageIndex] = useState(0); // image
 
 
   const handleDetails = () => {
@@ -110,6 +112,18 @@ const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,
 
 
 
+  const viewabilityConfig = {
+      itemVisiblePercentThreshold: 50,
+      };
+  
+  const onViewableItemsChanged = useRef(({ viewableItems }) => {
+    if (viewableItems.length > 0) {
+        setActiveImageIndex(viewableItems[0].index);
+    }
+    }).current;
+
+
+
 
   return(
     
@@ -147,24 +161,50 @@ const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,
           onClose={() => setShowRemovedPrompt(false)}
         />
     <View style={styles.imageWrapper}>
-      <Image
-        source={{ uri: image }} // Replace with dynamic if needed
-        style={styles.image}
-        resizeMode="cover"
-      />
- 
-        <View style={styles.overlay}>
-            <Text style={styles.overlayText}>Handover Date : {handOverQuarter} {handOverYear}</Text>
-        </View>
+      <View style={styles.carouselWrapper}>
+              <FlatList
+                data={image}
+                keyExtractor={(item, index) => index.toString()}
+                horizontal
+                pagingEnabled
+                showsHorizontalScrollIndicator={false}
+                renderItem={({ item, index }) => (
+                  <Image source={{ uri: item.secure_url }} style={styles.carouselImage} />
+                )}
+                onViewableItemsChanged={onViewableItemsChanged}
+                viewabilityConfig={viewabilityConfig}
+              />
+      
+              <View style={styles.pagination}>
+                  {image.map((_, index) => (
+                  <View
+                      key={index}
+                      style={[
+                      styles.dot,
+                      index === activeImageIndex ? styles.activeDot : null,
+                      ]}
+                  />
+                  ))}
+              </View>
+              </View>
+    
+        {(handOverQuarter || handOverYear) && (
+          <View style={styles.overlay}>
+            <Text style={styles.overlayText}>
+              Handover Date: {handOverQuarter} {handOverYear}
+            </Text>
+          </View>
+        )}
 
+        { projectType && (
         <View style={styles.overlayZ}>
             <Text style={styles.overlaySubText}>{projectType}</Text>
         </View>
-
+        )}
 
        {discount && (
         <View style={styles.overlay1}>
-          <Text style={{fontSize: 12,color: '#fff',fontWeight: 'bold'}}>{discount} Discount</Text>
+          <Text style={{fontSize: 12,color: '#fff',fontWeight: 'bold'}}>{discount}  Discount</Text>
         </View>
       )}
 
@@ -267,19 +307,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 2 },
   },
-  imageWrapper: {
-    position: 'relative',
-    height: 200,
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-  },
   overlay: {
     position: 'absolute',
-    top: 10,
+    top: 20,
     height:25,
-    left: 10,
+    left: 20,
     backgroundColor: '#fff',
     paddingVertical: 4,
     paddingHorizontal: 8,
@@ -291,8 +323,8 @@ const styles = StyleSheet.create({
   },
   overlayZ: {
     position: 'absolute',
-    top: 40,
-    left: 10,
+    top: 50,
+    left: 20,
     height:25,
     fontSize:16,
     backgroundColor: '#fff',
@@ -426,11 +458,40 @@ buttonText: {
 },
 heartIconWrapper: {
   position: 'absolute',
-  marginTop:200,
-  right: 2,
+  marginTop:250,
+  right: 8,
   backgroundColor: '#fff',
   padding: 6,
   borderRadius: 20,
 
+},
+carouselWrapper: {
+  position: "relative",
+  paddingHorizontal:16,
+},
+carouselImage: {
+  width: width-50,
+  height: 250,
+  borderRadius: 4,
+  resizeMode: "contain",
+},
+pagination: {
+  position: 'absolute',
+  bottom: 12,
+  flexDirection: 'row',
+  justifyContent: 'center',
+  alignSelf: 'center',
+},
+dot: {
+  width: 8,
+  height: 8,
+  borderRadius: 4,
+  backgroundColor: 'rgba(255, 255, 255, 0.5)',
+  marginHorizontal: 4,
+},
+activeDot: {
+  backgroundColor: '#fff',
+  width: 10,
+  height: 10,
 },
 });

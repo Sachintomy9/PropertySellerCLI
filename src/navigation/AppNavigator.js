@@ -46,7 +46,8 @@ const AppNavigator = () => {
             <Stack.Screen name="Login" component={require('../screens/LoginScreen').default} />
             <Stack.Screen name="Register" component={require('../screens/RegisterScreen').default} />
             <Stack.Screen name="Otp" component={require('../screens/OtpScreen').default} />
-            <Stack.Screen name="ForgotPassVerify" component={require('../screens/ForgotPassSetScreen').default} />
+            <Stack.Screen name="ForgotPassVerify" component={require('../screens/ForgotPassVerScreen').default} />
+            <Stack.Screen name="ForgotPassSet" component={require('../screens/ForgotPassSetScreen').default} />
             <Stack.Screen name="TermsCondi" component={require('../screens/TermsCondiScreen').default} />
           </>
         ) : (
@@ -54,7 +55,8 @@ const AppNavigator = () => {
             <Stack.Screen name="Login" component={require('../screens/LoginScreen').default} />
             <Stack.Screen name="Register" component={require('../screens/RegisterScreen').default} />
             <Stack.Screen name="Otp" component={require('../screens/OtpScreen').default} />
-            <Stack.Screen name="ForgotPassVerify" component={require('../screens/ForgotPassSetScreen').default} />
+            <Stack.Screen name="ForgotPassVerify" component={require('../screens/ForgotPassVerScreen').default} />
+            <Stack.Screen name="ForgotPassSet" component={require('../screens/ForgotPassSetScreen').default} />
             <Stack.Screen name="TermsCondi" component={require('../screens/TermsCondiScreen').default} />
           </>
         )}

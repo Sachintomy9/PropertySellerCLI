@@ -27,6 +27,7 @@
     "react-native-gesture-handler": "^2.27.1",
     "react-native-image-viewing": "^0.2.2",
     "react-native-keychain": "^10.0.0",
+    "react-native-localize": "^3.5.1",
     "react-native-reanimated": "^3.18.0",
     "react-native-safe-area-context": "^5.5.1",
     "react-native-screens": "^4.11.1",

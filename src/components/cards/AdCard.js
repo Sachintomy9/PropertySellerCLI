@@ -9,27 +9,27 @@ const AdCard = ({ ads }) => {
   const fadeAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      // Fade out
+  const interval = setInterval(() => {
+    // Start fading out current image
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 1500,  // Total fade duration
+      useNativeDriver: true,
+    }).start();
+
+    // After 500ms (when fade-out is halfway), change image and start fade-in
+    setTimeout(() => {
+      setIndex((prev) => (prev + 1) % ads.length);
       Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: 300,
+        toValue: 1,
+        duration: 1500,  // Should match fade-out duration
         useNativeDriver: true,
-      }).start(() => {
-        // Change image after fade out
-        setIndex((prev) => (prev + 1) % ads.length);
+      }).start();
+    }, 1000);  // Overlap after 500ms of fade-out
+  }, 5000);  // Change every 3 seconds
 
-        // Fade in
-        Animated.timing(fadeAnim, {
-          toValue: 1,
-          duration: 300,
-          useNativeDriver: true,
-        }).start();
-      });
-    }, 3000); // Change every 3 seconds
-
-    return () => clearInterval(interval);
-  }, [ads]);
+  return () => clearInterval(interval);
+}, [ads]);
 
   if (!ads || ads.length === 0) return null;
 
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   container: {
     height: 112,
     width: width - 20,
-    marginVertical: 10,
+    marginBottom:5,
     alignSelf: 'center',
     borderRadius: 4,
     backgroundColor: '#fff',

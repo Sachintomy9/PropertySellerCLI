@@ -100,7 +100,7 @@ const ProfileScreen = () => {
 
 
       <View style={styles.buttonsRow}>
-        <TouchableOpacity style={styles.secondaryButton}>
+        <TouchableOpacity style={styles.secondaryButton} onPress={() => navigation.navigate("Saved")}>
             <SavedPropIcon />
           <Text style={styles.buttonText}>Saved Properties</Text>
         </TouchableOpacity>

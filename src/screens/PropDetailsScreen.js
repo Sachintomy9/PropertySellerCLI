@@ -361,7 +361,7 @@ const PropertyDetailScreen = () => {
 
       {/* Property Info */}
       <View style={styles.infoRow}>
-        <Text style={styles.infoText}>{formatPropType(property.propertyTypes)}   </Text>
+        <Text style={styles.infoText}>{formatPropType(property.propertyTypes)} </Text>
         <BedIcon />
         <Text style={styles.infoText}>Bedrooms: {property.type}</Text>
         {/*<BathIcon />
@@ -393,7 +393,7 @@ const PropertyDetailScreen = () => {
       {/* Property Information */}
       <Text style={styles.sectionTitle}>Property Information</Text>
       <View style={styles.infoBlock}>
-        <InfoRow label="Type" value={property.propertyTypes} />
+        <InfoRow label="Type" value={formatPropType(property.propertyTypes)} />
         <InfoRow label="Purpose" value="For Sale" />
         <InfoRow label="Reference no" value="Bayut - NANCY\\102235" />
         <InfoRow label="Completion" value={property.completionType ?? "Offplan"} />

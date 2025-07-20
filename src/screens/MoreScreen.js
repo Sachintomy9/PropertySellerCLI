@@ -109,6 +109,9 @@ const MoreScreen = () => {
       case 'Blog':
         navigation.navigate('Blogs');
         break;
+      case 'News':
+        navigation.navigate('News');
+        break;
       case 'Login':
          await loginUser();
         navigation.navigate('Login');
@@ -178,6 +181,7 @@ const MoreScreen = () => {
           items={[
             { label: 'Blog', Icon: BlogIcon },
             { label: 'Property Talks', Icon: PropTalksIcon },
+            { label: 'News', Icon: PropTalksIcon },
           ]}
         />
 

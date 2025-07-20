@@ -133,6 +133,7 @@ const FreelanceRegScreen = () => {
     <EnquirySubmitted
         visible={showSuccessPrompt}
         onClose={() => setShowSuccessPrompt(false)}
+        message={"Interest"}
         />
     {isGuest ? (
         <EmptyState 

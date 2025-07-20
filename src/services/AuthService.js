@@ -92,7 +92,7 @@ export const refreshToken = async () => {
     console.log('✅ Token refreshed and stored successfully.');
     return accessToken;
   } catch (error) {
-    console.error('❌ Refresh token failed:', error?.response?.data || error.message);
+    console.error(' Logging out:', error?.response?.data || error.message);
     await logout();
     return null;
   }

@@ -59,6 +59,7 @@ const AppNavigator = () => {
           </>
         )}
         <Stack.Screen name="Profile" component={require('../screens/ProfileScreen').default} />
+        <Stack.Screen name="Saved" component={require('../screens/SavedScreen').default} />
         <Stack.Screen name="EditProfile" component={require('../screens/EditProfileScreen').default} />
         <Stack.Screen name="PropDetails" component={require('../screens/PropDetailsScreen').default} />
         <Stack.Screen name="FloorPlans" component={require('../screens/FloorPlansScreen').default} />
@@ -71,6 +72,8 @@ const AppNavigator = () => {
         <Stack.Screen name="SellerReg" component={require('../screens/SellerRegScreen').default} />
         <Stack.Screen name="Terms" component={require('../screens/TermsScreen').default} />
         <Stack.Screen name="Blogs" component={require('../screens/BlogScreen').default} />
+        <Stack.Screen name="News" component={require('../screens/NewsScreen').default} />
+        <Stack.Screen name="NewsRead" component={require('../screens/NewsReadScreen').default} />
         <Stack.Screen name="BlogRead" component={require('../screens/BlogReadScreen').default} />
         <Stack.Screen name="Rental" component={require('../screens/RentalIncomeScreen').default} />
         <Stack.Screen name="Careers" component={require('../screens/CareersScreen').default} />

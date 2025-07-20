@@ -148,6 +148,7 @@ const CareersScreen = () => {
     <EnquirySubmitted
         visible={showSuccessPrompt}
         onClose={() => setShowSuccessPrompt(false)}
+        message={"Interest"}
         />
     {isGuest ? (
         <EmptyState 

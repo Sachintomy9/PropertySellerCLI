@@ -2,7 +2,8 @@ import React ,{useState} from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { fonts } from '../../../styles/fonts';
 import { useNavigation } from '@react-navigation/native';
-import { useSelector } from 'react-redux';
+import { useDispatch,useSelector } from 'react-redux';
+import { setEnquiry,setIsSubmitted } from '../../redux/slices/EnquirySlice';
 import BedIcon from '../../assets/svg/svgicons/Details/BedIcon';
 import BuildingIcon from '../../assets/svg/svgicons/Others/BuildingIcon';
 import EnquireIcon from '../../assets/svg/svgicons/Others/EnquireIcon';
@@ -19,15 +20,20 @@ import EnquiryPrompt from '../popups/EnquiryPrompt';
 import LoginPrompt from '../popups/LoginPrompt';
 import SavedRemoved from '../popups/SavedRemoved';
 import SavedSuccess from '../popups/SavedSuccess';
+import EnquirySubmitted from '../popups/EnquirySubmitted';
+import EnquiryExists from '../popups/EnquiryExists';
 import { formatPropType } from '../../utils/formatPropType';
 import api from '../../services/ApiClient';
 const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,discount,paymentPlan,handOverQuarter,handOverYear, title, price, rooms, baths, area, location,image }) => {
   const navigation=useNavigation();
+  const dispatch = useDispatch();
   const { wishlist,updateWishlist } = useWishlist();
   const [modalVisible, setModalVisible] = useState(false);
   const { selectedCurrency, conversionRate } = useSelector((state) => state.currency);
   const {isGuest} = useAuth();
   const {profile} = useProfile();
+
+  const { enquiry, isSubmitted } = useSelector((state) => state.enquiry);
 
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [showSuccessPrompt, setShowSuccessPrompt] =useState(false);
@@ -106,8 +112,40 @@ const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,
 
 
   return(
+    
     <View style={styles.card}>
     {/* Property Image */}
+    {isSubmitted && (
+      <EnquirySubmitted
+        visible={isSubmitted}
+        onClose={() => dispatch(setIsSubmitted(false))}
+        message={"Enquiry"}
+      />
+    )}
+
+    {enquiry && (
+      <EnquiryExists
+        visible={enquiry}
+        onClose={() => dispatch(setEnquiry(false))}
+        message={"Enquiry"}
+      />
+    )}
+    
+    {showLoginPrompt && (
+      <LoginPrompt
+        visible={showLoginPrompt}
+        onClose={() => setShowLoginPrompt(false)}
+      />
+    )}
+
+    <SavedSuccess
+          visible={showSuccessPrompt}
+          onClose={() => setShowSuccessPrompt(false)}
+        />
+        <SavedRemoved
+          visible={showRemovedPrompt}
+          onClose={() => setShowRemovedPrompt(false)}
+        />
     <View style={styles.imageWrapper}>
       <Image
         source={{ uri: image }} // Replace with dynamic if needed
@@ -126,7 +164,7 @@ const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,
 
        {discount && (
         <View style={styles.overlay1}>
-          <Text style={styles.overlaySubText}>{discount} Discount</Text>
+          <Text style={{fontSize: 12,color: '#fff',fontWeight: 'bold'}}>{discount} Discount</Text>
         </View>
       )}
 
@@ -142,20 +180,8 @@ const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,
 
     </View>
 
+        
 
-    <LoginPrompt
-          visible={showLoginPrompt}
-          onClose={() => setShowLoginPrompt(false)}
-        />
-
-        <SavedSuccess
-          visible={showSuccessPrompt}
-          onClose={() => setShowSuccessPrompt(false)}
-        />
-        <SavedRemoved
-          visible={showRemovedPrompt}
-          onClose={() => setShowRemovedPrompt(false)}
-        />
 
     {/* Property Info */}
     <View style={styles.content}>
@@ -195,7 +221,7 @@ const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,
             <View style={{top: 5, marginLeft:20}}>
               <StarsIcon/> 
             </View>
-            <View style={{bottom: 10, left:20}}>
+            <View style={{bottom: 12, left:20}}>
               <Text style={styles.validated}>{getDaysAgoText(createdAt)}</Text>
             </View>
           </View>
@@ -234,7 +260,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 4,
     marginHorizontal: 9,
-    marginBottom: 20,
+    marginBottom: 5,
     overflow: 'hidden',
     elevation: 3,
     shadowColor: '#000',
@@ -252,6 +278,7 @@ const styles = StyleSheet.create({
   overlay: {
     position: 'absolute',
     top: 10,
+    height:25,
     left: 10,
     backgroundColor: '#fff',
     paddingVertical: 4,
@@ -266,6 +293,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 40,
     left: 10,
+    height:25,
+    fontSize:16,
     backgroundColor: '#fff',
     paddingVertical: 2,
     paddingHorizontal: 8,
@@ -280,7 +309,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 20,
     right: 20,
-    backgroundColor: '#37f73d',
+    backgroundColor: '#54bc4c',
     paddingVertical: 4,
     paddingHorizontal: 8,
     borderRadius: 4,
@@ -293,7 +322,8 @@ const styles = StyleSheet.create({
   },
   overlaySubText: {
     fontSize: 12,
-    color: '#555',
+    color: '#00',
+    fontWeight: 'bold',
   },
   content: {
     padding: 12,

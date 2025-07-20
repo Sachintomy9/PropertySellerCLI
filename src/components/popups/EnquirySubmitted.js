@@ -13,7 +13,7 @@ import { useNavigation} from '@react-navigation/native';
 import { fonts } from '../../../styles/fonts';
 import CheckMark from '../../assets/svg/svgicons/PopUps/CheckMark';
 
-const EnquirySubmitted = ({ visible, onClose }) => {
+const EnquirySubmitted = ({ visible, onClose,message }) => {
 
   return (
     <Modal
@@ -21,25 +21,22 @@ const EnquirySubmitted = ({ visible, onClose }) => {
       transparent={true}
       visible={visible}
       onRequestClose={onClose}
+      statusBarTranslucent={true}  // Add this for Android
     >
-      <View style={styles.overlay}>
-        <View style={styles.container}>
-          {/* Close Icon */}
+      {/* Semi-transparent backdrop */}
+      <View style={styles.modalBackdrop}>
+        {/* White content container */}
+        <View style={styles.modalContainer}>
           <Pressable style={styles.closeIcon} onPress={onClose}>
             <CloseIcon/>
           </Pressable>
-
-          {/* Content */}
-          <Text style={styles.title}>Your Interest Has Been Submitted</Text>
+          <Text style={styles.title}>Your {message} Has Been Submitted</Text>
           <Text style={styles.subtitle}>
             Our team will contact you shortly.
           </Text>
           <View style={styles.CheckMark}>
             <CheckMark/>
           </View>
-
-
-          {/* Login/Signup Button */}
         </View>
       </View>
     </Modal>
@@ -48,21 +45,18 @@ const EnquirySubmitted = ({ visible, onClose }) => {
 
 export default EnquirySubmitted;
 const styles = StyleSheet.create({
-  overlay: {
+modalBackdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)', // dim background
+    backgroundColor: 'rgba(0,0,0,0.1)',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 20,
   },
-  container: {
-    width: '100%',
-    backgroundColor: '#fff',
+  modalContainer: {
+    width: '90%',  // Slightly less than full width
+    backgroundColor: 'white',
     borderRadius: 16,
-    paddingVertical: 24,
-    paddingHorizontal: 20,
+    padding: 24,
     alignItems: 'center',
-    position: 'relative',
   },
   closeIcon: {
     position: 'absolute',

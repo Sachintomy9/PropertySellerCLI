@@ -12,8 +12,9 @@ import CloseIcon from '../../assets/svg/svgicons/ProfileScreen/CloseIcon';
 import { useNavigation} from '@react-navigation/native';
 import { fonts } from '../../../styles/fonts';
 import CheckMark from '../../assets/svg/svgicons/PopUps/CheckMark';
+import IntroNextIcon from '../../assets/svg/svgicons/Others/IntroNextIcon';
 
-const EnquirySubmitted = ({ visible, onClose }) => {
+const EnquiryExists = ({ visible, onClose }) => {
 
   return (
     <Modal
@@ -30,7 +31,7 @@ const EnquirySubmitted = ({ visible, onClose }) => {
           </Pressable>
 
           {/* Content */}
-          <Text style={styles.title}>Your Interest Has already been Submitted</Text>
+          <Text style={styles.title}>Your Enquiry has already been Submitted</Text>
           <Text style={styles.subtitle}>
             Our team will contact you shortly.
           </Text>
@@ -41,9 +42,6 @@ const EnquirySubmitted = ({ visible, onClose }) => {
           <TouchableOpacity style={styles.button} onPress={onClose}>
           <Text style={styles.buttonText}>Send a reminder</Text>
           {/* The icon is absolutely positioned within the button */}
-          <View style={styles.iconWrapper}>
-            <IntroNextIcon />
-          </View>
         </TouchableOpacity>
 
 
@@ -54,11 +52,11 @@ const EnquirySubmitted = ({ visible, onClose }) => {
   );
 };
 
-export default EnquirySubmitted;
+export default EnquiryExists;
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)', // dim background
+    backgroundColor: 'rgba(0,0,0,0.1)', // dim background
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20,
@@ -74,8 +72,8 @@ const styles = StyleSheet.create({
   },
   closeIcon: {
     position: 'absolute',
-    top: 14,
-    right: 14,
+    top: 5,
+    right: 5,
     padding: 5,
   },
   title: {
@@ -96,14 +94,6 @@ const styles = StyleSheet.create({
   icon: {
     marginBottom: 24,
   },
-  button: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#ff1645',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-  },
   buttonText: {
     color: '#fff',
     fontSize: 16,
@@ -114,23 +104,19 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#ff1645',
-    paddingVertical: 16,
+    height:50,
     borderRadius: 30,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center', // This centers the buttonText
-    width: '100%', // Make button take full width within padding
+    width: '80%', // Make button take full width within padding
     alignSelf: 'center',
+    marginTop:30,
   },
   buttonText: {
     color: '#fff',
     fontSize: 18, // Increased font size
     fontWeight: '600',
     fontFamily: fonts?.PoppinsMedium,
-  },
-  // This wrapper positions the icon on the right side of the button
-  iconWrapper: {
-    position: 'absolute',
-    right: 25,
   },
 });

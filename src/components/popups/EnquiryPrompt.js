@@ -9,6 +9,8 @@ import {
   FlatList,
 } from 'react-native';
 import { useProfile } from '../../context/ProfileContext';
+import { useDispatch,useSelector } from 'react-redux';
+import { setEnquiry,setIsSubmitted } from '../../redux/slices/EnquirySlice';
 import { fonts } from '../../../styles/fonts';
 import DropDownIcon2 from '../../assets/svg/svgicons/Others/DropDownIcon2';
 import CloseIcon from '../../assets/svg/svgicons/ProfileScreen/CloseIcon';
@@ -18,7 +20,7 @@ const API_URL = 'https://api.propertyseller.com/api/v1';
 
 const EnquiryPrompt = ({ projectId, visible, onClose }) => {
   const { profile } = useProfile();
-
+  const dispatch = useDispatch();
   const [name, setName] = useState(profile.name || '');
   const [phone, setPhone] = useState(profile.phone || '');
   const [assignedTo, setAssignedTo] = useState('');
@@ -50,37 +52,49 @@ const EnquiryPrompt = ({ projectId, visible, onClose }) => {
   };
 
   const handleSubmit = async () => {
-    if (validateInputs()) {
-      try{
-        const fullPhone = `${callingCode}${phone}`;
-        if(profile.id){
-          setAssignedTo(profile.id);
-          console.log("assignedTo",assignedTo);
-        }
-        const payload = {
-            name: name.trim(),
-            number: fullPhone.trim(),
-            projectId: projectId,
-        };
-        console.log('Sending payload:',payload);
-        const response = await axios.post(`${API_URL}/enquiry`,payload);
-        console.log('Registration successful:', response.data);
-        onClose();
-        setShowSuccessPrompt(true);
-        setName('');
-        setPhone('');
-        setAssignedTo('');
-        
-      }catch{
-          console.error('Registration error:', error.response?.data || error.message);
-            if (error.response && error.response.data) {
-            Alert.alert('Error', error.response.data.message || 'Registration failed');
-            } else {
-            Alert.alert('Error', 'An unexpected error occurred. Please try again.');
-            }
-      }
+  if (!validateInputs()) return; // Exit early if validation fails
+
+  try {
+    const fullPhone = `${callingCode}${phone}`;
+    if (profile.id) {
+      setAssignedTo(profile.id);
+      console.log("assignedTo", assignedTo);
     }
-  };
+
+    const payload = {
+      name: name.trim(),
+      number: fullPhone.trim(),
+      projectId: projectId,
+    };
+    console.log('Sending payload:', payload);
+
+    const response = await axios.post(`${API_URL}/enquiry`, payload);
+
+    // Handle API response
+    if (response.data.message === "Enquiry already exist") {
+      console.log('Enquiry already exists');
+      dispatch(setEnquiry(true)); // Mark as existing enquiry
+    } else {
+      console.log('Enquiry does not exist');
+      dispatch(setIsSubmitted(true)); // Mark as submitted
+    }
+
+    // Reset form and close modal
+    setName('');
+    setPhone('');
+    setAssignedTo('');
+    setShowSuccessPrompt(true); // Show success message
+    onClose(); // Close modal AFTER state updates
+
+  } catch (error) { // <-- Fix: Added `error` parameter
+    console.error('Registration error:', error.response?.data || error.message);
+    if (error.response?.data) {
+      Alert.alert('Error', error.response.data.message || 'Registration failed');
+    } else {
+      Alert.alert('Error', 'An unexpected error occurred. Please try again.');
+    }
+  }
+};
 
   const handleCountrySelect = (country) => {
     setCountryCode(country.cca2);

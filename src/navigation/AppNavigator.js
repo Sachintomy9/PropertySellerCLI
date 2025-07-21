@@ -63,6 +63,8 @@ const AppNavigator = () => {
         <Stack.Screen name="Profile" component={require('../screens/ProfileScreen').default} />
         <Stack.Screen name="Saved" component={require('../screens/SavedScreen').default} />
         <Stack.Screen name="EditProfile" component={require('../screens/EditProfileScreen').default} />
+        <Stack.Screen name="ChangePass" component={require('../screens/ChangePasswordScreen').default} />
+        <Stack.Screen name="Otp1" component={require('../screens/OtpChangePassScreen').default} />
         <Stack.Screen name="PropDetails" component={require('../screens/PropDetailsScreen').default} />
         <Stack.Screen name="FloorPlans" component={require('../screens/FloorPlansScreen').default} />
         <Stack.Screen name="ImageGallery" component={require('../screens/ImageGalleryScreen').default} />
@@ -81,6 +83,7 @@ const AppNavigator = () => {
         <Stack.Screen name="Careers" component={require('../screens/CareersScreen').default} />
         <Stack.Screen name="WhyDubai" component={require('../screens/WhyDubaiScreen').default} />
         <Stack.Screen name="FreelanceReg" component={require('../screens/FreelanceRegScreen').default} />
+        <Stack.Screen name="OpenHouse" component={require('../screens/OpenHouseScreen').default} />
         <Stack.Screen name="Privacy" component={require('../screens/PrivacyPolicyScreen').default} />
         <Stack.Screen name="AiAgentIntro" component={require('../screens/AiAgentIntroScreen').default} />
 

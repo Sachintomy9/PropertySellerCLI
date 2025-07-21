@@ -15,14 +15,6 @@ const TopSearchHeader = () => {
   return (
     <View style={styles.container}>
       {/* Search Bar */}
-      <View style={styles.searchBar}>
-        <SearchIcon width={18} height={18} style={styles.searchIcon} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search.."
-          placeholderTextColor="#999"
-        />
-      </View>
       <View style={styles.filterRow}>
             <TouchableOpacity style={styles.dropdownBtn}>
                 <Text style={{fontSize: 12, left:25 , marginRight:25 ,fontFamily: fonts.PoppinsMedium,}}>Emirates</Text>
@@ -50,23 +42,6 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
     borderBottomWidth: 0.5,
     borderBottomColor: '#e0e0e0',
-  },
-  searchBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    borderRadius: 4,
-    paddingHorizontal: 12,
-    height: 44,
-  },
-  searchIcon: {
-    marginRight: 8,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 14,
-    color: '#000',
   },
   filterRow: {
     flexDirection: 'row',

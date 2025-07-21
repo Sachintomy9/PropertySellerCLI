@@ -47,7 +47,7 @@ export default EnquirySubmitted;
 const styles = StyleSheet.create({
 modalBackdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.1)',
+    backgroundColor: 'rgba(0,0,0,0.6)',
     justifyContent: 'center',
     alignItems: 'center',
   },

@@ -9,8 +9,6 @@ import {
   FlatList,
 } from 'react-native';
 import { useProfile } from '../../context/ProfileContext';
-import { useDispatch,useSelector } from 'react-redux';
-import { setEnquiry,setIsSubmitted } from '../../redux/slices/EnquirySlice';
 import { fonts } from '../../../styles/fonts';
 import * as RNLocalize from 'react-native-localize';
 import DropDownIcon2 from '../../assets/svg/svgicons/Others/DropDownIcon2';
@@ -19,9 +17,8 @@ import countries from 'world-countries';
 import axios from 'axios';
 const API_URL = 'https://api.propertyseller.com/api/v1';
 
-const EnquiryPrompt = ({ projectId, visible, onClose }) => {
+const EnquiryPrompt = ({ projectId, visible, onClose,setEnquiry,setIsSubmitted }) => {
   const { profile } = useProfile();
-  const dispatch = useDispatch();
   const [name, setName] = useState(profile.name || '');
   const [phone, setPhone] = useState(profile.phone || '');
   const [assignedTo, setAssignedTo] = useState('');
@@ -88,10 +85,10 @@ const EnquiryPrompt = ({ projectId, visible, onClose }) => {
     // Handle API response
     if (response.data.message === "Enquiry already exist") {
       console.log('Enquiry already exists');
-      dispatch(setEnquiry(true)); // Mark as existing enquiry
+      (setEnquiry(true)); // Mark as existing enquiry
     } else {
       console.log('Enquiry does not exist');
-      dispatch(setIsSubmitted(true)); // Mark as submitted
+      (setIsSubmitted(true)); // Mark as submitted
     }
 
     // Reset form and close modal

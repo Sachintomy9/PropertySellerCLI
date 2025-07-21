@@ -47,7 +47,7 @@ const Section = ({ items, onItemPress }) => (
           <Icon width={20} height={20} style={styles.icon} />
           <Text style={styles.label}>{label}</Text>
           <View style={styles.spacer} />
-          <ArrowIcon />
+          <ArrowIcon color='#888'/>
         </TouchableOpacity>
         
         {/* Add divider between items (except last one) */}
@@ -108,6 +108,9 @@ const MoreScreen = () => {
         break;
       case 'Seller Registration':
         navigation.navigate('SellerReg');
+        break;
+      case 'Open House':
+        navigation.navigate('OpenHouse');
         break;
       case 'Careers':
         navigation.navigate('Careers');

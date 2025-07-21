@@ -7,11 +7,15 @@ import {
   FlatList,
   StyleSheet,
   Text,
+  TextInput,
+  TouchableOpacity,
 } from 'react-native';
 import axios from 'axios';
 import DeveloperCard from '../components/cards/DeveloperCard';
 import TopHeader2 from '../components/Headers/TopHeader2';
 import TopSearchHeader from '../components/Headers/TopSearchHeader';
+import CloseIcon from '../assets/svg/svgicons/ProfileScreen/CloseIcon';
+import SearchIcon from '../assets/svg/svgicons/Others/SearchIcon';
 
 const DeveloperScreen = () => {
   const [developers, setDevelopers] = useState([]);
@@ -19,6 +23,7 @@ const DeveloperScreen = () => {
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const scrollY = useRef(new Animated.Value(0)).current;
   const [contentHeight, setContentHeight] = useState(1);
@@ -27,7 +32,8 @@ const DeveloperScreen = () => {
   const fetchDevelopers = async (page = 1) => {
     if (!hasMore && page !== 1) return;
 
-    const url = `https://api.propertyseller.com/api/v1/developers?page=${page}`;
+    const searchParam = searchQuery ? `&search=${searchQuery}` : '';
+    const url = `https://api.propertyseller.com/api/v1/developers?page=${page}&limit=10${searchParam}`; 
     try {
       if (page === 1) setLoading(true);
       else setLoadingMore(true);
@@ -54,6 +60,14 @@ const DeveloperScreen = () => {
   useEffect(() => {
     fetchDevelopers(1);
   }, []);
+
+  useEffect(() => {
+    const delayDebounce = setTimeout(() => {
+      fetchDevelopers(1); // Trigger a fresh search
+    }, 800); // debounce delay
+  
+    return () => clearTimeout(delayDebounce); // cleanup timeout
+  }, [searchQuery]);
 
   const loadMore = () => {
     if (!loadingMore && hasMore) {
@@ -84,6 +98,24 @@ const DeveloperScreen = () => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <TopHeader2 title="Developers" />
+      <View style={styles.searchBar}>
+        <SearchIcon width={18} height={18} style={styles.searchIcon} />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search.."
+          placeholderTextColor="#999"
+          value={searchQuery}
+          onChangeText={text => setSearchQuery(text)}
+        />
+        {searchQuery.length > 0 && (
+            <TouchableOpacity onPress={() => {
+              setSearchQuery('');
+              fetchDevelopers(1); // Reset to original data
+            }}>
+              <CloseIcon width={18} height={18} style={styles.clearIcon} />
+            </TouchableOpacity>
+          )}
+      </View>
       <TopSearchHeader/>
 
       <View style={{ flex: 1 }}>
@@ -138,7 +170,7 @@ const styles = StyleSheet.create({
   scrollbarTrack: {
     position: 'absolute',
     right: 2,
-    top: 60,
+    top: 0,
     bottom: 0,
     width: 4,
     backgroundColor: '#f0f0f0',
@@ -149,4 +181,28 @@ const styles = StyleSheet.create({
     backgroundColor: '#FF1645',
     borderRadius: 2,
   },
+  searchBar: {
+    flexDirection: 'row',
+    alignSelf: 'center',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    borderRadius: 4,
+    paddingHorizontal: 12,
+    height: 44,
+    width:"96%",
+  },
+  searchIcon: {
+    marginRight: 8,
+    top: 10,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 14,
+    color: '#000',
+  },
+  clearIcon: {
+  marginLeft: 8,
+  alignSelf: 'center',
+  top:12,
+},
 });

@@ -2,8 +2,7 @@ import React ,{useState, useEffect,useRef} from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, FlatList, Dimensions } from 'react-native';
 import { fonts } from '../../../styles/fonts';
 import { useNavigation } from '@react-navigation/native';
-import { useDispatch,useSelector } from 'react-redux';
-import { setEnquiry,setIsSubmitted } from '../../redux/slices/EnquirySlice';
+import { useSelector } from 'react-redux';
 import BedIcon from '../../assets/svg/svgicons/Details/BedIcon';
 import BuildingIcon from '../../assets/svg/svgicons/Others/BuildingIcon';
 import EnquireIcon from '../../assets/svg/svgicons/Others/EnquireIcon';
@@ -27,14 +26,14 @@ import api from '../../services/ApiClient';
 const { width } = Dimensions.get('window');
 const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,discount,paymentPlan,handOverQuarter,handOverYear, title, price, rooms, baths, area, location,image }) => {
   const navigation=useNavigation();
-  const dispatch = useDispatch();
   const { wishlist,updateWishlist } = useWishlist();
   const [modalVisible, setModalVisible] = useState(false);
   const { selectedCurrency, conversionRate } = useSelector((state) => state.currency);
   const {isGuest} = useAuth();
   const {profile} = useProfile();
 
-  const { enquiry, isSubmitted } = useSelector((state) => state.enquiry);
+  const [enquiry,setEnquiry] = useState(false);
+  const [isSubmitted, setIsSubmitted] =useState(false);
 
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [showSuccessPrompt, setShowSuccessPrompt] =useState(false);
@@ -132,7 +131,7 @@ const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,
     {isSubmitted && (
       <EnquirySubmitted
         visible={isSubmitted}
-        onClose={() => dispatch(setIsSubmitted(false))}
+        onClose={() => (setIsSubmitted(false))}
         message={"Enquiry"}
       />
     )}
@@ -140,7 +139,7 @@ const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,
     {enquiry && (
       <EnquiryExists
         visible={enquiry}
-        onClose={() => dispatch(setEnquiry(false))}
+        onClose={() => (setEnquiry(false))}
         message={"Enquiry"}
       />
     )}
@@ -281,6 +280,8 @@ const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,
         projectId={propertyId}
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
+        setIsSubmitted={setIsSubmitted}
+        setEnquiry={setEnquiry}
       />
       </View>
     </View>

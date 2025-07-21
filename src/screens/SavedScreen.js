@@ -27,6 +27,10 @@ const SavedScreen = () => {
       }
     };
 
+    useEffect(() => {
+        refreshWishlist(1);
+      }, []);
+
 
 
   const renderItem = ({ item }) => {
@@ -61,7 +65,7 @@ const SavedScreen = () => {
 };
   return (
   <View style={{ flex: 1, backgroundColor: '#fff' }}>
-    <TopHeader2 title="Wishlist" />
+    <TopHeader2 title="Saved Properties" />
 
     {/* Empty State Handling */}
     {isGuest ? (

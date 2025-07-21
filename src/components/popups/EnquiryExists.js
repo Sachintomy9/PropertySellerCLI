@@ -7,12 +7,9 @@ import {
   StyleSheet,
   Pressable,
 } from 'react-native';
-import { useAuth } from '../../context/AuthContext';
 import CloseIcon from '../../assets/svg/svgicons/ProfileScreen/CloseIcon';
-import { useNavigation} from '@react-navigation/native';
 import { fonts } from '../../../styles/fonts';
 import CheckMark from '../../assets/svg/svgicons/PopUps/CheckMark';
-import IntroNextIcon from '../../assets/svg/svgicons/Others/IntroNextIcon';
 
 const EnquiryExists = ({ visible, onClose }) => {
 
@@ -56,7 +53,7 @@ export default EnquiryExists;
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.1)', // dim background
+    backgroundColor: 'rgba(0,0,0,0.6)', // dim background
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20,

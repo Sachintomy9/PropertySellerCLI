@@ -86,6 +86,15 @@ const RentalIncomeScreen = () => {
         return <ActivityIndicator size="large" style={{ marginTop: 50 }} />;
       }
 
+      const hasValidData = (item) => {
+        const { townhouses, villas, apartments } = item;
+        return (
+          (townhouses && townhouses.length > 0) ||
+          (villas && villas.length > 0) ||
+          (apartments && apartments.length > 0)
+        );
+      };
+
   const renderItem = ({ item }) => (
     <RentalIncomeCard
       emirate={item.emirateDetails?.name}
@@ -104,7 +113,7 @@ const RentalIncomeScreen = () => {
         <View style={{ flex: 1 }}>
 
             <Animated.FlatList
-            data={rentalData}
+            data={rentalData.filter(hasValidData)}
             keyExtractor={(item, index) => item._id || `rental-${index}`}
             renderItem={renderItem}
             contentContainerStyle={styles.list}

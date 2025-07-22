@@ -24,7 +24,7 @@ const HeaderTab = ({ activeTab }) => {
       label: `Layout${property?.layoutImages.length > 0 ? ` (${property.layoutImages.length})` : ''}`,
       route: 'FloorPlans',
     },
-    { key: 'Video', label: 'Video', route: 'VideoScreen' },
+    { key: 'Video', label: 'Video', route: 'Video' },
   ];
 
   return (

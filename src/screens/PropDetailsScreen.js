@@ -26,7 +26,7 @@ import { collectWishlist } from '../services/AuthService';
 import { useWishlist } from '../context/WishlistContext';
 import { useMortgage } from '../context/MortgageContext';
 import { formatPropType } from '../utils/formatPropType';
-
+import Share from 'react-native-share';
 // SVG icons (you should create/import these)
 import BackIcon from '../assets/svg/svgicons/Details/BackIcon';
 import SavedInactive from '../assets/svg/svgicons/BottomTabs/SavedInactive';
@@ -356,7 +356,21 @@ const PropertyDetailScreen = () => {
         });
       };
 
+      const handleShare = async () => {
+        try {
+          const shareLink = `https://www.propertyseller.com/projects/${property.slug}`;
 
+          const shareOptions = {
+            title: property.projectTitle || 'Check this out!',
+            message: `${property.projectTitle}\n\nCheck this out on PropertySeller:\n${shareLink}\n`,
+            failOnCancel: false,
+          };
+
+          await Share.open(shareOptions);
+        } catch (error) {
+          console.error('Share failed:', error.message);
+        }
+        };
     
 
     
@@ -379,7 +393,7 @@ const PropertyDetailScreen = () => {
             </TouchableOpacity>
         </View>
         <View style={{marginLeft:250,backgroundColor:"#FFE8EF",borderRadius:5,width:35,height:35}}>
-            <TouchableOpacity >
+            <TouchableOpacity onPress={handleShare}>
             <ShareIcon color="#000" width={32} height={32}/>
             </TouchableOpacity>
         </View>
@@ -473,7 +487,7 @@ const PropertyDetailScreen = () => {
           <MapIcon size={28}/>
           <Text style={styles.actionText}>Map</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.actionBtn} onPress={() => Linking.openURL(property.youtubeVideoLink)}>
+        <TouchableOpacity style={styles.actionBtn} onPress={() => navigation.navigate("Video")}>
           <PlayIcon size={28}/>
           <Text style={styles.actionText}>Watch Video</Text>
         </TouchableOpacity>

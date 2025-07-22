@@ -13,6 +13,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useProfile } from '../../context/ProfileContext';
 import { useWishlist } from '../../context/WishlistContext';
 import { useSelector } from 'react-redux';
+import Share from 'react-native-share';
 import api from '../../services/ApiClient';
 const MultipleButton = ({ onSave, onShare, onEnquire }) => {
     const [modalVisible, setModalVisible] = useState(false);
@@ -54,6 +55,22 @@ const MultipleButton = ({ onSave, onShare, onEnquire }) => {
     }
     }
   };
+
+   const handleShare = async () => {
+        try {
+          const shareLink = `https://www.propertyseller.com/projects/${property.slug}`;
+
+          const shareOptions = {
+            title: property.projectTitle || 'Check this out!',
+            message: `${property.projectTitle}\n\nCheck this out on PropertySeller:\n${shareLink}\n`,
+            failOnCancel: false,
+          };
+
+          await Share.open(shareOptions);
+        } catch (error) {
+          console.error('Share failed:', error.message);
+        }
+        };
 
 
   const isWishlisted = wishlist.some(
@@ -100,7 +117,7 @@ const MultipleButton = ({ onSave, onShare, onEnquire }) => {
       </TouchableOpacity>
 
 
-      <TouchableOpacity style={styles.button} onPress={onShare}>
+      <TouchableOpacity style={styles.button} onPress={handleShare}>
         <ShareIcon />
         <Text style={styles.text}>Share</Text>
       </TouchableOpacity>

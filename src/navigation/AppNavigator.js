@@ -66,6 +66,7 @@ const AppNavigator = () => {
         <Stack.Screen name="ChangePass" component={require('../screens/ChangePasswordScreen').default} />
         <Stack.Screen name="Otp1" component={require('../screens/OtpChangePassScreen').default} />
         <Stack.Screen name="PropDetails" component={require('../screens/PropDetailsScreen').default} />
+        <Stack.Screen name="Video" component={require('../screens/VideoScreen').default} />
         <Stack.Screen name="DescriptionRead" component={require('../screens/DescriptionReadScreen').default} />
         <Stack.Screen name="FloorPlans" component={require('../screens/FloorPlansScreen').default} />
         <Stack.Screen name="ImageGallery" component={require('../screens/ImageGalleryScreen').default} />

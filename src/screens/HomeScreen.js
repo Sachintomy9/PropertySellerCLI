@@ -13,6 +13,7 @@ const HomeScreen = () => {
   const [properties, setProperties] = useState([]);
 
   const [loading, setLoading] = useState(true);
+  const [loading1, setLoading1] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -92,7 +93,7 @@ const HomeScreen = () => {
         if (isRefreshing) {
         setRefreshing(true);
       } else if (pageNum === 1) {
-        setLoading(true);
+        setLoading1(true);
       } else {
         setIsFetchingAdMore(true);
       }
@@ -112,7 +113,7 @@ const HomeScreen = () => {
     } catch (err) {
       console.error('Error fetching ads:', err);
     }finally {
-      setLoading(false);
+      setLoading1(false);
       setRefreshing(false);
       setIsFetchingAdMore(false);
     }
@@ -176,10 +177,10 @@ const HomeScreen = () => {
   };
 
   const renderFooter = () => {
-    if (!isFetchingMore || !isFetchingAdMore) return null;
+    if (!isFetchingMore && !isFetchingAdMore) return null;
     return (
       <View style={{ paddingVertical: 20 }}>
-        <ActivityIndicator size="small" />
+        <ActivityIndicator size="small" color={"#ff1645"}/>
       </View>
     );
   };
@@ -272,7 +273,7 @@ const HomeScreen = () => {
         onContentSizeChange={(w, h) => setContentHeight(h)}
         onLayout={e => setScrollViewHeight(e.nativeEvent.layout.height)}
         ListEmptyComponent={
-          !loading && !refreshing ? <EmptyState /> : null
+          !loading && !loading1 && !refreshing && properties.length === 0 ? <EmptyState /> : null
         }
       />
 

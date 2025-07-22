@@ -92,7 +92,7 @@ const DeveloperScreen = () => {
   });
 
   if (loading && currentPage === 1) {
-    return <ActivityIndicator size="large" style={{ marginTop: 50 }} />;
+    return <ActivityIndicator size="large" style={{ marginTop: 50 }} color={"#ff1645"}/>;
   }
 
   return (

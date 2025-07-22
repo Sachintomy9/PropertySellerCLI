@@ -1,5 +1,5 @@
 import React ,{useState, useEffect,useRef} from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, FlatList, Dimensions } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, FlatList, Dimensions,ActivityIndicator } from 'react-native';
 import { fonts } from '../../../styles/fonts';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
@@ -38,6 +38,7 @@ const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [showSuccessPrompt, setShowSuccessPrompt] =useState(false);
   const [showRemovedPrompt, setShowRemovedPrompt] =useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [activeImageIndex, setActiveImageIndex] = useState(0); // image
 
 
@@ -50,6 +51,7 @@ const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,
     if (isGuest) {
       setShowLoginPrompt(true);
     } else {
+      setIsLoading(true);
       try{  
           // Show corresponding popup
           if (!isWishlisted) {
@@ -67,7 +69,9 @@ const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,
       } catch (error) {
         console.error('Profile update error:', error.response?.data || error.message);
         Alert.alert('Error', error.response?.data?.message || 'Profile update failed.');
-      }
+      } finally {
+      setIsLoading(false); // hide loader regardless of success or failure
+    }
     }
   };
 
@@ -127,6 +131,11 @@ const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,
   return(
     
     <View style={styles.card}>
+      {isLoading && (
+              <View style={styles.loadingOverlay}>
+                <ActivityIndicator size="large" color="#FF1645" />
+              </View>
+            )}
     {/* Property Image */}
     {isSubmitted && (
       <EnquirySubmitted
@@ -203,7 +212,7 @@ const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,
 
        {discount && (
         <View style={styles.overlay1}>
-          <Text style={{fontSize: 12,color: '#fff',fontWeight: 'bold'}}>{discount}  Discount</Text>
+          <Text style={{fontSize: 12,color: '#fff',fontFamily:fonts.PoppinsMedium}}>{discount} Discount</Text>
         </View>
       )}
 
@@ -351,12 +360,12 @@ const styles = StyleSheet.create({
   overlayText: {
     fontSize: 12,
     color: '#000',
-    fontWeight: 'bold',
+    fontFamily: fonts.PoppinsSemiBold,
   },
   overlaySubText: {
     fontSize: 12,
     color: '#00',
-    fontWeight: 'bold',
+    fontFamily: fonts.PoppinsSemiBold,
   },
   content: {
     padding: 12,
@@ -402,11 +411,6 @@ const styles = StyleSheet.create({
     color: '#555',
     marginHorizontal: 2,
     fontFamily: fonts.PoppinsRegular
-  },
-  dot: {
-    fontSize: 14,
-    color: '#aaa',
-    marginHorizontal: 2,
   },
   location: {
     fontSize: 13,
@@ -489,10 +493,18 @@ dot: {
   borderRadius: 4,
   backgroundColor: 'rgba(255, 255, 255, 0.5)',
   marginHorizontal: 4,
+marginBottom:10,
 },
 activeDot: {
   backgroundColor: '#fff',
   width: 10,
   height: 10,
+},
+loadingOverlay: {
+  ...StyleSheet.absoluteFillObject,
+  backgroundColor: 'rgba(255,255,255,0.7)',
+  justifyContent: 'center',
+  alignItems: 'center',
+  zIndex: 10,
 },
 });

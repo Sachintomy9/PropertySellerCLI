@@ -1,23 +1,111 @@
 import React,{useState} from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import HeartIcon from '../../assets/svg/svgicons/Others/HeartIcon';
+import { View, Text, TouchableOpacity, StyleSheet,ActivityIndicator } from 'react-native';
+import SavedInactive from '../../assets/svg/svgicons/BottomTabs/SavedInactive';
+import SavedActive from '../../assets/svg/svgicons/BottomTabs/SavedActive';
 import ShareIcon from '../../assets/svg/svgicons/Others/ShareIcon';
 import EnquireIcon from '../../assets/svg/svgicons/Others/EnquireIcon';
 import EnquiryPrompt from '../popups/EnquiryPrompt';
-
+import SavedSuccess from '../popups/SavedSuccess';
+import SavedRemoved from '../popups/SavedRemoved';
+import LoginPrompt from '../popups/LoginPrompt';
+import { collectWishlist } from '../../services/AuthService';
+import { useAuth } from '../../context/AuthContext';
+import { useProfile } from '../../context/ProfileContext';
+import { useWishlist } from '../../context/WishlistContext';
+import { useSelector } from 'react-redux';
+import api from '../../services/ApiClient';
 const MultipleButton = ({ onSave, onShare, onEnquire }) => {
     const [modalVisible, setModalVisible] = useState(false);
+    const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+    const [showSuccessPrompt, setShowSuccessPrompt] =useState(false);
+    const [showRemovedPrompt, setShowRemovedPrompt] =useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const {profile} = useProfile();
+    const {isGuest} = useAuth();
+    const { wishlist,updateWishlist } = useWishlist();
+    const property = useSelector((state) => state.property.property);
+
+    const handleHeartPress = async () => {
+    if (isGuest) {
+      setShowLoginPrompt(true);
+    } else {
+      setIsLoading(true);
+      try{  
+          // Show corresponding popup
+          if (!isWishlisted) {
+            setShowSuccessPrompt(true); // now added
+          } else {
+            setShowRemovedPrompt(true); // now removed
+          }
+        
+        console.log("Profile id:",profile.id);
+        const payload = {userId: profile.id, projectId: property._id,}
+        console.log("payload: ",payload);
+        const response = await api.post('wishlist',payload);
+        await collectWishlist(profile,updateWishlist);
+
+        console.log("Successfully Added to wishlist:",response.data)
+      } catch (error) {
+        console.error('Profile update error:', error.response?.data || error.message);
+        Alert.alert('Error', error.response?.data?.message || 'Profile update failed.');
+      }  finally {
+      setIsLoading(false); // hide loader regardless of success or failure
+    }
+    }
+  };
+
+
+  const isWishlisted = wishlist.some(
+    item => item.propertyDetails?._id === property._id
+  );
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.button} onPress={onSave}>
-        <HeartIcon />
-        <Text style={styles.text}>Save</Text>
+      {showLoginPrompt && (
+      <LoginPrompt
+        visible={showLoginPrompt}
+        onClose={() => setShowLoginPrompt(false)}
+      />
+    )}
+
+    {isLoading && (
+        <View style={styles.loadingOverlay}>
+          <ActivityIndicator size="large" color="#FF1645" />
+        </View>
+      )}
+
+    <SavedSuccess
+          visible={showSuccessPrompt}
+          onClose={() => setShowSuccessPrompt(false)}
+        />
+        <SavedRemoved
+          visible={showRemovedPrompt}
+          onClose={() => setShowRemovedPrompt(false)}
+        />
+
+      <TouchableOpacity style={styles.button} onPress={handleHeartPress}>
+        {isWishlisted ? (
+          <>
+          <SavedActive width={24} height={24} />
+          <Text style={styles.text}>Saved</Text>
+          </>
+        ) : (
+          <>
+          <SavedInactive width={24} height={24} stroke='#ff1645' />
+          <Text style={styles.text}>Save</Text>
+          </>
+        )}
+        
       </TouchableOpacity>
+
+
       <TouchableOpacity style={styles.button} onPress={onShare}>
         <ShareIcon />
         <Text style={styles.text}>Share</Text>
       </TouchableOpacity>
+
+      
       <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
         <View style={styles.Icon}>
         <EnquireIcon style={{ width: 24, height: 24 }} />
@@ -65,4 +153,11 @@ const styles = StyleSheet.create({
   Icon:{
 
   },
+  loadingOverlay: {
+  ...StyleSheet.absoluteFillObject,
+  backgroundColor: 'rgba(255,255,255,0.7)',
+  justifyContent: 'center',
+  alignItems: 'center',
+  zIndex: 10,
+},
 });

@@ -44,6 +44,40 @@ import LoginPrompt from '../components/popups/LoginPrompt';
 import SavedSuccess from '../components/popups/SavedSuccess';
 import SavedRemoved from '../components/popups/SavedRemoved';
 import EnquirySubmitted from '../components/popups/EnquirySubmitted';
+import AdCard from '../components/cards/AdCard';
+
+const RecommendedCard = ({ item, onPress }) => {
+      return (
+        <TouchableOpacity
+          style={styles.card}
+          onPress={() => onPress(item._id)}
+        >
+          <Image source={{ uri: item.mainImages?.[0]?.secure_url }} style={styles.cardImage} />
+
+          <Text style={styles.cardPrice}>
+            {parseFloat(item.priceInAED.replace(/,/g, '')).toLocaleString()} AED
+          </Text>
+
+          <View style={styles.cardDetails}>
+            <BedIcon size={20}/>
+            <Text style={styles.cardText}>{item.type}</Text>
+
+          {item.squareFeet && (  
+            <>
+            <AreaIcon  size={20}/>
+            <Text numberOfLines={1} style={styles.cardText}>{item.squareFeet} sqft</Text>
+            </>
+          )}
+          </View>
+
+          <View style={styles.cardLocation}>
+            <LocationIcon color='#000' size={20}/>
+            <Text numberOfLines={1} style={{ flexShrink: 1 }}>{item.address}</Text>
+          </View>
+        </TouchableOpacity>
+      );
+    };
+
 const PropertyDetailScreen = () => {
   const route = useRoute();
   const {isGuest} = useAuth();
@@ -60,6 +94,88 @@ const PropertyDetailScreen = () => {
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [showSuccessPrompt, setShowSuccessPrompt] =useState(false);
   const [showRemovedPrompt, setShowRemovedPrompt] =useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [ads, setAds] = useState([]);
+  const [adsLoading, setAdsLoading] = useState(true); 
+  const [recommended, setRecommended] = useState([]);
+  const [recommendedLoading, setRecommendedLoading] = useState(true);
+  useEffect(() => {
+  let isMounted = true;
+
+  const fetchAllAds = async () => {
+      try {
+        let allAds = [];
+        let page = 1;
+        let hasMore = true;
+
+        while (hasMore) {
+          const response = await axios.get(`https://api.propertyseller.com/api/v1/banners?page=${page}`);
+
+          if (
+            response.data.success &&
+            Array.isArray(response.data.data) &&
+            response.data.data.length > 0
+          ) {
+            allAds = [...allAds, ...response.data.data];
+            page++;
+            hasMore = page <= response.data.pagination.totalPages;
+          } else {
+            hasMore = false;
+          }
+        }
+
+        if (isMounted) {
+          setAds(allAds);
+        }
+      } catch (error) {
+        console.error('Error fetching paginated ads:', error);
+        setAds([]);
+      } finally {
+        if (isMounted) setAdsLoading(false);
+      }
+    };
+
+    fetchAllAds();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+    useEffect(() => {
+      const fetchRecommended = async () => {
+        setRecommendedLoading(true);
+        try {
+          const response = await axios.get('https://api.propertyseller.com/api/v1/projects');
+
+          if (response.data.success) {
+            const all = response.data.data;
+
+            // Exclude current property
+            const filtered = all.filter(item => item._id !== propertyId);
+
+            // Shuffle the list randomly
+            const shuffled = filtered.sort(() => 0.5 - Math.random());
+
+            // Take the first 4
+            const selected = shuffled.slice(0, 4);
+
+            setRecommended(selected);
+          }
+        } catch (err) {
+          console.error('Error fetching recommended properties:', err);
+        } finally {
+          setRecommendedLoading(false);
+        }
+      };
+
+      fetchRecommended();
+    }, [propertyId]);
+
+    const handleRecommendedPress = (id) => {
+      navigation.push('PropDetails', { propertyId: id });
+    };
 
 
     const scrollY = useRef(new Animated.Value(0)).current;
@@ -137,6 +253,7 @@ const PropertyDetailScreen = () => {
     if (isGuest) {
       setShowLoginPrompt(true);
     } else {
+      setIsLoading(true);
       try{  
           // Show corresponding popup
           if (!isWishlisted) {
@@ -154,7 +271,9 @@ const PropertyDetailScreen = () => {
       } catch (error) {
         console.error('Profile update error:', error.response?.data || error.message);
         Alert.alert('Error', error.response?.data?.message || 'Profile update failed.');
-      }
+      } finally {
+      setIsLoading(false); // hide loader regardless of success or failure
+    }
     }
   };
   const isWishlisted = wishlist.some(
@@ -181,7 +300,7 @@ const PropertyDetailScreen = () => {
   if (loading || !property) {
     return (
       <View style={styles.loaderContainer}>
-        <ActivityIndicator size="large" color="#D91E5B" />
+        <ActivityIndicator size="large" color="#ff1645" />
       </View>
     );
   }
@@ -238,8 +357,17 @@ const PropertyDetailScreen = () => {
       };
 
 
+    
+
+    
+
   return (
     <View style={styles.container} contentContainerStyle={styles.content}>
+      {isLoading && (
+          <View style={styles.loadingOverlay}>
+            <ActivityIndicator size="large" color="#FF1645" />
+          </View>
+        )}
 
             {/* Top Navigation */}
       <View style={styles.headerRow}>
@@ -342,11 +470,11 @@ const PropertyDetailScreen = () => {
       {/* Action Buttons */}
       <View style={styles.actionRow}>
         <TouchableOpacity style={styles.actionBtn} onPress={() => Linking.openURL(property.googleMapsUrl)}>
-          <MapIcon />
+          <MapIcon size={28}/>
           <Text style={styles.actionText}>Map</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.actionBtn} onPress={() => Linking.openURL(property.youtubeVideoLink)}>
-          <PlayIcon />
+          <PlayIcon size={28}/>
           <Text style={styles.actionText}>Watch Video</Text>
         </TouchableOpacity>
       </View>
@@ -363,19 +491,19 @@ const PropertyDetailScreen = () => {
 
       {/* Property Info */}
       <View style={styles.infoRow}>
-        <Text style={styles.infoText}>{formatPropType(property.propertyTypes)} </Text>
-        <BedIcon />
-        <Text style={styles.infoText}>Bedrooms: {property.type}</Text>
-        {/*<BathIcon />
-        <Text style={styles.infoText}> Bathrooms: 2 </Text>*/}
-
+        <Text style={styles.infoText1}>{formatPropType(property.propertyTypes)}</Text>
         
+        <View style={styles.infoItem}>
+          <BedIcon size={25}/>
+          <Text style={styles.infoText}> Bedrooms: {property.type}</Text>
+        </View>
+
         {property.squareFeet && (
-          <>
-            <AreaIcon />
-            <Text style={styles.infoText}>Area: {property.squareFeet} sqft </Text>
-          </>
-  )}
+          <View style={styles.infoItem}>
+            <AreaIcon size={25}/>
+            <Text style={styles.infoText}> Area: {property.squareFeet} sqft</Text>
+          </View>
+        )}
       </View>
 
       {/* Description */}
@@ -386,8 +514,16 @@ const PropertyDetailScreen = () => {
           : (property.description?.slice(0, 200) || 'NA') + '...'}
       </Text>
       {property.description?.length > 200 && (
-        <TouchableOpacity onPress={() => setReadMore(!readMore)} style={styles.readMoreBtn}>
-          <Text style={styles.readMoreText}>{readMore ? 'Show Less' : 'Read More'}</Text>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate('DescriptionRead', {
+              description: property.description,
+              descriptionInArabic: property.descriptionInArabic,
+            })
+          }
+          style={styles.readMoreBtn}
+        >
+          <Text style={styles.readMoreText}>Read More</Text>
         </TouchableOpacity>
       )}
 
@@ -484,7 +620,11 @@ const PropertyDetailScreen = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Mortgage Banner */}
+        {/* Add section */}
+            {!adsLoading && ads.length > 0 && (
+                <AdCard ads={ads} />
+              )}
+
         
 
         {/* Payment Plan */}
@@ -518,7 +658,15 @@ const PropertyDetailScreen = () => {
 
       <Text style={styles.sectionTitle}>Recommended For You</Text>
 
-
+      {recommendedLoading ? (
+        <ActivityIndicator size="large" color="#ff1645" style={{ marginVertical: 20 }} />
+      ) : (
+        <View style={styles.recommendationGrid}>
+          {recommended.map((item) => (
+  <RecommendedCard key={item._id} item={item} onPress={handleRecommendedPress} />
+))}
+        </View>
+      )}
   
 
 
@@ -623,7 +771,8 @@ activeDot: {
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
+    justifyContent: 'center',
     gap: 6,
     width: "48%",
   },
@@ -661,13 +810,23 @@ activeDot: {
     flexWrap: 'wrap',
     alignItems: 'center',
     marginTop: 10,
-    gap: 8,
+    gap: 16,
   },
   infoText: {
     fontSize: 13,
     color: '#333',
     fontFamily: fonts.PoppinsRegular,
   },
+  infoText1: {
+    fontSize: 14,
+    color: '#333',
+    fontFamily: fonts.PoppinsMedium,
+  },
+  infoItem: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  gap: 4, // spacing between icon and text
+},
   sectionTitle: {
     fontSize: 20,
     marginTop: 24,
@@ -689,7 +848,7 @@ activeDot: {
   },
   readMoreText: {
     color: '#ff1645',
-    fontWeight: 'bold',
+    fontFamily: fonts.PoppinsMedium,
   },
   infoBlock: {
     marginTop: 12,
@@ -855,6 +1014,55 @@ editBtn: {
 editBtnText: {
   color: '#ff1645',
   fontWeight: 'bold',
+},
+recommendationGrid: {
+  flexDirection: 'row',
+  flexWrap: 'wrap',
+  justifyContent: 'space-between',
+  marginVertical: 10,
+  gap: 10
+},
+card: {
+  width: '48.5%',
+  backgroundColor: '#fff',
+  borderRadius: 10,
+  padding: 8,
+  elevation: 3,
+},
+cardImage: {
+  width: '100%',
+  height: 120,
+  borderRadius: 8,
+  resizeMode: 'cover',
+},
+cardPrice: {
+  fontFamily: fonts.PoppinsMedium,
+  fontSize: 16,
+  marginTop: 5,
+},
+cardDetails: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  marginTop: 5,
+  gap: 5
+},
+cardText: {
+  fontSize: 12,
+  marginRight: 8,
+  flexShrink: 1
+},
+cardLocation: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  marginTop: 5,
+  gap: 5,
+},
+loadingOverlay: {
+  ...StyleSheet.absoluteFillObject,
+  backgroundColor: 'rgba(255,255,255,0.7)',
+  justifyContent: 'center',
+  alignItems: 'center',
+  zIndex: 10,
 },
   
 });

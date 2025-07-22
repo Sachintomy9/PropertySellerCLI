@@ -57,7 +57,7 @@ const RentalIncomeScreen = () => {
   };
 
   if (loading) {
-      return <ActivityIndicator size="large" style={{ marginTop: 50 }} />;
+      return <ActivityIndicator size="large" style={{ marginTop: 50 }} color={"#ff1645"}/>;
     }
   
     const loadMore = () => {
@@ -83,7 +83,7 @@ const RentalIncomeScreen = () => {
       });
     
       if (loading && currentPage === 1) {
-        return <ActivityIndicator size="large" style={{ marginTop: 50 }} />;
+        return <ActivityIndicator size="large" style={{ marginTop: 50 }} color={"#ff1645"}/>;
       }
 
       const hasValidData = (item) => {

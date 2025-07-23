@@ -44,6 +44,7 @@ import LoginPrompt from '../components/popups/LoginPrompt';
 import SavedSuccess from '../components/popups/SavedSuccess';
 import SavedRemoved from '../components/popups/SavedRemoved';
 import EnquirySubmitted from '../components/popups/EnquirySubmitted';
+import BuildingIcon from '../assets/svg/svgicons/Others/BuildingIcon';
 import AdCard from '../components/cards/AdCard';
 
 const RecommendedCard = ({ item, onPress }) => {
@@ -59,13 +60,13 @@ const RecommendedCard = ({ item, onPress }) => {
           </Text>
 
           <View style={styles.cardDetails}>
-            <BedIcon size={20}/>
+            <BedIcon size={18}/>
             <Text style={styles.cardText}>{item.type}</Text>
 
-          {item.squareFeet && (  
+          {item.totalFloors && (  
             <>
-            <AreaIcon  size={20}/>
-            <Text numberOfLines={1} style={styles.cardText}>{item.squareFeet} sqft</Text>
+            <BuildingIcon  size={15}/>
+            <Text numberOfLines={1} style={styles.cardText}>{item.totalFloors} floors</Text>
             </>
           )}
           </View>
@@ -456,7 +457,13 @@ const PropertyDetailScreen = () => {
             }}
             >
               <Image source={{ uri: item.secure_url }} style={styles.carouselImage} />
+
+              <View style={styles.overlayTags}>
+                <Text style={styles.tag}>Handover Date :{property.handOverQuarter} - {property.handOverYear}</Text>
+                <Text style={styles.tag}>{property.paymentPlan} Payment Plan</Text>
+              </View>
             </TouchableOpacity>
+            
           )}
           onViewableItemsChanged={onViewableItemsChanged}
           viewabilityConfig={viewabilityConfig}
@@ -476,11 +483,7 @@ const PropertyDetailScreen = () => {
         </View>
 
       {/* Tags */}
-      <View style={styles.tagRow}>
-        <Text style={styles.tag}>Handover Date :{property.handOverQuarter} - {property.handOverYear}</Text>
-        <Text style={styles.tag}>{property.paymentPlan} Payment Plan</Text>
-      </View>
-
+     
       {/* Action Buttons */}
       <View style={styles.actionRow}>
         <TouchableOpacity style={styles.actionBtn} onPress={() => Linking.openURL(property.googleMapsUrl)}>
@@ -716,11 +719,12 @@ carouselWrapper: {
   marginTop: 10,
   marginBottom: 12,
   paddingHorizontal:4,
+  flexDirection: "column",
 },
 carouselImage: {
   width: width - 32,
   height: 250,
-  borderRadius: 10,
+  borderRadius: 4,
   resizeMode: 'cover',
 },
 pagination: {
@@ -751,28 +755,23 @@ activeDot: {
     marginBottom: 10,
     paddingHorizontal:10,
   },
-  mainImage: {
-    width: '100%',
-    height: 200,
-    borderRadius: 10,
-  },
-  tagRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginTop: 12,
-    gap: 8,
-  },
+ overlayTags: {
+  position: 'absolute',
+  top: 10,
+  left: 10,
+  flexDirection: 'column',
+  gap: 8,
+},
   tag: {
     backgroundColor: '#fff',
     paddingHorizontal: 10,
     paddingVertical: 4,
-    borderRadius: 5,
+    borderRadius: 4,
     fontSize: 12,
     fontWeight: '600',
     borderColor: '#ccc',
     borderWidth: 1,
-    flexDirection:"row",
-    width: "48.5%"
+      overflow: 'hidden',
   },
   actionRow: {
     flexDirection: 'row',
@@ -784,7 +783,7 @@ activeDot: {
     backgroundColor: '#FFDDE5',
     paddingVertical: 10,
     paddingHorizontal: 20,
-    borderRadius: 10,
+    borderRadius: 4,
     alignItems: "center",
     justifyContent: 'center',
     gap: 6,
@@ -858,7 +857,7 @@ activeDot: {
     alignSelf: 'flex-start',
     paddingHorizontal: 14,
     paddingVertical: 6,
-    borderRadius: 6,
+    borderRadius: 4,
   },
   readMoreText: {
     color: '#ff1645',
@@ -898,7 +897,7 @@ activeDot: {
   floorPlanImageStyled: {
   width: '100%',
   height: 200,
-  borderRadius: 10,
+  borderRadius: 6,
   marginBottom: 12,
   resizeMode: 'cover',
 },
@@ -907,7 +906,7 @@ moreButton: {
   alignItems: 'center',
   justifyContent: 'center',
   paddingVertical: 14,
-  borderRadius: 10,
+  borderRadius: 4,
   borderWidth: 1,
   borderColor: '#FFDDE5',
   backgroundColor: '#fff',
@@ -950,7 +949,7 @@ amenitiesRow: {
 amenityCard: {
   width: '30%',
   backgroundColor: '#F9F9F9',
-  borderRadius: 10,
+  borderRadius: 4,
   padding: 8,
   alignItems: 'center',
   justifyContent: 'center',
@@ -981,7 +980,7 @@ subText: {
 mortgageCard: {
   borderWidth: 1,
   borderColor: '#e2e2e2',
-  borderRadius: 10,
+  borderRadius: 4,
   padding: 16,
   marginBottom: 12,
   backgroundColor: '#fff',
@@ -1022,7 +1021,7 @@ editBtn: {
   paddingHorizontal: 12,
   paddingVertical: 6,
   backgroundColor: '#fff0f6',
-  borderRadius: 6,
+  borderRadius: 4,
 },
 
 editBtnText: {
@@ -1039,14 +1038,13 @@ recommendationGrid: {
 card: {
   width: '48.5%',
   backgroundColor: '#fff',
-  borderRadius: 10,
+  borderRadius: 4,
   padding: 8,
-  elevation: 3,
 },
 cardImage: {
   width: '100%',
   height: 120,
-  borderRadius: 8,
+  borderRadius: 4,
   resizeMode: 'cover',
 },
 cardPrice: {

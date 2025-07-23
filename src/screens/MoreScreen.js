@@ -135,6 +135,9 @@ const MoreScreen = () => {
       case 'Terms & Conditions':
         navigation.navigate('Terms');
         break;
+      case 'Help':
+        navigation.navigate('HelpCenter');
+        break;
       default:
         alert(`No screen configured for: ${screenName}`);
     }
@@ -209,6 +212,7 @@ const MoreScreen = () => {
           items={[
             { label: 'Privacy Policy', Icon: PrivacyIcon },
             { label: 'Terms & Conditions', Icon: TermsCondIcon },
+            { label: 'Help', Icon: TermsCondIcon },
           ]}
         />
       </Animated.ScrollView>

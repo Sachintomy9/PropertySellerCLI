@@ -6,7 +6,7 @@ export const formatPropType = (rawType) => {
     penthouse: "Penthouse",
     villa: "Villa",
     townhouse: "Town House",
-    tounhouse: "Town House",  // fallback for typo
+    tounhouse: "Town House",  // typo fallback
     officespace: "Office Space",
     office: "Office",
     space: "Space",
@@ -14,15 +14,25 @@ export const formatPropType = (rawType) => {
     house: "House"
   };
 
-  // Normalize input
-  const lower = rawType;
+  if (!rawType) return '';
 
-  // Extract matching words from the rawType
+  // If it's an array, map each value
+  if (Array.isArray(rawType)) {
+    const formattedArray = rawType.map((type) => formatPropType(type)).filter(Boolean);
+    return formattedArray.join(", ");
+  }
+
+  if (typeof rawType !== 'string') {
+    console.warn('Unexpected propType format:', rawType);
+    return '';
+  }
+
+  const lower = rawType.toLowerCase();
+
   const matches = Object.keys(mapping).filter((key) =>
     lower.includes(key)
   );
 
-  // Remove duplicates and map to proper labels
   const formatted = [...new Set(matches)].map((key) => mapping[key]);
 
   return formatted.length > 0

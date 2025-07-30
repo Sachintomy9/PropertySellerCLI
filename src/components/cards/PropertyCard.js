@@ -424,7 +424,6 @@ const styles = StyleSheet.create({
     color: '#D91E5B',
     marginBottom: 10,
     marginLeft:20,
-    fontWeight: '600',
     fontFamily: fonts.PoppinsRegular,
   },
   actionRow: {

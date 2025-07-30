@@ -8,6 +8,8 @@ import EnquiryPrompt from '../popups/EnquiryPrompt';
 import SavedSuccess from '../popups/SavedSuccess';
 import SavedRemoved from '../popups/SavedRemoved';
 import LoginPrompt from '../popups/LoginPrompt';
+import EnquirySubmitted from '../popups/EnquirySubmitted';
+import EnquiryExists from '../popups/EnquiryExists';
 import { collectWishlist } from '../../services/AuthService';
 import { useAuth } from '../../context/AuthContext';
 import { useProfile } from '../../context/ProfileContext';
@@ -21,6 +23,9 @@ const MultipleButton = ({ onSave, onShare, onEnquire }) => {
     const [showSuccessPrompt, setShowSuccessPrompt] =useState(false);
     const [showRemovedPrompt, setShowRemovedPrompt] =useState(false);
     const [isLoading, setIsLoading] = useState(false);
+
+    const [enquiry,setEnquiry] = useState(false);
+    const [isSubmitted, setIsSubmitted] =useState(false);
 
     const {profile} = useProfile();
     const {isGuest} = useAuth();
@@ -101,6 +106,22 @@ const MultipleButton = ({ onSave, onShare, onEnquire }) => {
           onClose={() => setShowRemovedPrompt(false)}
         />
 
+      {isSubmitted && (
+      <EnquirySubmitted
+        visible={isSubmitted}
+        onClose={() => (setIsSubmitted(false))}
+        message={"Enquiry"}
+      />
+    )}
+
+    {enquiry && (
+      <EnquiryExists
+        visible={enquiry}
+        onClose={() => (setEnquiry(false))}
+        message={"Enquiry"}
+      />
+    )}
+
       <TouchableOpacity style={styles.button} onPress={handleHeartPress}>
         {isWishlisted ? (
           <>
@@ -129,9 +150,12 @@ const MultipleButton = ({ onSave, onShare, onEnquire }) => {
         </View>
         <Text style={styles.text}>Enquire</Text>
       </TouchableOpacity>
-      <EnquiryPrompt
+      <EnquiryPrompt 
+        projectId={property._id}
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
+        setIsSubmitted={setIsSubmitted}
+        setEnquiry={setEnquiry}
       />
     </View>
   );

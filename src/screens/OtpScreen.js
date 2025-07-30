@@ -74,7 +74,7 @@ const OtpScreen = () => {
       Alert.alert('Error', response.data.message || 'OTP verification failed');
     }
   } catch (error) { 
-    console.error('Error verifying OTP:', error.response?.data?.message);
+    console.log('Error verifying OTP:', error.response?.data?.message);
     setShowInvalid(true);
   } finally {
       setIsLoading(false); // hide loader regardless of success or failure

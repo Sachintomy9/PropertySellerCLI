@@ -93,10 +93,10 @@ const ResetPasswordScreen = () => {
         email,
         password : newPass
       });
-        console.log('New password sent successfully:', response.data);
+        console.log('New password sent successfully:');
         const {token} = response.data
         // Navigate to the next screen or show success message
-        navigation.navigate('Otp', { email,token });
+        navigation.replace('Otp', { email,token });
       } catch (error) {
         console.error('Registration error:', error.response?.data || error.message);
         if (error.response && error.response.data) {

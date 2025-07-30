@@ -370,7 +370,7 @@ const RegisterScreen = () => {
             <CheckBox
                 value={agree}
                 onValueChange={setAgree}
-                tintColors={{ true: '#4CAF50', false: '#000' }}
+                tintColors={{ true: '#ff1645', false: '#000' }}
             />
             <Text style={styles.termsText}>
                 I agree to the{' '}
@@ -445,7 +445,7 @@ const styles = StyleSheet.create({
   registerText: { fontSize: 13, color: '#666',fontFamily: fonts.PoppinsRegular, },
   registerLink: { fontSize: 13, color: '#000', fontWeight: '600', fontFamily: fonts.PoppinsSemiBold, },
   signupButton: {
-    backgroundColor: '#FF004D',
+    backgroundColor: '#ff1645',
     paddingVertical: 14,
     borderRadius: 6,
     alignItems: 'center',

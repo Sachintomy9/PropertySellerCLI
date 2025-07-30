@@ -16,6 +16,9 @@ const FilterBar = () => {
   const [selectedEmirate, setSelectedEmirate] = useState(null);
   const [selectedCity, setSelectedCity] = useState(null);
 
+  const [isEmirateOpen, setIsEmirateOpen] = useState(false);
+  const [isCityOpen, setIsCityOpen] = useState(false);
+
   const categories = ['Offplan Projects', 'Offplan Resale', 'Secondary', 'Land'];
   const types = ['Residential', 'Commercial'];
   const emirates = [
@@ -38,7 +41,7 @@ const FilterBar = () => {
     <View style={{ backgroundColor: '#fff', paddingHorizontal: 8, paddingBottom: 67, paddingTop: 2 }}>
       {/* Emirates & City Dropdown Row */}
       <View style={styles.filterRow}>
-        <TouchableOpacity style={styles.dropdownWrapper}>
+        <View style={styles.dropdownWrapper}>
           <Dropdown
             data={emirates}
             labelField="label"
@@ -46,14 +49,17 @@ const FilterBar = () => {
             placeholder="Emirates"
             value={selectedEmirate}
             onChange={(item) => setSelectedEmirate(item.value)}
+            onFocus={() => setIsEmirateOpen(true)}
+            onBlur={() => setIsEmirateOpen(false)}
             style={styles.dropdown}
             placeholderStyle={styles.dropdownPlaceholder}
             selectedTextStyle={styles.dropdownSelectedText}
+            renderRightIcon={() => null}
           />
-          <View style={{zIndex:2,bottom:35, left:162 }}>
+          <View style={[styles.customArrow, isEmirateOpen && styles.arrowUp]}>
             <DropDownIcon/>
           </View>
-        </TouchableOpacity>
+        </View>
         
 
         <View style={styles.dropdownWrapper}>
@@ -65,11 +71,14 @@ const FilterBar = () => {
             placeholder="City"
             value={selectedCity}
             onChange={(item) => setSelectedCity(item.value)}
+            onFocus={() => setIsCityOpen(true)}
+            onBlur={() => setIsCityOpen(false)}
             style={styles.dropdown}
             placeholderStyle={styles.dropdownPlaceholder}
             selectedTextStyle={styles.dropdownSelectedText}
+            renderRightIcon={() => null}
           />
-          <View style={{zIndex:2,bottom:35, left:162 }}>
+          <View style={[styles.customArrow, isCityOpen && styles.arrowUp]}>
             <DropDownIcon/>
           </View>
 
@@ -141,6 +150,15 @@ const styles = StyleSheet.create({
     height: 48,
     paddingHorizontal: 10,
   },
+  customArrow: {
+  position: 'absolute',
+  right: 12,
+  top: 12,
+  zIndex: 2,
+},
+arrowUp: {
+  transform: [{ rotate: '180deg' }],
+},
   dropdownPlaceholder: {
     fontSize: 14,
     color: '#444',

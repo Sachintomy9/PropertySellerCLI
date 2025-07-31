@@ -83,8 +83,8 @@ const RegisterScreen = () => {
       newErrors.name = 'Name can only contain alphabets';
     }
 
-    if (!/^\d{6}$/.test(number)) {
-      newErrors.number = 'Phonenumber must be atleast 6 digits';
+    if (!/^\d{7,15}$/.test(number)) {
+      newErrors.number = 'Phone number must be between 7 and 15 digits';
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -240,7 +240,7 @@ const RegisterScreen = () => {
               value={number}
               onChangeText={setNumber}
               style={styles.phoneTextInput}
-              maxLength={10}
+              maxLength={15}
             />
           </View>
           {errors.number && <Text style={styles.error}>{errors.number}</Text>}

@@ -1,127 +1,187 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import { fonts } from '../../../styles/fonts';
 import DropDownIcon from '../../assets/svg/svgicons/Others/DropDownIcon';
 import FilterIcon from '../../assets/svg/svgicons/Others/FilterIcon';
 import { Dropdown } from 'react-native-element-dropdown';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateFilter } from '../../redux/slices/FilterSlice';
+import { useNavigation } from '@react-navigation/native';
 
 const FilterBar = () => {
-  const [selectedCategory, setSelectedCategory] = useState('Offplan Projects');
-  const [selectedType, setSelectedType] = useState('Residential');
-  const [selectedEmirate, setSelectedEmirate] = useState(null);
-  const [selectedCity, setSelectedCity] = useState(null);
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const filters = useSelector((state) => state.filters);
+
 
   const [isEmirateOpen, setIsEmirateOpen] = useState(false);
   const [isCityOpen, setIsCityOpen] = useState(false);
 
-  const categories = ['Offplan Projects', 'Offplan Resale', 'Secondary', 'Land'];
-  const types = ['Residential', 'Commercial'];
-  const emirates = [
-    { label: "Abu Dhabi", value: "Abu Dhabi" },
-    { label: "Dubai", value: "Dubai" },
-    { label: "Sharjah", value: "Sharjah" },
-    { label: "Ajman", value: "Ajman" },
-    { label: "Umm Al Quwain", value: "Umm Al Quwain" },
-    { label: "Ras Al Khaimah", value: "Ras Al Khaimah" },
-    { label: "Fujairah", value: "Fujairah" },
-  ];
+  const [emirates, setEmirates] = useState([]);
+  const [cities, setCities] = useState([]);
 
-  const cities = [
-    { label: "Dubai City", value: "Dubai City" },
-    { label: "Abu Dhabi City", value: "Abu Dhabi City" },
-    // Add more cities as needed
-  ];
+  const [loadingEmirates, setLoadingEmirates] = useState(false);
+  const [loadingCities, setLoadingCities] = useState(false);
+
+  const [selectedEmirateId, setSelectedEmirateId] = useState(null);
+
+    // Fetch emirates on component mount
+  useEffect(() => {
+    const fetchEmirates = async () => {
+      try {
+        setLoadingEmirates(true);
+        const res = await fetch('https://v1-api.propertyseller.com/api/v1/emirate/names');
+        const data = await res.json();
+        if (data.success) {
+          const formatted = data.data.map((item) => ({
+            label: item.name,
+            value: item._id,
+          }));
+          setEmirates(formatted);
+        }
+      } catch (error) {
+        console.error('Error fetching emirates:', error);
+      } finally {
+        setLoadingEmirates(false);
+      }
+    };
+    fetchEmirates();
+  }, []);
+
+  // Fetch cities when emirate changes
+  useEffect(() => {
+    if (!selectedEmirateId) return;
+    const fetchCities = async () => {
+      try {
+        setLoadingCities(true);
+        const res = await fetch(`https://v1-api.propertyseller.com/api/v1/city/names?emirate=${selectedEmirateId}`);
+        const data = await res.json();
+        if (data.success) {
+          const formatted = data.data.map((item) => ({
+            label: item.name,
+            value: item._id,
+          }));
+          setCities(formatted);
+        }
+      } catch (error) {
+        console.error('Error fetching cities:', error);
+      } finally {
+        setLoadingCities(false);
+      }
+    };
+    fetchCities();
+  }, [selectedEmirateId]);
 
   return (
     <View style={{ backgroundColor: '#fff', paddingHorizontal: 8, paddingBottom: 67, paddingTop: 2 }}>
       {/* Emirates & City Dropdown Row */}
       <View style={styles.filterRow}>
         <View style={styles.dropdownWrapper}>
-          <Dropdown
-            data={emirates}
-            labelField="label"
-            valueField="value"
-            placeholder="Emirates"
-            value={selectedEmirate}
-            onChange={(item) => setSelectedEmirate(item.value)}
-            onFocus={() => setIsEmirateOpen(true)}
-            onBlur={() => setIsEmirateOpen(false)}
-            style={styles.dropdown}
-            placeholderStyle={styles.dropdownPlaceholder}
-            selectedTextStyle={styles.dropdownSelectedText}
-            renderRightIcon={() => null}
-          />
+          {loadingEmirates ? (
+            <ActivityIndicator size="small" color= "#ff1645" style={{ marginTop: 10 }} />
+          ) : (
+            <Dropdown
+              data={emirates}
+              labelField="label"
+              valueField="value"
+              placeholder="Emirates"
+              value={filters.emirateId || null}
+              onChange={(item) => {
+                setSelectedEmirateId(item.value);
+                dispatch(updateFilter({ key: 'emirateId', value: item.value }));
+                dispatch(updateFilter({ key: 'emirateName', value: item.label }));
+                setCities([]); // Clear old cities
+              }}
+              onFocus={() => setIsEmirateOpen(true)}
+              onBlur={() => setIsEmirateOpen(false)}
+              style={styles.dropdown}
+              placeholderStyle={styles.dropdownPlaceholder}
+              selectedTextStyle={styles.dropdownSelectedText}
+              renderRightIcon={() => null}
+            />
+          )}
           <View style={[styles.customArrow, isEmirateOpen && styles.arrowUp]}>
-            <DropDownIcon/>
+            <DropDownIcon />
           </View>
         </View>
-        
 
         <View style={styles.dropdownWrapper}>
-          
-          <Dropdown
-            data={cities}
-            labelField="label"
-            valueField="value"
-            placeholder="City"
-            value={selectedCity}
-            onChange={(item) => setSelectedCity(item.value)}
-            onFocus={() => setIsCityOpen(true)}
-            onBlur={() => setIsCityOpen(false)}
-            style={styles.dropdown}
-            placeholderStyle={styles.dropdownPlaceholder}
-            selectedTextStyle={styles.dropdownSelectedText}
-            renderRightIcon={() => null}
-          />
+          {loadingCities ? (
+            <ActivityIndicator size="small" color='#ff1645' style={{ marginTop: 10 }} />
+          ) : (
+            <Dropdown
+              data={cities}
+              labelField="label"
+              valueField="value"
+              placeholder="City"
+              value={filters.cityId || null}
+              onChange={(item) => {
+                dispatch(updateFilter({ key: 'cityId', value: item.value }));
+                dispatch(updateFilter({ key: 'cityName', value: item.label }));
+              }}
+              onFocus={() => setIsCityOpen(true)}
+              onBlur={() => setIsCityOpen(false)}
+              style={styles.dropdown}
+              placeholderStyle={styles.dropdownPlaceholder}
+              selectedTextStyle={styles.dropdownSelectedText}
+              renderRightIcon={() => null}
+            />
+          )}
           <View style={[styles.customArrow, isCityOpen && styles.arrowUp]}>
-            <DropDownIcon/>
+            <DropDownIcon />
           </View>
-
         </View>
       </View>
 
       {/* Categories */}
-      <View style={styles.categoryContainer}>
-        {categories.map((item) => (
-          <TouchableOpacity
-            key={item}
-            style={[
-              styles.categoryButton,
-              selectedCategory === item && styles.categoryButtonSelected,
-            ]}
-            onPress={() => setSelectedCategory(item)}
-          >
-            <Text style={[styles.categoryText, selectedCategory === item && styles.categoryTextSelected]}>
-              {item}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+
+        <View style={styles.categoryContainer}>
+          {[
+            { label: "Off-Plan projects", value: "off-plan-projects" },
+            { label: "Off-Plan Resale", value: "off-plan-resale" },
+            { label: "Secondary", value: "off-plan-secondary" },
+            { label: "Land", value: "off-plan-land" },
+          ].map(({ label, value }) => {
+            const active = filters.projectTypeFirst === value;
+            return (
+              <TouchableOpacity
+                key={value}
+                onPress={() => dispatch(updateFilter({ key: 'projectTypeFirst', value }))}
+                style={[styles.categoryButton, active && styles.categoryButtonSelected]}
+              >
+                <Text style={[styles.categoryText, active && styles.categoryTextSelected]}>{label}</Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+
 
       {/* Type Tabs + Filter Icon */}
       <View style={{ flex: 1, flexDirection: "row" }}>
-        <View style={styles.typeContainer}>
-          {types.map((type) => (
-            <TouchableOpacity
-              key={type}
-              style={[
-                styles.typeButton,
-                selectedType === type && styles.typeButtonSelected,
-              ]}
-              onPress={() => setSelectedType(type)}
-            >
-              <Text style={[styles.typeText, selectedType === type && styles.typeTextSelected]}>
-                {type}
-              </Text>
-            </TouchableOpacity>
-          ))}
+
+      <View style={styles.typeContainer}>
+          {[{ label: "All", value: "all" },{ label: "Residential", value: "residential" },{ label: "Commercial ", value: "commercial" },].map(({ label, value }) => {
+            const active = filters.projectTypeLast === value;
+            return (
+              <TouchableOpacity
+                key={value}
+                onPress={() => dispatch(updateFilter({ key: 'projectTypeLast', value }))}
+                style={[styles.typeButton, active && styles.typeButtonSelected]}
+              >
+                <Text style={[styles.typeText, active && styles.typeTextSelected]}>{label}</Text>
+              </TouchableOpacity>
+            );
+          })}
         </View>
-        <TouchableOpacity style={styles.filterIcon}>
+
+
+        <TouchableOpacity style={styles.filterIcon} onPress={() => navigation.navigate('FilterOption')}>
           <View style={{ alignSelf: "center", top: 4 }}>
             <FilterIcon />
           </View>
@@ -205,7 +265,7 @@ arrowUp: {
     backgroundColor: '#fff',
     marginTop: 5,
     borderRadius: 4,
-    padding: 6,
+    padding: 5,
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 4,

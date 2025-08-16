@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   Alert,
   Modal,
   FlatList,
+  ActivityIndicator,
 } from 'react-native';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext'
@@ -50,16 +51,6 @@ const BlogReadScreen = () => {
     const [scrollViewHeight, setScrollViewHeight] = useState(0);
 
 
-    const emirates = [
-        { label: "Abu Dhabi", value: "Abu Dhabi" },
-        { label: "Dubai", value: "Dubai" },
-        { label: "Sharjah", value: "Sharjah" },
-        { label: "Ajman", value: "Ajman" },
-        { label: "Umm Al-Quwain", value: "Umm Al-Quwain" },
-        { label: "Ras Al Khaimah", value: "Ras Al Khaimah" },
-        { label: "Fujeirah", value: "Fujeirah" },
-        ];
-
     const propertyType = [
         { label: "Offplan Projects", value: "Offplan Projects" },
         { label: "Offplan Resale", value: "Offplan Resale" },
@@ -67,6 +58,64 @@ const BlogReadScreen = () => {
         { label: "Land", value: "Land" },
         // Add more cities as needed
     ];
+
+    const [isEmirateOpen, setIsEmirateOpen] = useState(false);
+    const [isCityOpen, setIsCityOpen] = useState(false);
+  
+    const [emirates, setEmirates] = useState([]);
+    const [cities, setCities] = useState([]);
+  
+    const [loadingEmirates, setLoadingEmirates] = useState(false);
+    const [loadingCities, setLoadingCities] = useState(false);
+  
+    const [selectedEmirateId, setSelectedEmirateId] = useState(null);
+  
+      // Fetch emirates on component mount
+    useEffect(() => {
+      const fetchEmirates = async () => {
+        try {
+          setLoadingEmirates(true);
+          const res = await fetch('https://v1-api.propertyseller.com/api/v1/emirate/names');
+          const data = await res.json();
+          if (data.success) {
+            const formatted = data.data.map((item) => ({
+              label: item.name,
+              value: item._id,
+            }));
+            setEmirates(formatted);
+          }
+        } catch (error) {
+          console.error('Error fetching emirates:', error);
+        } finally {
+          setLoadingEmirates(false);
+        }
+      };
+      fetchEmirates();
+    }, []);
+  
+    // Fetch cities when emirate changes
+    useEffect(() => {
+      if (!selectedEmirateId) return;
+      const fetchCities = async () => {
+        try {
+          setLoadingCities(true);
+          const res = await fetch(`https://v1-api.propertyseller.com/api/v1/city/names?emirate=${selectedEmirateId}`);
+          const data = await res.json();
+          if (data.success) {
+            const formatted = data.data.map((item) => ({
+              label: item.name,
+              value: item._id,
+            }));
+            setCities(formatted);
+          }
+        } catch (error) {
+          console.error('Error fetching cities:', error);
+        } finally {
+          setLoadingCities(false);
+        }
+      };
+      fetchCities();
+    }, [selectedEmirateId]);
 
     const validate = () => {
         const newErrors = {};
@@ -271,6 +320,9 @@ const BlogReadScreen = () => {
 
             <Text style={styles.label}>Emirates</Text>
             <View style={styles.dropdownWrapper}>
+              {loadingEmirates ? (
+                <ActivityIndicator size="small" color= "#ff1645" style={{ marginTop: 10 }} />
+              ) : (
                 <Dropdown
                     data={emirates}
                     labelField="label"
@@ -282,6 +334,7 @@ const BlogReadScreen = () => {
                     placeholderStyle={styles.dropdownPlaceholder}
                     selectedTextStyle={styles.dropdownSelectedText}
                 />
+                )}
             </View>
             {errors.emirate && <Text style={styles.error}>{errors.emirate}</Text>}
 
@@ -504,6 +557,7 @@ const styles = StyleSheet.create({
   dropdownPlaceholder: {
     fontSize: 14,
     color: '#999',
+    fontFamily: fonts.PoppinsRegular,
   },
   dropdownSelectedText: {
     fontSize: 14,

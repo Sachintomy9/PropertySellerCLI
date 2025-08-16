@@ -61,6 +61,16 @@ const AppNavigator = () => {
           </>
         )}
         <Stack.Screen name="Profile" component={require('../screens/ProfileScreen').default} />
+        <Stack.Screen name="FilterOption" component={require('../screens/FilterOptionScreen').default} options={{
+          // slide from bottom
+          cardStyleInterpolator: ({ current, layouts }) => {
+            return {
+              cardStyle: {transform: [{translateY: current.progress.interpolate({inputRange: [0, 1],outputRange: [layouts.screen.height, 0],}),},],},
+
+              overlayStyle: {opacity: current.progress.interpolate({inputRange: [0, 1],outputRange: [0, 0.5],}),},};},
+             gestureDirection: 'vertical',presentation: 'transparentModal', // gives overlay effect
+          }}
+           />
         <Stack.Screen name="Saved" component={require('../screens/SavedScreen').default} />
         <Stack.Screen name="EditProfile" component={require('../screens/EditProfileScreen').default} />
         <Stack.Screen name="ChangePass" component={require('../screens/ChangePasswordScreen').default} />

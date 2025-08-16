@@ -26,6 +26,7 @@ import api from '../../services/ApiClient';
 const { width } = Dimensions.get('window');
 const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,discount,paymentPlan,handOverQuarter,handOverYear, title, price, rooms, baths, area, location,image }) => {
   const navigation=useNavigation();
+  const [carouselWidth, setCarouselWidth] = useState(width - 18);
   const { wishlist,updateWishlist } = useWishlist();
   const [modalVisible, setModalVisible] = useState(false);
   const { selectedCurrency, conversionRate } = useSelector((state) => state.currency);
@@ -169,15 +170,31 @@ const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,
           onClose={() => setShowRemovedPrompt(false)}
         />
     <View style={styles.imageWrapper}>
-      <View style={styles.carouselWrapper}>
+      <View
+        style={[styles.imageWrapper, { overflow: 'hidden', borderRadius: 0 }]}
+        onLayout={(e) => {
+          const w = e.nativeEvent.layout.width;
+          if (w && w !== carouselWidth) setCarouselWidth(w);
+        }}
+      >
               <FlatList
                 data={image}
                 keyExtractor={(item, index) => index.toString()}
                 horizontal
                 pagingEnabled
+                snapToInterval={carouselWidth}
+                snapToAlignment="center"
+                decelerationRate="fast"
                 showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{ paddingHorizontal: 0 }}
                 renderItem={({ item, index }) => (
-                  <Image source={{ uri: item.secure_url }} style={styles.carouselImage} />
+                  <View style={{ width: carouselWidth, height: 250 }}>
+                    <Image
+                      source={{ uri: item.webp?.url || item.png?.url }}
+                      style={[styles.carouselImage, { width: carouselWidth, height: 250 }]}
+                      resizeMode="cover"
+                    />
+                  </View>
                 )}
                 onViewableItemsChanged={onViewableItemsChanged}
                 viewabilityConfig={viewabilityConfig}
@@ -471,13 +488,12 @@ heartIconWrapper: {
 },
 carouselWrapper: {
   position: "relative",
-  paddingHorizontal:16,
+  paddingHorizontal:0,
 },
 carouselImage: {
-  width: width-50,
+  width: '100%',
   height: 250,
-  borderRadius: 4,
-  resizeMode: "contain",
+  borderRadius: 0,
 },
 pagination: {
   position: 'absolute',

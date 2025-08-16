@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { View, Animated, FlatList, StyleSheet, ActivityIndicator,TextInput,TouchableOpacity } from 'react-native';
+import { useSelector } from 'react-redux';
 import TopHeader from '../components/Headers/TopHeader';
 import FilterBar from '../components/others/FilterBar';
 import PropertyCard from '../components/cards/PropertyCard';
@@ -10,8 +11,9 @@ import EmptyState from '../components/others/EmptyScreen';
 import CloseIcon from '../assets/svg/svgicons/ProfileScreen/CloseIcon';
 
 const HomeScreen = () => {
-  const [properties, setProperties] = useState([]);
+  const filters = useSelector((state) => state.filters);
 
+  const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loading1, setLoading1] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -64,8 +66,33 @@ const HomeScreen = () => {
       } else {
         setIsFetchingMore(true);
       }
-      const searchParam = searchQuery ? `&search=${searchQuery}` : '';
-      const response = await axios.get(`https://api.propertyseller.com/api/v1/projects?page=${pageNum}&limit=10${searchParam}`);
+        let queryParams = new URLSearchParams({
+          page: pageNum,
+          limit: 10,
+          search: searchQuery ? searchQuery : '',
+          developers: filters.developers || '',
+          facilities: filters.facilities || '',
+          completionType: filters.completionType || 'all',
+          projectTypeFirst: filters.projectTypeFirst || '',
+          projectTypeLast: filters.projectTypeLast || '',
+          emirate: filters.emirateId || '',
+          city: filters.cityId || '',
+          priceMin: filters.priceMin || '',
+          priceMax: filters.priceMax || '',
+          areaMin: filters.areaMin || '',
+          areaMax: filters.areaMax || '',
+          beds: filters.beds || '',
+          year: filters.handoverYear || '',
+          qtr: filters.handoverQuarter || '',
+          paymentPlan: filters.paymentPlan || '',
+          furnishing: filters.furnishing || 'all',
+          discount: filters.discount || 'all',
+          propertyType: filters.propertyType || '',
+        });
+
+      const url = `https://v1-api.propertyseller.com/api/v1/projects/?${queryParams.toString()}`;
+      console.log('Fetching properties from:', url);
+      const response = await axios.get(url);
       if (response.data.success) {
         const newProjects = response.data.data;
         const pagination = response.data.pagination;
@@ -130,7 +157,7 @@ const HomeScreen = () => {
   }, 500); // debounce delay
 
   return () => clearTimeout(delayDebounce); // cleanup timeout
-}, [searchQuery]);
+}, [searchQuery, filters]);
 
   const mergeAdsIntoProperties = (propertyList) => {
     const mixedList = [];

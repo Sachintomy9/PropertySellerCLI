@@ -3,18 +3,23 @@
 import React, { useEffect } from 'react';
 import { View, StyleSheet, Image, Animated } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { hasSeenAiAgentIntro } from '../utils/IntroStorage';
 import AiAgentSplash from '../assets/svg/svgimages/AiAgentSplash';
 
-const AiAgentScreen = () => {
+const AiAgentSplashScreen = () => {
   const navigation = useNavigation();
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      navigation.navigate('AiAgentIntro'); // Replace with your actual screen
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, []);
+    let mounted = true;
+    (async () => {
+      const seen = await hasSeenAiAgentIntro();
+      if (!mounted) return;
+      // Use replace so splash isn't on the back stack
+      if (seen) navigation.replace('AiAgentMain');
+      else navigation.replace('AiAgentIntro');
+    })();
+    return () => { mounted = false; };
+  }, [navigation]);
 
   return (
     <View style={styles.container}>
@@ -26,7 +31,7 @@ const AiAgentScreen = () => {
   );
 };
 
-export default AiAgentScreen;
+export default AiAgentSplashScreen;
 
 const styles = StyleSheet.create({
   container: {

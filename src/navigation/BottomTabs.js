@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text,View } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 
 import HomeActive from '../assets/svg/svgicons/BottomTabs/HomeActive';
 import HomeInactive from '../assets/svg/svgicons/BottomTabs/HomeInactive';
@@ -15,11 +16,23 @@ import MoreInactive from '../assets/svg/svgicons/BottomTabs/MoreInactive';
 
 import HomeScreen from '../screens/HomeScreen';
 import SavedScreen from '../screens/SavedScreen';
-import AiAgentScreen from '../screens/AiagentScreen';
+import AiAgentMain from '../screens/AiAgentMainScreen';
+import AiAgentSplash from '../screens/AiagentSplashScreen';
+import AiAgentIntro from '../screens/AiAgentIntroScreen';
 import FeaturedScreen from '../screens/FeaturedScreen';
 import MoreScreen from '../screens/MoreScreen';
 
 const Tab = createBottomTabNavigator();
+const AiStack = createStackNavigator();
+function AiAgentStack() {
+  return (
+    <AiStack.Navigator screenOptions={{ headerShown: false }}>
+      <AiStack.Screen name="AiAgentSplash" component={AiAgentSplash} />
+      <AiStack.Screen name="AiAgentIntro" component={AiAgentIntro} />
+      <AiStack.Screen name="AiAgentMain" component={AiAgentMain} />
+    </AiStack.Navigator>
+  );
+}
 
 const TabNavigator = () => {
   return (
@@ -77,7 +90,7 @@ const TabNavigator = () => {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Saved" component={SavedScreen} />
-      <Tab.Screen name="AiAgent" component={AiAgentScreen} />
+      <Tab.Screen name="AiAgent" component={AiAgentStack} />
       <Tab.Screen name="Featured" component={FeaturedScreen} />
       <Tab.Screen name="More" component={MoreScreen} />
     </Tab.Navigator>

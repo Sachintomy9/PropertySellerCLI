@@ -98,7 +98,7 @@ const AppNavigator = () => {
         <Stack.Screen name="OpenHouse" component={require('../screens/OpenHouseScreen').default} />
         <Stack.Screen name="Privacy" component={require('../screens/PrivacyPolicyScreen').default} />
         <Stack.Screen name="HelpCenter" component={require('../screens/HelpCenterScreen').default} />
-        <Stack.Screen name="AiAgentIntro" component={require('../screens/AiAgentIntroScreen').default} />
+
 
       </Stack.Navigator>
     </NavigationContainer>

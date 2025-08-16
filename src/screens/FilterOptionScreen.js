@@ -293,7 +293,7 @@ const FilterOptionsScreen = ({ navigation }) => {
               return (
                 <TouchableOpacity
                   key={value}
-                  onPress={() => setFilter('completionType', active ? "All" : value)}
+                  onPress={() => setFilter('completionType', value)}
                   style={[styles.smallPill, active && styles.smallPillActive]}
                 >
                   <Text style={[styles.smallPillText, active && styles.smallPillTextActive]}>{label}</Text>

@@ -190,11 +190,11 @@ const PropertyCard = ({ propertyId,propType,projectType,sqfeet,createdAt,floors,
                 renderItem={({ item, index }) => (
                   <View style={{ width: carouselWidth, height: 250 }}>
                     <Image
-                      source={{ uri: item.webp?.url || item.png?.url }}
+                      source={{ uri: item.webp?.url || item.png?.url || item.url }}
                       style={[styles.carouselImage, { width: carouselWidth, height: 250 }]}
                       resizeMode="cover"
                     />
-                  </View>
+                  </View> 
                 )}
                 onViewableItemsChanged={onViewableItemsChanged}
                 viewabilityConfig={viewabilityConfig}

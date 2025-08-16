@@ -1,11 +1,11 @@
 import * as React from "react";
 import Svg, { Rect, Defs, Pattern, Use, Image } from "react-native-svg";
-const AiagentInactive = (props) => (
+const AiagentInactive = ({ size = 28, color = "none", ...props }) => (
   <Svg
-    width={28}
-    height={28}
+    width={size}
+    height={size}
     viewBox="0 0 117 116"
-    fill="none"
+    fill={color}
     xmlns="http://www.w3.org/2000/svg"
     xmlnsXlink="http://www.w3.org/1999/xlink"
     {...props}

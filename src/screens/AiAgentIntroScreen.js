@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView,StatusBar, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { fonts } from '../../styles/fonts';
+import { setSeenAiAgentIntro } from '../utils/IntroStorage';
 import AiAgentIntro from '../assets/svg/svgimages/AiAgentIntro';
 import IntroButton from '../components/buttons/IntroButton';
 import BackIcon from '../assets/svg/svgicons/Details/BackIcon';
@@ -10,9 +11,10 @@ import IntroNextIcon from '../assets/svg/svgicons/Others/IntroNextIcon';
 const AiAgentIntroScreen = () => {
   const navigation = useNavigation();
 
-  const handleContinue = () => {
-    console.log("Continue from AiAgentScreen Pressed.");
-    // Example navigation: navigation.navigate('NextScreen');
+  const onContinue = async () => {
+    await setSeenAiAgentIntro();
+    // replace so user doesn't go back to intro
+    navigation.replace('AiAgentMain');
   };
 
   return (
@@ -41,7 +43,7 @@ const AiAgentIntroScreen = () => {
         </View>
 
         {/* The button is placed outside the content container to fix it to the bottom */}
-        <TouchableOpacity style={styles.button} onPress={handleContinue}>
+        <TouchableOpacity style={styles.button} onPress={onContinue}>
           <Text style={styles.buttonText}>Continue</Text>
           {/* The icon is absolutely positioned within the button */}
           <View style={styles.iconWrapper}>

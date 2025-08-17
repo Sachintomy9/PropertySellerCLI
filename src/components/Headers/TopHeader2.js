@@ -5,7 +5,7 @@ import BackIcon from '../../assets/svg/svgicons/Details/BackIcon';
 import BellIcon from '../../assets/svg/svgicons/Others/BellIcon';
 import { fonts } from '../../../styles/fonts';
 
-const TopHeader2 = ({ title, showBack = true, onRightPress }) => {
+const TopHeader2 = ({ title, showBack = true, showNotification = true }) => {
   const navigation = useNavigation();
 
   return (
@@ -23,9 +23,11 @@ const TopHeader2 = ({ title, showBack = true, onRightPress }) => {
       <Text style={styles.title}>{title}</Text>
 
       {/* Right Icon (e.g., Bell) */}
-      <TouchableOpacity onPress={onRightPress} style={styles.rightIcon}>
-        <BellIcon/>
-      </TouchableOpacity>
+      {showNotification ? (
+        <TouchableOpacity onPress={() => navigation.navigate('Notification')} style={styles.rightIcon}>
+          <BellIcon/>
+        </TouchableOpacity>
+      ) : null}
     </View>
   );
 };

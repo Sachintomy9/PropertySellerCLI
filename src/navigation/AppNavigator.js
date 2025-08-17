@@ -98,6 +98,7 @@ const AppNavigator = () => {
         <Stack.Screen name="OpenHouse" component={require('../screens/OpenHouseScreen').default} />
         <Stack.Screen name="Privacy" component={require('../screens/PrivacyPolicyScreen').default} />
         <Stack.Screen name="HelpCenter" component={require('../screens/HelpCenterScreen').default} />
+        <Stack.Screen name="Notification" component={require('../screens/NotificationScreen').default} />
 
 
       </Stack.Navigator>

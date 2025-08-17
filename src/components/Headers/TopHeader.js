@@ -1,5 +1,5 @@
 // TopHeader.js
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   Modal,
   FlatList,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import { setCurrency } from '../../redux/slices/CurrencySlice';
 import countries from 'world-countries';
@@ -16,14 +17,20 @@ import countries from 'world-countries';
 import PropertySellerHeader from '../../assets/svg/svgimages/PropertySellerHeader';
 import BellIcon from '../../assets/svg/svgicons/Others/BellIcon';
 import DropDownIcon2 from '../../assets/svg/svgicons/Others/DropDownIcon2';
-import SearchIcon from '../../assets/svg/svgicons/Others/SearchIcon';
+import { fetchNotifications } from '../../redux/slices/NotificationSlice';
 
 const TopHeader = () => {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
   const { selectedCurrency, rates } = useSelector((state) => state.currency);
+  const { unreadCount } = useSelector((state) => state.notifications);
 
   const [showPicker, setShowPicker] = useState(false);
   const [searchTerm, setSearchTerm] = useState(''); 
+
+  useEffect(() => {
+    dispatch(fetchNotifications());
+  }, []);
 
   const handleCurrencySelect = (currencyCode) => {
     dispatch(setCurrency(currencyCode));
@@ -69,11 +76,13 @@ const TopHeader = () => {
         </View>
 
         {/* Notification Icon with Badge */}
-        <TouchableOpacity style={styles.notificationWrapper}>
+        <TouchableOpacity style={styles.notificationWrapper} onPress={() => navigation.navigate('Notification')}>
           <BellIcon width={24} height={24} />
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>4</Text>
-          </View>
+          {unreadCount > 0 && (
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>{unreadCount}</Text>
+            </View>
+          )}
         </TouchableOpacity>
       </View>
 

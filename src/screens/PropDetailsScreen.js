@@ -12,6 +12,7 @@ import {
   FlatList,
 } from 'react-native';
 import axios from 'axios';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch,useSelector } from 'react-redux';
 import { setPropertyRed } from '../redux/slices/PropertySlice';
 import { useRoute, useNavigation } from '@react-navigation/native';
@@ -73,7 +74,7 @@ const RecommendedCard = ({ item, onPress }) => {
 
           <View style={styles.cardLocation}>
             <LocationIcon color='#000' size={20}/>
-            <Text numberOfLines={1} style={{ flexShrink: 1 }}>{item.address}</Text>
+            <Text numberOfLines={1} style={{ flexShrink: 1, color: '#000' }}>{item.address}</Text>
           </View>
         </TouchableOpacity>
       );
@@ -377,7 +378,7 @@ const PropertyDetailScreen = () => {
     
 
   return (
-    <View style={styles.container} contentContainerStyle={styles.content}>
+    <SafeAreaView style={styles.container} contentContainerStyle={styles.content}>
       {isLoading && (
           <View style={styles.loadingOverlay}>
             <ActivityIndicator size="large" color="#FF1645" />
@@ -386,19 +387,19 @@ const PropertyDetailScreen = () => {
 
             {/* Top Navigation */}
       <View style={styles.headerRow}>
-        <View style={{backgroundColor:"#FFE8EF",borderRadius:5, width:35,height:35}}>
+        <View style={{backgroundColor:"#FFDDE5",borderRadius:5, width:34,height:35}}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <View style={{left:10}}>
                 <BackIcon />
               </View>
             </TouchableOpacity>
         </View>
-        <View style={{marginLeft:250,backgroundColor:"#FFE8EF",borderRadius:5,width:35,height:35}}>
+        <View style={{marginLeft:250,backgroundColor:"#FFDDE5",borderRadius:5,width:34,height:35}}>
             <TouchableOpacity onPress={handleShare}>
             <ShareIcon color="#000" width={32} height={32}/>
             </TouchableOpacity>
         </View>
-        <View style={{backgroundColor:"#FFE8EF",borderRadius:5,width:35,height:35}}>
+        <View style={{backgroundColor:"#FFDDE5",borderRadius:5,width:34,height:35, alignContent: "center", justifyContent: "center"}}>
             <TouchableOpacity onPress={handleHeartPress}>
             {isWishlisted ? (
                 <SavedActive width={32} height={32} />
@@ -511,13 +512,15 @@ const PropertyDetailScreen = () => {
         <Text style={styles.infoText1}>{formatPropType(property.propertyTypes)}</Text>
         
         <View style={styles.infoItem}>
-          <BedIcon size={25}/>
+          <BedIcon size={22}/>
           <Text style={styles.infoText}> Bedrooms: {property.type}</Text>
         </View>
 
         {property.squareFeet && (
           <View style={styles.infoItem}>
-            <AreaIcon size={25}/>
+            <View style={{ top: -1 }}>
+              <AreaIcon size={23}/>
+            </View>
             <Text style={styles.infoText}> Area: {property.squareFeet} sqft</Text>
           </View>
         )}
@@ -646,7 +649,7 @@ const PropertyDetailScreen = () => {
 
         {/* Payment Plan */}
         <Text style={styles.sectionTitle}>Payment Plan</Text>
-        <View style={styles.infoBlock}>
+        <View style={[styles.infoBlock, { borderBottomWidth: 0 }]} >
          <PaymentOptions paymentOptions={property.paymentOptions} />
         </View>
 
@@ -680,8 +683,8 @@ const PropertyDetailScreen = () => {
       ) : (
         <View style={styles.recommendationGrid}>
           {recommended.map((item) => (
-  <RecommendedCard key={item._id} item={item} onPress={handleRecommendedPress} />
-))}
+          <RecommendedCard key={item._id} item={item} onPress={handleRecommendedPress} />
+        ))}
         </View>
       )}
   
@@ -700,7 +703,7 @@ const PropertyDetailScreen = () => {
         />
     </View>
         <BottomEnquireButton propertyId={propertyId}/>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -751,7 +754,6 @@ activeDot: {
   headerRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 50,
     marginBottom: 10,
     paddingHorizontal:10,
   },
@@ -771,7 +773,9 @@ activeDot: {
     fontWeight: '600',
     borderColor: '#ccc',
     borderWidth: 1,
-      overflow: 'hidden',
+    overflow: 'hidden',
+    color: '#333',
+    fontFamily: fonts.PoppinsMedium,
   },
   actionRow: {
     flexDirection: 'row',
@@ -795,14 +799,19 @@ activeDot: {
   },
   title: {
     fontSize: 25,
+    color: '#111',
     marginTop: 20,
     fontFamily: fonts.PoppinsSemiBold,
   },
   priceLabel: {
+    fontFamily: fonts.PoppinsRegular,
+    color: '#000',
     fontSize: 14,
     marginTop: 4,
   },
   price: {
+    fontFamily: fonts.PoppinsMedium,
+    color: '#000',
     fontSize: 24,
     fontWeight: 'bold',
   },
@@ -814,6 +823,7 @@ activeDot: {
   },
   address: {
     fontSize: 14,
+    fontFamily: fonts.PoppinsRegular,
     color: '#333',
     flex: 1,
     flexWrap: 'wrap',
@@ -838,9 +848,12 @@ activeDot: {
   infoItem: {
   flexDirection: 'row',
   alignItems: 'center',
+  justifyContent: "center",
   gap: 4, // spacing between icon and text
+  paddingBottom: 10,
 },
   sectionTitle: {
+    color: '#111',
     fontSize: 20,
     marginTop: 24,
     fontFamily: fonts.PoppinsMedium,
@@ -869,20 +882,14 @@ activeDot: {
     borderBottomColor: '#eee',
     paddingBottom: 16,
   },
-  infoItem: {
-    marginBottom: 10,
-    flexDirection: 'row',
-    marginVertical: 4,
-
-  },
   infoLabel: {
-    fontSize: 13,
+    fontSize: 15,
     color: '#888',
     width: 170,
   },
   infoValue: {
     flex:1,
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '600',
     color: '#111',
   },
@@ -987,6 +994,7 @@ mortgageCard: {
 },
 
 mortgagePrice: {
+  color: '#000',
   fontSize: 24,
   fontWeight: 'bold',
   marginBottom: 10,
@@ -1007,6 +1015,7 @@ mortgageLine: {
   fontSize: 14,
   marginVertical: 2,
   color: '#333',
+  fontFamily: fonts.PoppinsRegular,
 },
 
 boldText: {
@@ -1026,7 +1035,7 @@ editBtn: {
 
 editBtnText: {
   color: '#ff1645',
-  fontWeight: 'bold',
+  fontFamily: fonts.PoppinsMedium,
 },
 recommendationGrid: {
   flexDirection: 'row',
@@ -1048,6 +1057,7 @@ cardImage: {
   resizeMode: 'cover',
 },
 cardPrice: {
+  color: '#000',
   fontFamily: fonts.PoppinsMedium,
   fontSize: 16,
   marginTop: 5,
@@ -1059,6 +1069,7 @@ cardDetails: {
   gap: 5
 },
 cardText: {
+  color: '#000',
   fontSize: 12,
   marginRight: 8,
   flexShrink: 1

@@ -1,6 +1,6 @@
 import * as React from "react";
 import Svg, { Rect, Defs, Pattern, Use, Image } from "react-native-svg";
-const AiagentInactive = ({ size = 28, color = "none", ...props }) => (
+const AiagentInactive = ({ size = 24, color = "none", ...props }) => (
   <Svg
     width={size}
     height={size}

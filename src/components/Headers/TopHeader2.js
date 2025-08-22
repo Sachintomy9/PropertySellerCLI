@@ -54,12 +54,13 @@ const styles = StyleSheet.create({
     marginTop:40,
   },
   title: {
+    color: "#000",
     fontSize: 18,
     fontWeight: '600',
     textAlign: 'center',
     flex: 1,
     marginTop:40,
-    fontFamily: fonts.PoppinsSemiBold
+    fontFamily: fonts.PoppinsSemiBold,
   },
   rightIcon: {
     width: 30,

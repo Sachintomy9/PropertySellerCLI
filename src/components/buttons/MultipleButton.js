@@ -1,5 +1,6 @@
 import React,{useState} from 'react';
 import { View, Text, TouchableOpacity, StyleSheet,ActivityIndicator } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import SavedInactive from '../../assets/svg/svgicons/BottomTabs/SavedInactive';
 import SavedActive from '../../assets/svg/svgicons/BottomTabs/SavedActive';
 import ShareIcon from '../../assets/svg/svgicons/Others/ShareIcon';
@@ -18,6 +19,7 @@ import { useSelector } from 'react-redux';
 import Share from 'react-native-share';
 import api from '../../services/ApiClient';
 const MultipleButton = ({ onSave, onShare, onEnquire }) => {
+    const insets = useSafeAreaInsets();
     const [modalVisible, setModalVisible] = useState(false);
     const [showLoginPrompt, setShowLoginPrompt] = useState(false);
     const [showSuccessPrompt, setShowSuccessPrompt] =useState(false);
@@ -83,7 +85,7 @@ const MultipleButton = ({ onSave, onShare, onEnquire }) => {
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingBottom: insets.bottom || 10 }]}>
       {showLoginPrompt && (
       <LoginPrompt
         visible={showLoginPrompt}

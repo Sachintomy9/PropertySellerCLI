@@ -80,7 +80,7 @@ const AboutUsScreen = () => {
             <Text style={{fontSize: 22,fontFamily: fonts.PoppinsSemiBold, alignSelf: "center",paddingHorizontal: 12,paddingTop: 10,color: '#000'}}>Meet the Founder - </Text>
             <Text style={{fontSize: 22,fontFamily: fonts.PoppinsSemiBold, alignSelf: "center",paddingHorizontal: 12,paddingBottom: 40,color: '#000'}}>Ashiq Emiraaz </Text>
 
-            <Text style={{fontFamily: fonts.PoppinsRegular, fontSize: 17, paddingHorizontal: 12, paddingBottom: 50, textAlign: "center"}} >Ashiq Emiraaz is the driving force behind PropertySeller. With years of experience in real estate
+            <Text style={{fontFamily: fonts.PoppinsRegular, color: '#000', fontSize: 17, paddingHorizontal: 12, paddingBottom: 50, textAlign: "center"}} >Ashiq Emiraaz is the driving force behind PropertySeller. With years of experience in real estate
                  and business development, he understood the challenges that buyers and investors face when navigating the market. 
                  His vision was to create a tech-driven, customer-focused platform that removes uncertainty and makes property transactions
                   effortless.From launching startups to building industry connections, Ashiq’s journey has been fueled by innovation, 
@@ -156,6 +156,7 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   blogContent: {
+    color: '#000',
     fontFamily: fonts.PoppinsRegular,
     fontSize: 17,
     paddingHorizontal: 12,

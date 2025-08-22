@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TextInput,
   FlatList,
+  ActivityIndicator,
 } from 'react-native';
 import { useProfile } from '../../context/ProfileContext';
 import { fonts } from '../../../styles/fonts';
@@ -23,7 +24,7 @@ const EnquiryPrompt = ({ projectId, visible, onClose,setEnquiry,setIsSubmitted }
   const [phone, setPhone] = useState(profile.phone || '');
   const [assignedTo, setAssignedTo] = useState('');
   const [errors, setErrors] = useState({});
-  const [ showSuccessPrompt, setShowSuccessPrompt] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [countryCode, setCountryCode] = useState('');
   const [callingCode, setCallingCode] = useState('');
@@ -64,49 +65,51 @@ const EnquiryPrompt = ({ projectId, visible, onClose,setEnquiry,setIsSubmitted }
   };
 
   const handleSubmit = async () => {
-  if (!validateInputs()) return; // Exit early if validation fails
+    if (!validateInputs()) return; // Exit early if validation fails
+    setIsLoading(true);
+    try {
+      const fullPhone = `${callingCode}${phone}`;
+      if (profile.id) {
+        setAssignedTo(profile.id);
+        console.log("assignedTo", assignedTo);
+      }
 
-  try {
-    const fullPhone = `${callingCode}${phone}`;
-    if (profile.id) {
-      setAssignedTo(profile.id);
-      console.log("assignedTo", assignedTo);
+      const payload = {
+        name: name.trim(),
+        number: fullPhone.trim(),
+        projectId: projectId,
+      };
+      console.log('Sending payload:', payload);
+
+      const response = await axios.post(`${API_URL}/enquiry`, payload);
+
+      // Handle API response
+      if (response.data.message === "Enquiry already exist") {
+        console.log('Enquiry already exists');
+        (setEnquiry(true)); // Mark as existing enquiry
+      } else {
+        console.log('Enquiry does not exist');
+        (setIsSubmitted(true)); // Mark as submitted
+      }
+
+      // Reset form and close modal
+      setName('');
+      setPhone('');
+      setAssignedTo('');
+      onClose(); // Close modal AFTER state updates
+
+    } catch (error) { // <-- Fix: Added `error` parameter
+      console.error('Registration error:', error.response?.data || error.message);
+      if (error.response?.data) {
+        Alert.alert('Error', error.response.data.message || 'Registration failed');
+      } else {
+        Alert.alert('Error', 'An unexpected error occurred. Please try again.');
+      }
     }
-
-    const payload = {
-      name: name.trim(),
-      number: fullPhone.trim(),
-      projectId: projectId,
-    };
-    console.log('Sending payload:', payload);
-
-    const response = await axios.post(`${API_URL}/enquiry`, payload);
-
-    // Handle API response
-    if (response.data.message === "Enquiry already exist") {
-      console.log('Enquiry already exists');
-      (setEnquiry(true)); // Mark as existing enquiry
-    } else {
-      console.log('Enquiry does not exist');
-      (setIsSubmitted(true)); // Mark as submitted
+    finally {
+      setIsLoading(false);
     }
-
-    // Reset form and close modal
-    setName('');
-    setPhone('');
-    setAssignedTo('');
-    setShowSuccessPrompt(true); // Show success message
-    onClose(); // Close modal AFTER state updates
-
-  } catch (error) { // <-- Fix: Added `error` parameter
-    console.error('Registration error:', error.response?.data || error.message);
-    if (error.response?.data) {
-      Alert.alert('Error', error.response.data.message || 'Registration failed');
-    } else {
-      Alert.alert('Error', 'An unexpected error occurred. Please try again.');
-    }
-  }
-};
+  };
 
   const handleCountrySelect = (country) => {
     setCountryCode(country.cca2);
@@ -126,6 +129,13 @@ const EnquiryPrompt = ({ projectId, visible, onClose,setEnquiry,setIsSubmitted }
       transparent
       onRequestClose={onClose}
     >
+
+    {isLoading && (
+        <View style={styles.loadingOverlay}>
+          <ActivityIndicator size="large" color="#FF1645" />
+        </View>
+      )}
+
       <View style={styles.overlay}>
         <View style={styles.container}>
           <TouchableOpacity style={styles.crossButton} onPress={onClose}>
@@ -223,12 +233,14 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   title: {
+    color: '#000',
     fontSize: 18,
     marginBottom: 15,
     textAlign: 'center',
-    fontFamily: fonts.PoppinsSemiBold,
+    fontFamily: fonts.PoppinsMedium,
   },
   input: {
+    color: '#000',
     fontSize:16,
     borderWidth: 1,
     borderColor: '#ddd',
@@ -251,12 +263,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     right: 10,
-    borderWidth: 1,
-    borderColor: '#ddd',
+    borderRightWidth: 1,
+    borderRightColor: '#ddd',
     height: '100%',
     width: 45,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#fff',
     justifyContent: 'center',
+    borderRadius: 6,
   },
   flagText: {
     fontSize: 18,
@@ -266,12 +279,14 @@ const styles = StyleSheet.create({
     right: -3,
   },
   callingCodeText: {
+    color: '#000',
     fontSize: 16,
     right: 5,
   },
   phoneTextInput: {
     flex: 1,
     fontSize: 16,
+    color: '#000',
   },
   submitButton: {
     backgroundColor: '#ff1645',
@@ -280,7 +295,7 @@ const styles = StyleSheet.create({
   },
   submitText: {
     color: 'white',
-    fontWeight: 'bold',
+    fontFamily: fonts.PoppinsMedium,
     textAlign: 'center',
     fontSize: 16,
   },
@@ -298,7 +313,7 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: '#00000066',
+    backgroundColor: '#000',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -310,6 +325,8 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   searchInput: {
+    fontSize: 14,
+    color: '#000',
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 6,
@@ -323,7 +340,9 @@ const styles = StyleSheet.create({
     borderBottomColor: '#eee',
   },
   countryText: {
-    fontSize: 16,
+    color: '#000',
+    fontSize: 14,
+    fontFamily: fonts.PoppinsRegular,
   },
   closeBtn: {
     marginTop: 10,
@@ -333,4 +352,11 @@ const styles = StyleSheet.create({
     color: '#ff1645',
     fontWeight: 'bold',
   },
+    loadingOverlay: {
+  ...StyleSheet.absoluteFillObject,
+  backgroundColor: 'rgba(255,255,255,0.7)',
+  justifyContent: 'center',
+  alignItems: 'center',
+  zIndex: 10,
+},
 });

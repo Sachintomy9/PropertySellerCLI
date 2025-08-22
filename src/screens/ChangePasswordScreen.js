@@ -14,7 +14,7 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useProfile } from '../context/ProfileContext';
 import { fonts } from '../../styles/fonts'; // Adjust the path as necessary
-import axios from 'axios';
+import BackIcon from '../assets/svg/svgicons/Details/BackIcon';
 import api from '../services/ApiClient';
 const API_URL = 'https://api.propertyseller.com/api/v1/';
 
@@ -111,6 +111,9 @@ const ChangePasswordScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <TouchableOpacity style={{position:'absolute',top:50,left:20,zIndex:10}} onPress={() => navigation.goBack()}>
+        <BackIcon />
+      </TouchableOpacity>
       {isLoading && (
           <View style={styles.loadingOverlay}>
             <ActivityIndicator size="large" color="#FF1645" />

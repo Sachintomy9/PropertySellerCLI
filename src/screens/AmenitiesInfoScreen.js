@@ -11,6 +11,7 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import MultipleButton from '../components/buttons/MultipleButton';
 import TopHeader2 from '../components/Headers/TopHeader2';
+import { fonts } from '../../styles/fonts';
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const AmenitiesInfoScreen = () => {
@@ -95,11 +96,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     paddingLeft:10,
   },
-  title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 16,
-  },
   amenitiesRow: {
   flexDirection: 'row',
   flexWrap: 'wrap',
@@ -107,6 +103,11 @@ const styles = StyleSheet.create({
   gap: 10,
   marginTop: 12,
 },
+  amenityText: {
+    color: "#000",
+    fontSize: 14,
+    fontFamily: fonts.PoppinsRegular,
+  },
 
 amenityCard: {
   width: '30%',

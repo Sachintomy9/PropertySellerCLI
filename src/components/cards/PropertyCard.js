@@ -377,12 +377,12 @@ const styles = StyleSheet.create({
   overlayText: {
     fontSize: 12,
     color: '#000',
-    fontFamily: fonts.PoppinsSemiBold,
+    fontFamily: fonts.PoppinsMedium,
   },
   overlaySubText: {
     fontSize: 12,
-    color: '#00',
-    fontFamily: fonts.PoppinsSemiBold,
+    color: '#000',
+    fontFamily: fonts.PoppinsMedium,
   },
   content: {
     padding: 12,

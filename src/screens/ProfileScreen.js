@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
   },
   heading: {
     fontSize: 25,
-    fontWeight: '600',
+    color: '#000',
     textAlign: 'center',
     marginVertical: 15,
     fontFamily: fonts.PoppinsSemiBold,
@@ -156,7 +156,13 @@ const styles = StyleSheet.create({
     color: '#D91E5B',
     fontWeight: '600',
   },
+  logoutText: {
+    color: '#000',
+    fontSize: 14,
+    fontFamily: fonts.PoppinsMedium,
+  },
   name: {
+    color: '#000',
     fontSize: 18,
     marginTop: 10,
     fontWeight: '500',
@@ -206,18 +212,20 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   sectionTitle: {
-    fontWeight: '600',
+    color: '#000',
     fontSize: 16,
     marginBottom: 10,
-    fontFamily: fonts.PoppinsSemiBold,
+    fontFamily: fonts.PoppinsMedium,
   },
   label: {
+    color: '#000',
     fontSize: 13,
     marginTop: 10,
     marginBottom: 4,
     fontFamily: fonts.PoppinsMedium,
   },
   input: {
+    color: '#000',
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 6,

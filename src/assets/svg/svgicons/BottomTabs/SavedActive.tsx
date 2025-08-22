@@ -3,8 +3,8 @@ import Svg, { Path } from "react-native-svg";
 import { StyleSheet } from "react-native";
 
 const SavedActive = ({ 
-  width = 30, 
-  height = 30,
+  width = 25, 
+  height = 25,
   color = "#FF1645",  // Now controllable via prop
   style,
   ...props 

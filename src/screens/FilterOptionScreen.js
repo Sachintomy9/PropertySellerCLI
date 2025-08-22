@@ -5,10 +5,10 @@ import {
   TouchableOpacity,
   ScrollView,
   StyleSheet,
-  SafeAreaView,
   TextInput,
   ActivityIndicator,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateFilter } from '../redux/slices/FilterSlice';
 import DropDownIcon from '../assets/svg/svgicons/Others/DropDownIcon';
@@ -123,22 +123,21 @@ const FilterOptionsScreen = ({ navigation }) => {
       setFilter('emirateName', '');
       setFilter('cityName', '');
       setFilter('category', '');
-      setFilter('type', 'Residential');
       setFilter('developers', '');
       setFilter('facilities', '');
       setFilter('propertyType', '');
-      setFilter('handoverYear', 2026);
+      setFilter('handoverYear', '');
       setFilter('handoverQuarter', '');
       setFilter('paymentPlan', '');
       setFilter('completionType', 'all');
       setFilter('projectTypeFirst', 'off-plan-projects');
       setFilter('projectTypeLast', 'all');
-      setFilter('minPrice', '');
-      setFilter('maxPrice', '');
-      setFilter('minArea', '');
-      setFilter('maxArea', '');
-      setFilter('beds', null);
-      setFilter('baths', null);
+      setFilter('priceMin', '');
+      setFilter('priceMax', '');
+      setFilter('areaMin', '');
+      setFilter('areaMax', '');
+      setFilter('beds', '');
+      setFilter('baths', '');
       setFilter('furnishType', 'all');
       setFilter('discount', 'all');
       // keep previous filters intact (or reset them too if desired)
@@ -186,6 +185,7 @@ const FilterOptionsScreen = ({ navigation }) => {
                 style={styles.dropdown}
                 placeholderStyle={styles.dropdownText}
                 selectedTextStyle={styles.dropdownText}
+                itemTextStyle={styles.dropdownItemText}
                 renderRightIcon={() => (
                   <View>
                     <DropDownIcon style={isEmirateOpen && { transform: [{ rotate: '180deg' }] }} />
@@ -215,6 +215,7 @@ const FilterOptionsScreen = ({ navigation }) => {
                 style={styles.dropdown}
                 placeholderStyle={styles.dropdownText}
                 selectedTextStyle={styles.dropdownText}
+                itemTextStyle={styles.dropdownItemText}
                 renderRightIcon={() => (
                 <DropDownIcon
                   style={isEmirateOpen ? { transform: [{ rotate: '180deg' }] } : {}}
@@ -308,13 +309,13 @@ const FilterOptionsScreen = ({ navigation }) => {
         <Text style={styles.subTitle}>Choose Year</Text>
         <View style={styles.yearCard}>
           <TouchableOpacity style={styles.chevBtn} onPress={() => changeYear('prev')}>
-            <Text style={styles.chevText}>‹</Text>
+            <Text style={styles.chevText}>{"<"}</Text>
           </TouchableOpacity>
 
           <Text style={styles.yearText}>{filters.handoverYear || 2026}</Text>
 
           <TouchableOpacity style={styles.chevBtn} onPress={() => changeYear('next')}>
-            <Text style={styles.chevText}>›</Text>
+            <Text style={styles.chevText}>{">"}</Text>
           </TouchableOpacity>
         </View>
 
@@ -513,7 +514,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 50,
     paddingHorizontal: 18,
     marginBottom: 8,
   },
@@ -530,12 +530,11 @@ const styles = StyleSheet.create({
   divider: {
     height: 1,
     backgroundColor: '#efefef',
-    marginHorizontal: 0,
-    marginBottom: 14,
   },
   scrollContent: {
     paddingHorizontal: 16,
-    paddingBottom: 40,
+    paddingBottom: 10,
+    paddingTop: 10,
   },
 
   /* Cards that match the rounded boxes in the design */
@@ -827,13 +826,8 @@ const styles = StyleSheet.create({
   discountTextActive: { color: PRIMARY_PINK, fontFamily: fonts.PoppinsMedium },
 
    bottomBar: {
-    position: "static",
-    bottom: 12,
-    left: 12,
-    right: 12,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: 0,
     alignItems: 'center',
     backgroundColor: '#fff',
     padding: 8,
@@ -884,6 +878,11 @@ dropdownText: {
   color: '#444',
   textAlign: 'center',
 },
+  dropdownItemText: {
+    color: '#000', // Black text color for dropdown items
+    fontFamily: fonts.PoppinsRegular,
+    fontSize: 14,
+  },
 iconWrapper: {
   marginLeft: 6,
   alignItems: "flex-start",

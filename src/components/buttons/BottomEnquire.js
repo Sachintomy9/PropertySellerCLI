@@ -1,23 +1,43 @@
 // components/BottomEnquireButton.js
-
 import React,{useState} from 'react';
 import { View, Text, TouchableOpacity,StyleSheet } from 'react-native';
 import EnquireIcon from '../../assets/svg/svgicons/Others/EnquireIcon'; // Replace with your actual SVG path
 import { fonts } from '../../../styles/fonts';
 import EnquiryPrompt from '../popups/EnquiryPrompt';
+import EnquirySubmitted from '../popups/EnquirySubmitted';
+import EnquiryExists from '../popups/EnquiryExists';
 const BottomEnquireButton = ({propertyId}) => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [enquiry,setEnquiry] = useState(false);
+  const [isSubmitted, setIsSubmitted] =useState(false);
 
   return (
     <View style={styles.container}>
+      {isSubmitted && (
+        <EnquirySubmitted
+          visible={isSubmitted}
+          onClose={() => (setIsSubmitted(false))}
+          message={"Enquiry"}
+        />
+      )}
+
+      {enquiry && (
+        <EnquiryExists
+          visible={enquiry}
+          onClose={() => (setEnquiry(false))}
+          message={"Enquiry"}
+        />
+      )}
       <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
-        <EnquireIcon style={{ fill: "#fff", width: 24, height: 24,}}/>
+        <EnquireIcon style={{ fill: "#fff", width: 24, height: 24,}}/> 
         <Text style={styles.text}>Enquire Now</Text>
       </TouchableOpacity>
       <EnquiryPrompt
         projectId={propertyId}
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
+        setIsSubmitted={setIsSubmitted}
+        setEnquiry={setEnquiry}
       />
     </View>
   );

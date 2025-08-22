@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Modal,
   FlatList,
+  Dimensions,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
@@ -18,6 +19,13 @@ import PropertySellerHeader from '../../assets/svg/svgimages/PropertySellerHeade
 import BellIcon from '../../assets/svg/svgicons/Others/BellIcon';
 import DropDownIcon2 from '../../assets/svg/svgicons/Others/DropDownIcon2';
 import { fetchNotifications } from '../../redux/slices/NotificationSlice';
+
+const { width, height } = Dimensions.get('window');
+
+// Responsive sizing functions
+const responsiveWidth = (w) => (width * w) / 100;
+const responsiveHeight = (h) => (height * h) / 100;
+const moderateScale = (size, factor = 0.5) => size + (responsiveWidth(size) - size) * factor;
 
 const TopHeader = () => {
   const dispatch = useDispatch();
@@ -126,10 +134,8 @@ const TopHeader = () => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
-    paddingTop: 20,
-    paddingHorizontal: 8,
-    paddingBottom: 0,
-    borderBottomWidth: 0,
+    paddingTop: responsiveHeight(1),
+    paddingHorizontal: responsiveWidth(2),
     borderBottomColor: '#e0e0e0',
   },
   topRow: {
@@ -137,25 +143,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 8,
-    top: -2.5,
+    top: responsiveHeight(-0.3),
   },
   currencyButton: {
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#E0E0E0',
-    borderRadius: 6,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    borderRadius: 4,
+    paddingVertical: responsiveHeight(0.7),
+    paddingHorizontal: responsiveWidth(3),
+    width: responsiveWidth(17),
+    height: responsiveHeight(4),
   },
   currencyText: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#000',
-    marginRight: 6,
   },
   logo: {
     alignSelf: 'center',
-    right: 12,
+    right: responsiveWidth(3.5),
   },
   notificationWrapper: {
     position: 'relative',
@@ -163,11 +170,11 @@ const styles = StyleSheet.create({
   },
   badge: {
     position: 'absolute',
-    top: -4,
-    right: -4,
+    top: responsiveHeight(-0.3),
+    right: responsiveWidth(-0.5),
     backgroundColor: '#FF2D55',
-    width: 18,
-    height: 18,
+    width: responsiveWidth(4.5),
+    height: responsiveHeight(2),
     borderRadius: 9,
     justifyContent: 'center',
     alignItems: 'center',
@@ -177,23 +184,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 10,
     fontWeight: 'bold',
-  },
-  searchBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    borderRadius: 6,
-    paddingHorizontal: 12,
-    height: 44,
-  },
-  searchIcon: {
-    marginRight: 8,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 14,
-    color: '#000',
   },
   searchInput1: {
     fontSize: 14,

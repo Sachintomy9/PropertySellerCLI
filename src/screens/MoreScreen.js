@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Animated,
   LayoutAnimation,
+  Dimensions,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { fonts } from '../../styles/fonts';
@@ -34,6 +35,13 @@ import OpenHouseIcon from '../assets/svg/svgicons/MoreScreen/OpenHouseIcon';
 import PrivacyIcon from '../assets/svg/svgicons/MoreScreen/PrivacyIcon';
 import TermsCondIcon from '../assets/svg/svgicons/MoreScreen/TermsCondIcon';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
+const { width, height } = Dimensions.get('window');
+
+// Responsive sizing functions
+const responsiveWidth = (w) => (width * w) / 100;
+const responsiveHeight = (h) => (height * h) / 100;
+const moderateScale = (size, factor = 0.5) => size + (responsiveWidth(size) - size) * factor;
 
 
 const Section = ({ items, onItemPress }) => (
@@ -144,7 +152,7 @@ const MoreScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={{ flex: 1, flexDirection: 'row' }}>
         
         <Animated.ScrollView
@@ -248,7 +256,7 @@ const MoreScreen = () => {
         </View>
 
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -256,6 +264,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F8F8F8',
+    marginTop: responsiveHeight(5),
   },
   header: {
     height: 60,
@@ -303,6 +312,7 @@ section: {
   },
   label: {
     fontSize: 16,
+    color: '#000',
     marginLeft:10,
   },
   spacer: {

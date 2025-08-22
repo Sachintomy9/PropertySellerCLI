@@ -248,7 +248,7 @@ const HomeScreen = () => {
       <View style={styles.topHeaderWrapper}>
         <TopHeader />
         <View style={styles.searchBar}>
-          <SearchIcon width={18} height={18} style={styles.searchIcon} />
+          <SearchIcon width={24} height={24} style={styles.searchIcon} />
 
           <TextInput
             style={styles.searchInput}
@@ -321,7 +321,7 @@ const HomeScreen = () => {
 
 const styles = StyleSheet.create({
   topHeaderWrapper: {
-    height: 155,
+    height: 144,
     backgroundColor: '#fff',
     paddingTop: 40,
     zIndex: 20,
@@ -333,7 +333,7 @@ const styles = StyleSheet.create({
   },
   filterBarWrapper: {
     position: 'absolute',
-    top: 145,
+    top: 133,
     left: 0,
     right: 0,
     height: 80,
@@ -360,7 +360,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     borderWidth: 1,
     borderColor: '#e0e0e0',
-    borderRadius: 6,
+    borderRadius: 4,
     paddingHorizontal: 12,
     width:"96%",
     height: 50,
@@ -370,20 +370,20 @@ const styles = StyleSheet.create({
   },
   searchIcon: {
     marginRight: 8,
-    top:15,
+    top: 14,
   },
   searchInput: {
     flex: 1,
     alignSelf:"center",
-    fontSize: 14,
+    fontSize: 16,
     color: '#000',
     width:"96%",
-    paddingHorizontal:10,
+    paddingHorizontal:5,
   },
   clearIcon: {
   marginLeft: 8,
   alignSelf: 'center',
-  top:12,
+  top: 15,
 },
 });
 

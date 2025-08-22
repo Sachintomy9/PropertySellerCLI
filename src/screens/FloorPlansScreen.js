@@ -9,9 +9,9 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useSelector } from 'react-redux';
+import { useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import MultipleButton from '../components/buttons/MultipleButton';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import ImageViewing from 'react-native-image-viewing';
 import HeaderTab from '../components/Headers/HeaderTab';
 import BackIcon from '../assets/svg/svgicons/Details/BackIcon';
@@ -19,6 +19,7 @@ import BackIcon from '../assets/svg/svgicons/Details/BackIcon';
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const FloorPlansScreen = () => {
+  const insets = useSafeAreaInsets();
   const property = useSelector((state) => state.property.property);
   const layoutImages = property?.layoutImages || [];
 
@@ -91,8 +92,9 @@ const FloorPlansScreen = () => {
             ]}
           />
         </View>
+        
       </SafeAreaView>
-
+      
       <MultipleButton />
 
       {/* Image Zoom Modal */}

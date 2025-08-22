@@ -13,6 +13,7 @@ import { fonts } from '../../styles/fonts';
 import api from '../services/ApiClient';
 import { useNavigation } from '@react-navigation/native';
 import { useProfile } from '../context/ProfileContext';
+import BackIcon from '../assets/svg/svgicons/Details/BackIcon';
 
 const EditProfileScreen = () => {
   const navigation = useNavigation();
@@ -46,6 +47,9 @@ const EditProfileScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <TouchableOpacity style={{position:'absolute',top:50,left:20,zIndex:10}} onPress={() => navigation.goBack()}>
+        <BackIcon />
+      </TouchableOpacity>
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>Edit Profile</Text>
         <Text style={styles.subtitle}>Personal Details</Text>

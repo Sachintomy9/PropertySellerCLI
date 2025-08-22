@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
+  Dimensions,
 } from 'react-native';
 import { fonts } from '../../../styles/fonts';
 import DropDownIcon from '../../assets/svg/svgicons/Others/DropDownIcon';
@@ -13,6 +14,14 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateFilter } from '../../redux/slices/FilterSlice';
 import { useNavigation } from '@react-navigation/native';
+
+const { width, height } = Dimensions.get('window');
+
+// Responsive sizing functions
+const responsiveWidth = (w) => (width * w) / 100;
+const responsiveHeight = (h) => (height * h) / 100;
+const moderateScale = (size, factor = 0.5) => size + (responsiveWidth(size) - size) * factor;
+
 
 const FilterBar = () => {
   const navigation = useNavigation();
@@ -104,6 +113,7 @@ const FilterBar = () => {
               placeholderStyle={styles.dropdownPlaceholder}
               selectedTextStyle={styles.dropdownSelectedText}
               renderRightIcon={() => null}
+              itemTextStyle={styles.dropdownItemText} 
             />
           )}
           <View style={[styles.customArrow, isEmirateOpen && styles.arrowUp]}>
@@ -131,6 +141,7 @@ const FilterBar = () => {
               placeholderStyle={styles.dropdownPlaceholder}
               selectedTextStyle={styles.dropdownSelectedText}
               renderRightIcon={() => null}
+              itemTextStyle={styles.dropdownItemText}
             />
           )}
           <View style={[styles.customArrow, isCityOpen && styles.arrowUp]}>
@@ -197,8 +208,8 @@ const styles = StyleSheet.create({
   filterRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 10,
-    height: 48,
+    marginTop: responsiveHeight(1),
+    height: responsiveHeight(5.5),
   },
   dropdownWrapper: {
     flex: 0.493,
@@ -220,30 +231,35 @@ arrowUp: {
   transform: [{ rotate: '180deg' }],
 },
   dropdownPlaceholder: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#444',
-    fontFamily: fonts.PoppinsMedium,
+    fontFamily: fonts.PoppinsRegular,
   },
   dropdownSelectedText: {
-    fontSize: 14,
-    fontFamily: fonts.PoppinsMedium,
+    fontSize: 13,
+    fontFamily: fonts.PoppinsRegular,
     color: '#444',
+  },
+  dropdownItemText: {
+    color: '#000', // Black text color for dropdown items
+    fontFamily: fonts.PoppinsRegular,
+    fontSize: 13,
   },
   categoryContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     backgroundColor: '#fff',
-    marginTop: 5,
-    padding: 5,
+    marginTop: responsiveHeight(0.5),
+    padding: responsiveWidth(1.3),
     justifyContent: 'space-between',
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 4,
   },
   categoryButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 3,
-    height: 40,
+    paddingVertical: responsiveHeight(1.3),
+    paddingHorizontal: responsiveWidth(2),
+    height: responsiveHeight(5),
     borderRadius: 4,
     backgroundColor: 'transparent',
   },
@@ -251,56 +267,56 @@ arrowUp: {
     backgroundColor: '#FFDDE5',
   },
   categoryText: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#444',
-    fontFamily: fonts.PoppinsMedium,
+    fontFamily: fonts.PoppinsRegular,
   },
   categoryTextSelected: {
     color: '#ff1645',
-    fontSize: 14,
-    fontFamily: fonts.PoppinsMedium,
+    fontSize: 13,
+    fontFamily: fonts.PoppinsRegular,
   },
   typeContainer: {
     flexDirection: "row",
     backgroundColor: '#fff',
-    marginTop: 5,
+    marginTop: responsiveHeight(0.5),
     borderRadius: 4,
-    padding: 5,
+    padding: responsiveWidth(1.3),
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 4,
-    height: 54,
+    height: responsiveHeight(6),
     width: "85%",
   },
   typeButton: {
     flex: 1,
     alignItems: 'center',
-    padding: 10,
+    padding: responsiveWidth(2.5),
     borderRadius: 4,
-    height: 40,
+    height: responsiveHeight(4.6),
   },
   typeButtonSelected: {
     backgroundColor: '#FFDDE5',
   },
   typeText: {
-    fontSize: 14,
-    fontFamily: fonts.PoppinsMedium,
+    fontSize: 13,
+    fontFamily: fonts.PoppinsRegular,
     color: '#444',
   },
   typeTextSelected: {
     color: '#ff1645',
-    fontSize: 14,
-    fontFamily: fonts.PoppinsMedium,
+    fontSize: 13,
+    fontFamily: fonts.PoppinsRegular,
  
   },
   filterIcon: {
-    padding: 10,
+    padding: responsiveWidth(2.5),
     backgroundColor: '#FFDDE5',
     borderRadius: 4,
-    marginLeft: 6,
-    width: "13%",
-    height: 54,
-    top: 5,
+    marginLeft: responsiveWidth(1.3),
+    height: responsiveHeight(6),
+    width: responsiveWidth(13),
+    top: responsiveHeight(0.5),
     borderWidth: 1,
     borderColor: '#ddd',
   },

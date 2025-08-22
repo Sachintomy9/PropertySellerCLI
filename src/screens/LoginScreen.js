@@ -241,6 +241,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.PoppinsRegular,
   },
   input: {
+    color: '#000',
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 6,

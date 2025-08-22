@@ -96,7 +96,7 @@ const CitiesScreen = () => {
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
           <TopHeader2 title={"Cities"}/>
           <View style={styles.searchBar}>
-            <SearchIcon width={18} height={18} style={styles.searchIcon} />
+            <SearchIcon width={23} height={23} style={styles.searchIcon} />
             <TextInput
               style={styles.searchInput}
               placeholder="Search.."

@@ -139,14 +139,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   title: {
+    color: '#000',
     fontSize: 22,
-    fontWeight: '700',
+    fontFamily: fonts.PoppinsSemiBold,
     textAlign: 'center',
     marginBottom: 20,
   },
   subText: {
+    color: '#333',
     fontSize: 14,
-    color: '#444',
     textAlign: 'center',
     marginBottom: 16,
     lineHeight: 20,
@@ -175,8 +176,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   topicHeader: {
+    color: '#000',
     fontSize: 18,
-    fontFamily: fonts.PoppinsSemiBold,
+    fontFamily: fonts.PoppinsMedium,
     marginBottom: 12,
   },
   card: {
@@ -193,6 +195,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   cardTitle: {
+    color: '#000',
     fontSize: 16,
     fontFamily: fonts.PoppinsMedium,
     marginLeft: 10,
@@ -225,6 +228,7 @@ faqHeader: {
   alignItems: 'center',
 },
 faqTitle: {
+  color: '#333',
   fontSize: 16,
   fontFamily: fonts.PoppinsMedium,
   flex: 1,

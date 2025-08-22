@@ -164,19 +164,19 @@ const FreelanceRegScreen = () => {
             <View style={{flexDirection:"column"}}>
                 <View style={{flexDirection: "row", width:"90%", alignSelf: "center"}}>
                     <TickIcon color='#ff1645' size={22}/>
-                    <Text style={{fontFamily: fonts.PoppinsRegular,fontSize: 15,paddingHorizontal: 12,paddingBottom: 20}}>
+                    <Text style={{color: '#333', fontFamily: fonts.PoppinsRegular,fontSize: 15,paddingHorizontal: 12,paddingBottom: 20}}>
                         Maximize Your Earnings – Keep 80% of your commission
                     </Text>
                 </View>
                 <View style={{flexDirection: "row", width:"90%", alignSelf: "center"}}>
                     <TickIcon color='#ff1645' size={22}/>
-                    <Text style={{fontFamily: fonts.PoppinsRegular,fontSize: 15,paddingHorizontal: 12,paddingBottom: 35}}>
+                    <Text style={{color: '#333', fontFamily: fonts.PoppinsRegular,fontSize: 15,paddingHorizontal: 12,paddingBottom: 35}}>
                         No Ties, No Limits – Work on your own terms
                     </Text>
                 </View>
                 <View style={{flexDirection: "row", width:"90%", alignSelf: "center"}}>
                     <TickIcon color='#ff1645' size={22}/>
-                    <Text style={{fontFamily: fonts.PoppinsRegular,fontSize: 15,paddingHorizontal: 12,paddingBottom: 30}}>
+                    <Text style={{color: '#333', fontFamily: fonts.PoppinsRegular,fontSize: 15,paddingHorizontal: 12,paddingBottom: 30}}>
                         Close Deals with Confidence – Use PropertySeller as your platform
                     </Text>
                 </View>
@@ -335,6 +335,7 @@ const styles = StyleSheet.create({
         textAlign: "center"
     },
     blogContent: {
+        color: '#333',
         fontFamily: fonts.PoppinsRegular,
         fontSize: 15,
         paddingHorizontal: 12,
@@ -435,12 +436,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     right: 10,
-    borderWidth: 0.5,
+    borderRightWidth: 1,
     borderColor: '#ddd',
     height: '100%',
     width: 45,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f9f9f9',
     justifyContent: 'center',
+    borderRadius: 4,
   },
   flagText: {
     fontSize: 18,

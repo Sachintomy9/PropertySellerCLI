@@ -17,16 +17,16 @@ const TopSearchHeader = () => {
       {/* Search Bar */}
       <View style={styles.filterRow}>
             <TouchableOpacity style={styles.dropdownBtn}>
-                <Text style={{fontSize: 12, left:25 , marginRight:25 ,fontFamily: fonts.PoppinsMedium,}}>Emirates</Text>
+                <Text style={{fontSize: 12,color: '#000', left:25 , marginRight:25 ,fontFamily: fonts.PoppinsRegular,}}>Emirates</Text>
                 <DropDownIcon />
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.dropdownBtn}>
-                <Text style={{fontSize: 12, left:40 , marginRight:40 ,fontFamily: fonts.PoppinsMedium,}}>City</Text>
+                <Text style={{fontSize: 12,color: '#000', left:40 , marginRight:40 ,fontFamily: fonts.PoppinsRegular,}}>City</Text>
                 <DropDownIcon />
             </TouchableOpacity>
             <TouchableOpacity style={styles.dropdownBtn}>
-                <Text style={{fontSize: 12, left:8 , marginRight:8 ,fontFamily: fonts.PoppinsMedium,}}>Property Types</Text>
+                <Text style={{fontSize: 12,color: '#000', left:8 , marginRight:8 ,fontFamily: fonts.PoppinsRegular,}}>Property Types</Text>
                 <DropDownIcon />
             </TouchableOpacity>
         </View>

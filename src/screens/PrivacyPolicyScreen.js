@@ -301,6 +301,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
   },
   subContent: { 
+    color: '#333',
     fontFamily: fonts.PoppinsRegular,
     fontSize: 17,
     paddingHorizontal: 12,
@@ -316,6 +317,7 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   blogContent: {
+    color: '#333',
     fontFamily: fonts.PoppinsRegular,
     fontSize: 17,
     paddingHorizontal: 12,

@@ -183,37 +183,37 @@ const CareersScreen = () => {
             <View style={{flexDirection:"column"}}>
                 <View style={{flexDirection: "row", width:"90%", alignSelf: "center"}}>
                     <TickIcon color='#ff1645' size={22}/>
-                    <Text style={{fontFamily: fonts.PoppinsRegular,fontSize: 15,paddingHorizontal: 12,paddingBottom: 20}}>
+                    <Text style={{color: '#333', fontFamily: fonts.PoppinsRegular,fontSize: 15,paddingHorizontal: 12,paddingBottom: 20}}>
                         High Commission Payouts – Earn top-tier commissions on every deal.
                     </Text>
                 </View>
                 <View style={{flexDirection: "row", width:"90%", alignSelf: "center"}}>
                     <TickIcon color='#ff1645' size={22}/>
-                    <Text style={{fontFamily: fonts.PoppinsRegular,fontSize: 15,paddingHorizontal: 12,paddingBottom: 35}}>
+                    <Text style={{color: '#333', fontFamily: fonts.PoppinsRegular,fontSize: 15,paddingHorizontal: 12,paddingBottom: 35}}>
                         Exclusive Developer Partnerships – Get access to premium off-plan projects.
                     </Text>
                 </View>
                 <View style={{flexDirection: "row", width:"90%", alignSelf: "center"}}>
                     <TickIcon color='#ff1645' size={22}/>
-                    <Text style={{fontFamily: fonts.PoppinsRegular,fontSize: 15,paddingHorizontal: 12,paddingBottom: 30}}>
+                    <Text style={{color: '#333', fontFamily: fonts.PoppinsRegular,fontSize: 15,paddingHorizontal: 12,paddingBottom: 30}}>
                         Quality Leads – Benefit from our lead generation system.
                     </Text>
                 </View>
                 <View style={{flexDirection: "row", width:"90%", alignSelf: "center"}}>
                     <TickIcon color='#ff1645' size={22}/>
-                    <Text style={{fontFamily: fonts.PoppinsRegular,fontSize: 15,paddingHorizontal: 12,paddingBottom: 30}}>
+                    <Text style={{color: '#333', fontFamily: fonts.PoppinsRegular,fontSize: 15,paddingHorizontal: 12,paddingBottom: 30}}>
                         Advanced Technology – Use our innovative PropertySeller platform for seamless property sales.
                     </Text>
                 </View>
                 <View style={{flexDirection: "row", width:"90%", alignSelf: "center"}}>
                     <TickIcon color='#ff1645' size={22}/>
-                    <Text style={{fontFamily: fonts.PoppinsRegular,fontSize: 15,paddingHorizontal: 12,paddingBottom: 30}}>
+                    <Text style={{color: '#333', fontFamily: fonts.PoppinsRegular,fontSize: 15,paddingHorizontal: 12,paddingBottom: 30}}>
                         Marketing Support – Professional branding, digital promotions, and personalized marketing tools.
                     </Text>
                 </View>
                 <View style={{flexDirection: "row", width:"90%", alignSelf: "center"}}>
                     <TickIcon color='#ff1645' size={22}/>
-                    <Text style={{fontFamily: fonts.PoppinsRegular,fontSize: 15,paddingHorizontal: 12,paddingBottom: 30}}>
+                    <Text style={{color: '#333', fontFamily: fonts.PoppinsRegular,fontSize: 15,paddingHorizontal: 12,paddingBottom: 30}}>
                        Training & Mentorship – Enhance your skills with expert coaching and workshops.
                     </Text>
                 </View>
@@ -224,37 +224,37 @@ const CareersScreen = () => {
             <View style={{flexDirection:"column"}}>
                 <View style={{flexDirection: "row", width:"90%", alignSelf: "center"}}>
                     <TickIcon color='#ff1645' size={22}/>
-                    <Text style={{fontFamily: fonts.PoppinsRegular,fontSize: 15,paddingHorizontal: 12,paddingBottom: 20}}>
+                    <Text style={{color: '#333', fontFamily: fonts.PoppinsRegular,fontSize: 15,paddingHorizontal: 12,paddingBottom: 20}}>
                         Passionate individuals with a drive for sales and success.
                     </Text>
                 </View>
                 <View style={{flexDirection: "row", width:"90%", alignSelf: "center"}}>
                     <TickIcon color='#ff1645' size={22}/>
-                    <Text style={{fontFamily: fonts.PoppinsRegular,fontSize: 15,paddingHorizontal: 12,paddingBottom: 35}}>
+                    <Text style={{color: '#333', fontFamily: fonts.PoppinsRegular,fontSize: 15,paddingHorizontal: 12,paddingBottom: 35}}>
                         Strong communication and negotiation skills.
                     </Text>
                 </View>
                 <View style={{flexDirection: "row", width:"90%", alignSelf: "center"}}>
                     <TickIcon color='#ff1645' size={22}/>
-                    <Text style={{fontFamily: fonts.PoppinsRegular,fontSize: 15,paddingHorizontal: 12,paddingBottom: 30}}>
+                    <Text style={{color: '#333', fontFamily: fonts.PoppinsRegular,fontSize: 15,paddingHorizontal: 12,paddingBottom: 30}}>
                         Knowledge of Dubai’s real estate market (preferred but not mandatory).
                     </Text>
                 </View>
                 <View style={{flexDirection: "row", width:"90%", alignSelf: "center"}}>
                     <TickIcon color='#ff1645' size={22}/>
-                    <Text style={{fontFamily: fonts.PoppinsRegular,fontSize: 15,paddingHorizontal: 12,paddingBottom: 30}}>
+                    <Text style={{color: '#333', fontFamily: fonts.PoppinsRegular,fontSize: 15,paddingHorizontal: 12,paddingBottom: 30}}>
                         Knowledge of Dubai’s real estate market (preferred but not mandatory).
                     </Text>
                 </View>
                 <View style={{flexDirection: "row", width:"90%", alignSelf: "center"}}>
                     <TickIcon color='#ff1645' size={22}/>
-                    <Text style={{fontFamily: fonts.PoppinsRegular,fontSize: 15,paddingHorizontal: 12,paddingBottom: 30}}>
+                    <Text style={{color: '#333', fontFamily: fonts.PoppinsRegular,fontSize: 15,paddingHorizontal: 12,paddingBottom: 30}}>
                         Marketing Support – Professional branding, digital promotions, and personalized marketing tools.
                     </Text>
                 </View>
                 <View style={{flexDirection: "row", width:"90%", alignSelf: "center"}}>
                     <TickIcon color='#ff1645' size={22}/>
-                    <Text style={{fontFamily: fonts.PoppinsRegular,fontSize: 15,paddingHorizontal: 12,paddingBottom: 30}}>
+                    <Text style={{color: '#333', fontFamily: fonts.PoppinsRegular,fontSize: 15,paddingHorizontal: 12,paddingBottom: 30}}>
                        Ability to build and maintain client relationships.
                     </Text>
                 </View>
@@ -420,6 +420,7 @@ const styles = StyleSheet.create({
         textAlign: "center"
     },
     blogContent: {
+        color: '#333',
         fontFamily: fonts.PoppinsRegular,
         fontSize: 15,
         paddingHorizontal: 12,
@@ -506,12 +507,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     right: 10,
-    borderWidth: 0.5,
+    borderRightWidth: 1,
     borderColor: '#ddd',
     height: '100%',
     width: 45,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f9f9f9',
     justifyContent: 'center',
+    borderRadius: 4,
   },
   flagText: {
     fontSize: 18,

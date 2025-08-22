@@ -495,6 +495,7 @@ const styles = StyleSheet.create({
     textAlign: "center"
   },
   blogContent: {
+    color: '#333',
     fontFamily: fonts.PoppinsRegular,
     fontSize: 15,
     paddingHorizontal: 12,

@@ -125,7 +125,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   categoryTitle: {
-    fontFamily: fonts.PoppinsSemiBold,
+    color: '#111',
+    fontFamily: fonts.PoppinsMedium,
     fontSize: 16,
     marginBottom: 4,
   },

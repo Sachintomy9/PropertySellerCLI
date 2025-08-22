@@ -1,4 +1,4 @@
-package com.propertyseller
+package com.propertyseller.app
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

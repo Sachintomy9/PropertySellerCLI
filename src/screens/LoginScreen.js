@@ -210,11 +210,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: 200,
+    // paddingTop: 200,
+    // display:"flex",
+    justifyContent:"center",
   },
   innerContainer: {
     padding: 20,
-    marginTop: 40,
+    // marginTop: 40,
   },
   heading: {
     fontSize: 28,

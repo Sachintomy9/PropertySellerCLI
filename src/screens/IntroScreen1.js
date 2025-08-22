@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View} from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { fonts } from '../../styles/fonts'
 import IntroButton from '../components/buttons/IntroButton'
@@ -16,19 +16,17 @@ const IntroScreen1 = () => {
     <View style={styles.container}>
       <Text style={styles.title}>All Properties in One Place.</Text>
       <Text style={styles.subtitle}>Explore off-plan projects, off-plan resale, secondary sales, and land. Both commercial and residential directly on PropertySeller.</Text>
-      <IntroScreen1svg   />
-      <IntroButton 
+      <IntroScreen1svg />
+      <IntroButton
         title="Next"
-        onPress={handleNextPress}/>
-
-
+        onPress={handleNextPress} />
     </View>
   )
 }
 
 
 const styles = StyleSheet.create({
-container: {
+  container: {
     flex: 1,
     paddingHorizontal: 24,
     justifyContent: 'center',
@@ -48,7 +46,7 @@ container: {
     color: '#555',
     marginBottom: 20,
   },
-  
+
 
 });
 

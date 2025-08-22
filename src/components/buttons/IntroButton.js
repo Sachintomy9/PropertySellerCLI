@@ -25,12 +25,13 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: 'row',
     backgroundColor: '#FF2D55',
-    paddingHorizontal: 160,
-    paddingVertical: 12,
+    width: '100%',
+    justifyContent:"center",
+    paddingVertical: 16,
     borderRadius: 30,
     alignItems: "center",
     position: 'absolute',
-    bottom: 40,
+    bottom: 50,
   },
   text: {
     color: '#fff',

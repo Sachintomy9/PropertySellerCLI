@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   Alert,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import { useNavigation,useRoute} from '@react-navigation/native';
 import { CodeField, Cursor, useBlurOnFulfill, useClearByFocusCell } from 'react-native-confirmation-code-field';
@@ -243,7 +244,7 @@ const styles = StyleSheet.create({
   codeFieldRoot: {
     justifyContent: 'space-between',
     width: '100%',
-    paddingHorizontal: 20,
+    paddingHorizontal: Platform.OS === "ios" ? 20 : 0,
   },
   cell: {
     width: 48,

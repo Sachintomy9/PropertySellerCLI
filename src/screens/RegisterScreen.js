@@ -417,15 +417,16 @@ export default RegisterScreen;
 
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
+  container: { flex: 1, backgroundColor: '#fff',paddingBottom: 50 },
   innerContainer: { padding: 20, paddingBottom: 50 , marginTop: 30, },
   heading: { fontSize: 28, color: '#000',fontFamily: fonts.PoppinsSemiBold, alignSelf: "center" },
-  subHeading: { fontSize: 14, color: '#666', marginTop: 4, marginBottom: 24,marginBottom: 10, alignSelf: "center", fontFamily: fonts.PoppinsRegular, },
+  subHeading: { fontSize: 14, color: '#666', marginTop: 4, marginBottom: 24,marginBottom: 10, alignSelf: "center", fontFamily: fonts.PoppinsRegular,textAlign:"center" },
   label: { fontSize: 14, color: '#000', marginBottom: 6, marginTop: 12 ,fontFamily: fonts.PoppinsRegular, },
   input: {
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 6,
+    color: '#000',
     padding: 12,
     fontSize: 14,
     backgroundColor: '#f9f9f9',
@@ -518,6 +519,8 @@ linkText: {
   phoneTextInput: {
     flex: 1,
     fontSize: 16,
+    color: '#000',
+
   },
 modalOverlay: {
     flex: 1,

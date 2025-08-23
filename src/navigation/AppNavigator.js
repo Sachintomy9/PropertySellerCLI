@@ -29,14 +29,14 @@ const AppNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {isAuthenticated ? ( <>
+        {isAuthenticated ? (<>
           <Stack.Screen name="Main" component={BottomTabs} />
           <Stack.Screen name="Login" component={require('../screens/LoginScreen').default} />
-            <Stack.Screen name="Register" component={require('../screens/RegisterScreen').default} />
-            <Stack.Screen name="Otp" component={require('../screens/OtpScreen').default} />
-            <Stack.Screen name="ForgotPassVerify" component={require('../screens/ForgotPassVerScreen').default} />
-            <Stack.Screen name="ForgotPassSet" component={require('../screens/ForgotPassSetScreen').default} />
-          </>
+          <Stack.Screen name="Register" component={require('../screens/RegisterScreen').default} />
+          <Stack.Screen name="Otp" component={require('../screens/OtpScreen').default} />
+          <Stack.Screen name="ForgotPassVerify" component={require('../screens/ForgotPassVerScreen').default} />
+          <Stack.Screen name="ForgotPassSet" component={require('../screens/ForgotPassSetScreen').default} />
+        </>
         ) : showIntro ? (
           <>
             <Stack.Screen name="Intro1" component={require('../screens/IntroScreen1').default} />
@@ -65,12 +65,14 @@ const AppNavigator = () => {
           // slide from bottom
           cardStyleInterpolator: ({ current, layouts }) => {
             return {
-              cardStyle: {transform: [{translateY: current.progress.interpolate({inputRange: [0, 1],outputRange: [layouts.screen.height, 0],}),},],},
+              cardStyle: { transform: [{ translateY: current.progress.interpolate({ inputRange: [0, 1], outputRange: [layouts.screen.height, 0], }), },], },
 
-              overlayStyle: {opacity: current.progress.interpolate({inputRange: [0, 1],outputRange: [0, 0.5],}),},};},
-             gestureDirection: 'vertical',presentation: 'transparentModal', // gives overlay effect
-          }}
-           />
+              overlayStyle: { opacity: current.progress.interpolate({ inputRange: [0, 1], outputRange: [0, 0.5], }), },
+            };
+          },
+          gestureDirection: 'vertical', presentation: 'transparentModal', // gives overlay effect
+        }}
+        />
         <Stack.Screen name="Saved" component={require('../screens/SavedScreen').default} />
         <Stack.Screen name="EditProfile" component={require('../screens/EditProfileScreen').default} />
         <Stack.Screen name="ChangePass" component={require('../screens/ChangePasswordScreen').default} />

@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { View, Animated, FlatList, StyleSheet, ActivityIndicator,TextInput,TouchableOpacity } from 'react-native';
+import { View, Animated, FlatList, StyleSheet, ActivityIndicator, TextInput, TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 import TopHeader from '../components/Headers/TopHeader';
 import FilterBar from '../components/others/FilterBar';
@@ -9,6 +9,7 @@ import AdCard from '../components/cards/AdCard';
 import SearchIcon from '../assets/svg/svgicons/Others/SearchIcon';
 import EmptyState from '../components/others/EmptyScreen';
 import CloseIcon from '../assets/svg/svgicons/ProfileScreen/CloseIcon';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 const HomeScreen = () => {
   const filters = useSelector((state) => state.filters);
@@ -23,16 +24,16 @@ const HomeScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
 
- 
-  const [ adPage, setAdPage] = useState(1);
+
+  const [adPage, setAdPage] = useState(1);
   const [totalAdPages, setTotalAdPages] = useState(1);
   const [isFetchingAdMore, setIsFetchingAdMore] = useState(false);
 
-  const filterBarTranslateY = useRef(new Animated.Value(0)).current;
+  // const filterBarTranslateY = useRef(new Animated.Value(0)).current;
   const lastScrollY = useRef(0);
   const isFilterBarHidden = useRef(false);
   const [ads, setAds] = useState([]);
-  const [adIndex, setAdIndex] = useState(0);  
+  const [adIndex, setAdIndex] = useState(0);
   const [combinedData, setCombinedData] = useState([]);
 
 
@@ -66,29 +67,29 @@ const HomeScreen = () => {
       } else {
         setIsFetchingMore(true);
       }
-        let queryParams = new URLSearchParams({
-          page: pageNum,
-          limit: 10,
-          search: searchQuery ? searchQuery : '',
-          developers: filters.developers || '',
-          facilities: filters.facilities || '',
-          completionType: filters.completionType || 'all',
-          projectTypeFirst: filters.projectTypeFirst || '',
-          projectTypeLast: filters.projectTypeLast || '',
-          emirate: filters.emirateName || '',
-          city: filters.cityName || '',
-          priceMin: filters.priceMin || '',
-          priceMax: filters.priceMax || '',
-          areaMin: filters.areaMin || '',
-          areaMax: filters.areaMax || '',
-          beds: filters.beds || '',
-          year: filters.handoverYear || '',
-          qtr: filters.handoverQuarter || '',
-          paymentPlan: filters.paymentPlan || '',
-          furnishing: filters.furnishing || 'all',
-          discount: filters.discount || 'all',
-          propertyType: filters.propertyType || '',
-        });
+      let queryParams = new URLSearchParams({
+        page: pageNum,
+        limit: 10,
+        search: searchQuery ? searchQuery : '',
+        developers: filters.developers || '',
+        facilities: filters.facilities || '',
+        completionType: filters.completionType || 'all',
+        projectTypeFirst: filters.projectTypeFirst || '',
+        projectTypeLast: filters.projectTypeLast || '',
+        emirate: filters.emirateName || '',
+        city: filters.cityName || '',
+        priceMin: filters.priceMin || '',
+        priceMax: filters.priceMax || '',
+        areaMin: filters.areaMin || '',
+        areaMax: filters.areaMax || '',
+        beds: filters.beds || '',
+        year: filters.handoverYear || '',
+        qtr: filters.handoverQuarter || '',
+        paymentPlan: filters.paymentPlan || '',
+        furnishing: filters.furnishing || 'all',
+        discount: filters.discount || 'all',
+        propertyType: filters.propertyType || '',
+      });
 
       const url = `https://v1-api.propertyseller.com/api/v1/projects/?${queryParams.toString()}`;
       console.log('Fetching properties from:', url);
@@ -117,7 +118,7 @@ const HomeScreen = () => {
 
   const fetchAds = async (pageNum = 1, isRefreshing = false) => {
     try {
-        if (isRefreshing) {
+      if (isRefreshing) {
         setRefreshing(true);
       } else if (pageNum === 1) {
         setLoading1(true);
@@ -139,7 +140,7 @@ const HomeScreen = () => {
       }
     } catch (err) {
       console.error('Error fetching ads:', err);
-    }finally {
+    } finally {
       setLoading1(false);
       setRefreshing(false);
       setIsFetchingAdMore(false);
@@ -152,12 +153,12 @@ const HomeScreen = () => {
   }, []);
 
   useEffect(() => {
-  const delayDebounce = setTimeout(() => {
-    fetchProperties(1); // Trigger a fresh search
-  }, 500); // debounce delay
+    const delayDebounce = setTimeout(() => {
+      fetchProperties(1); // Trigger a fresh search
+    }, 500); // debounce delay
 
-  return () => clearTimeout(delayDebounce); // cleanup timeout
-}, [searchQuery, filters]);
+    return () => clearTimeout(delayDebounce); // cleanup timeout
+  }, [searchQuery, filters]);
 
   const mergeAdsIntoProperties = (propertyList) => {
     const mixedList = [];
@@ -170,31 +171,31 @@ const HomeScreen = () => {
       }
     }
 
-  return mixedList;
-};
-
-  const handleScroll = (event) => {
-    const currentY = event.nativeEvent.contentOffset.y;
-    const deltaY = currentY - lastScrollY.current;
-
-    if (deltaY > 5 && !isFilterBarHidden.current) {
-      Animated.timing(filterBarTranslateY, {
-        toValue: -180,
-        duration: 500,
-        useNativeDriver: true,
-      }).start();
-      isFilterBarHidden.current = true;
-    } else if (deltaY < -5 && isFilterBarHidden.current) {
-      Animated.timing(filterBarTranslateY, {
-        toValue: 0,
-        duration: 200,
-        useNativeDriver: true,
-      }).start();
-      isFilterBarHidden.current = false;
-    }
-
-    lastScrollY.current = currentY;
+    return mixedList;
   };
+
+  // const handleScroll = (event) => {
+  //   const currentY = event.nativeEvent.contentOffset.y;
+  //   const deltaY = currentY - lastScrollY.current;
+
+  //   if (deltaY > 5 && !isFilterBarHidden.current) {
+  //     Animated.timing(filterBarTranslateY, {
+  //       toValue: -180,
+  //       duration: 500,
+  //       useNativeDriver: true,
+  //     }).start();
+  //     isFilterBarHidden.current = true;
+  //   } else if (deltaY < -5 && isFilterBarHidden.current) {
+  //     Animated.timing(filterBarTranslateY, {
+  //       toValue: 0,
+  //       duration: 200,
+  //       useNativeDriver: true,
+  //     }).start();
+  //     isFilterBarHidden.current = false;
+  //   }
+
+  //   lastScrollY.current = currentY;
+  // };
 
   const handleLoadMore = () => {
     if (!isFetchingMore && page < totalPages) {
@@ -207,123 +208,173 @@ const HomeScreen = () => {
     if (!isFetchingMore && !isFetchingAdMore) return null;
     return (
       <View style={{ paddingVertical: 20 }}>
-        <ActivityIndicator size="small" color={"#ff1645"}/>
+        <ActivityIndicator size="small" color={"#ff1645"} />
       </View>
     );
   };
 
   const renderItem = ({ item }) => {
-  if (item.type === 'ad') {
-    return <AdCard ads={ads} />;
-  }
+    if (item.type === 'ad') {
+      return <AdCard ads={ads} />;
+    }
 
-  const property = item.data;
+    const property = item.data;
+    return (
+      <PropertyCard
+        title={property.projectTitle}
+        propType={property.propertyTypes}
+        projectType={property.projectType}
+        type={property.type}
+        discount={property.discount}
+        handOverQuarter={property.handOverQuarter}
+        handOverYear={property.handOverYear}
+        paymentPlan={property.paymentPlan}
+        price={property.priceInAED}
+        rooms={property.type}
+        floors={property.totalFloors}
+        baths="–"
+        area="–"
+        sqfeet={property.squareFeet}
+        propertyId={property._id}
+        location={property.address}
+        createdAt={property.createdAt}
+        image={property.mainImages}
+      />
+    );
+  };
+
+  const filterBarOpacity = scrollY.interpolate({
+    inputRange: [0, 200],
+    outputRange: [1, 0],
+    extrapolate: 'clamp',
+  });
+
+  const filterBarTranslateY = scrollY.interpolate({
+    inputRange: [0, 200],
+    outputRange: [0, -50], // slide up 50px
+    extrapolate: 'clamp',
+  });
+
+  const [showFilterBar, setShowFilterBar] = useState(true);
+
+  useEffect(() => {
+    const listenerId = scrollY.addListener(({ value }) => {
+      if (value > 200 && showFilterBar) {
+        setShowFilterBar(false); // remove from render
+      } else if (value <= 200 && !showFilterBar) {
+        setShowFilterBar(true); // add back
+      }
+    });
+
+    return () => {
+      scrollY.removeListener(listenerId);
+    };
+  }, [scrollY, showFilterBar]);
+
+  // console.log(filterBarHeight, 'filterBarHeight')
+
+
   return (
-    <PropertyCard
-      title={property.projectTitle}
-      propType={property.propertyTypes}
-      projectType={property.projectType}
-      type={property.type}
-      discount={property.discount}
-      handOverQuarter={property.handOverQuarter}
-      handOverYear={property.handOverYear}
-      paymentPlan={property.paymentPlan}
-      price={property.priceInAED}
-      rooms={property.type}
-      floors={property.totalFloors}
-      baths="–"
-      area="–"
-      sqfeet={property.squareFeet}
-      propertyId={property._id}
-      location={property.address}
-      createdAt={property.createdAt}
-      image={property.mainImages}
-    />
-  );
-};
+    <SafeAreaProvider>
 
+      <SafeAreaView style={{ flex: 1, backgroundColor: '#279f5fff' }}>
+        <View style={{ flex: 1, backgroundColor: '#fff' }}>
 
-  return (
-    <View style={{ flex: 1, backgroundColor: '#fff' }}>
-      <View style={styles.topHeaderWrapper}>
-        <TopHeader />
-        <View style={styles.searchBar}>
-          <SearchIcon width={24} height={24} style={styles.searchIcon} />
+          <View style={styles.topHeaderWrapper}>
 
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search.."
-            placeholderTextColor="#999"
-            value={searchQuery}
-            onChangeText={text => setSearchQuery(text)}
+            {/* Scroll content here */}
+            <TopHeader />
+            <View style={[styles.searchBar, {
+              marginBottom: showFilterBar ? 0 : 8
+            }]}>
+              <SearchIcon width={24} height={24} style={styles.searchIcon} />
+
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Search.."
+                placeholderTextColor="#999"
+                value={searchQuery}
+                onChangeText={text => setSearchQuery(text)}
+              />
+
+              {searchQuery.length > 0 && (
+                <TouchableOpacity onPress={() => {
+                  setSearchQuery('');
+                  fetchProperties(1); // Reset to original data
+                }}>
+                  <CloseIcon width={18} height={18} style={styles.clearIcon} />
+                </TouchableOpacity>
+              )}
+            </View>
+
+            {showFilterBar && (
+              <Animated.View
+                style={{
+                  opacity: filterBarOpacity,
+                  transform: [{ translateY: filterBarTranslateY }],
+                }}
+              >
+                <FilterBar />
+              </Animated.View>
+            )}
+
+          </View>
+
+          <FlatList
+            data={combinedData}
+            keyExtractor={(item, index) =>
+              item.type === 'ad'
+                ? `ad-${item.data?._id || index}-${index}`
+                : `property-${item.data?._id || index}-${index}`
+            }
+            renderItem={renderItem}
+            contentContainerStyle={{ paddingTop: 8 }}
+            scrollEventThrottle={16}
+            onScroll={Animated.event(
+              [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+              {
+                useNativeDriver: false,
+                // listener: handleScroll, // This runs your filterBar animation logic
+              }
+            )}
+            onEndReached={handleLoadMore}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={renderFooter}
+            refreshing={refreshing}
+            onRefresh={() => fetchProperties(1, true)}
+            onContentSizeChange={(w, h) => setContentHeight(h)}
+            onLayout={e => setScrollViewHeight(e.nativeEvent.layout.height)}
+            ListEmptyComponent={
+              !loading && !loading1 && !refreshing && properties.length === 0 ? <EmptyState /> : null
+            }
           />
 
-          {searchQuery.length > 0 && (
-            <TouchableOpacity onPress={() => {
-              setSearchQuery('');
-              fetchProperties(1); // Reset to original data
-            }}>
-              <CloseIcon width={18} height={18} style={styles.clearIcon} />
-            </TouchableOpacity>
-          )}
+          <View style={styles.scrollbarTrack}>
+            <Animated.View
+              style={[
+                styles.scrollbarThumb,
+                {
+                  height: thumbHeight,
+                  transform: [{ translateY }],
+                },
+              ]}
+            />
+          </View>
         </View>
-      </View>
-      {/* Search Bar */}
-      
+      </SafeAreaView>
+    </SafeAreaProvider>
 
-      <Animated.View style={[styles.filterBarWrapper, { transform: [{ translateY: filterBarTranslateY }] }]}>
-        <FilterBar />
-      </Animated.View>
 
-      <FlatList
-        data={combinedData}
-        keyExtractor={(item, index) =>
-          item.type === 'ad'
-            ? `ad-${item.data?._id || index}-${index}`
-            : `property-${item.data?._id || index}-${index}`
-}
-        renderItem={renderItem}
-        contentContainerStyle={{ paddingTop: 176 }}
-        scrollEventThrottle={16}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          {
-            useNativeDriver: false,
-            listener: handleScroll, // This runs your filterBar animation logic
-          }
-        )}
-        onEndReached={handleLoadMore}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={renderFooter}
-        refreshing={refreshing}
-        onRefresh={() => fetchProperties(1, true)}
-        onContentSizeChange={(w, h) => setContentHeight(h)}
-        onLayout={e => setScrollViewHeight(e.nativeEvent.layout.height)}
-        ListEmptyComponent={
-          !loading && !loading1 && !refreshing && properties.length === 0 ? <EmptyState /> : null
-        }
-      />
-
-      <View style={styles.scrollbarTrack}>
-        <Animated.View
-          style={[
-            styles.scrollbarThumb,
-            {
-              height: thumbHeight,
-              transform: [{ translateY }],
-            },
-          ]}
-        />
-      </View>
-    </View>
   );
 };
 
 const styles = StyleSheet.create({
   topHeaderWrapper: {
-    height: 144,
+    // height: 144,
+    // paddingVertical: 10,
     backgroundColor: '#fff',
-    paddingTop: 40,
+    // paddingTop: 40,
+    gap: 10,
     zIndex: 20,
     elevation: 5,
     shadowColor: '#fff',
@@ -332,15 +383,15 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   filterBarWrapper: {
-    position: 'absolute',
-    top: 133,
-    left: 0,
-    right: 0,
-    height: 80,
-    zIndex: 10,
-    backgroundColor: '#fff',
-    },
-    scrollbarTrack: {
+    // position: 'absolute',
+    // top: 133,
+    // left: 0,
+    // right: 0,
+    // height: 80,
+    // zIndex: 10,
+    // backgroundColor: '#fff',
+  },
+  scrollbarTrack: {
     position: 'absolute',
     right: 2,
     top: 180, // same as paddingTop
@@ -362,29 +413,34 @@ const styles = StyleSheet.create({
     borderColor: '#e0e0e0',
     borderRadius: 4,
     paddingHorizontal: 12,
-    width:"96%",
-    height: 50,
-    zIndex:22,
-    backgroundColor:"#fff",
-    top:-5,
+    width: "96%",
+    justifyContent: "center",
+    alignContent: "center",
+    alignItems: "center",
+    height: 48,
+    zIndex: 22,
+    backgroundColor: "#fff",
+    // top:-5,
+    // marginBottom:10,
   },
   searchIcon: {
     marginRight: 8,
-    top: 14,
+    // top: 14,
   },
   searchInput: {
     flex: 1,
-    alignSelf:"center",
+    alignSelf: "center",
     fontSize: 16,
     color: '#000',
-    width:"96%",
-    paddingHorizontal:5,
+    // backgroundColor:"red",
+    width: "96%",
+    paddingHorizontal: 0,
   },
   clearIcon: {
-  marginLeft: 8,
-  alignSelf: 'center',
-  top: 15,
-},
+    marginLeft: 8,
+    alignSelf: 'center',
+    // top: 15,
+  },
 });
 
 export default HomeScreen;

@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -40,7 +40,7 @@ const FilterBar = () => {
 
   const [selectedEmirateId, setSelectedEmirateId] = useState(null);
 
-    // Fetch emirates on component mount
+  // Fetch emirates on component mount
   useEffect(() => {
     const fetchEmirates = async () => {
       try {
@@ -88,12 +88,20 @@ const FilterBar = () => {
   }, [selectedEmirateId]);
 
   return (
-    <View style={{ backgroundColor: '#fff', paddingHorizontal: 8, paddingBottom: 67, paddingTop: 2 }}>
+    <View style={{
+      backgroundColor: 'transparent',
+      paddingHorizontal: 8,
+      // paddingBottom: responsiveHeight(2),
+      // paddingBottom: 67, 
+      // height:responsiveHeight(10),
+      gap:10,
+      // paddingTop: 2
+    }}>
       {/* Emirates & City Dropdown Row */}
       <View style={styles.filterRow}>
         <View style={styles.dropdownWrapper}>
           {loadingEmirates ? (
-            <ActivityIndicator size="small" color= "#ff1645" style={{ marginTop: 10 }} />
+            <ActivityIndicator size="small" color="#ff1645" style={{ marginTop: 10 }} />
           ) : (
             <Dropdown
               data={emirates}
@@ -113,7 +121,7 @@ const FilterBar = () => {
               placeholderStyle={styles.dropdownPlaceholder}
               selectedTextStyle={styles.dropdownSelectedText}
               renderRightIcon={() => null}
-              itemTextStyle={styles.dropdownItemText} 
+              itemTextStyle={styles.dropdownItemText}
             />
           )}
           <View style={[styles.customArrow, isEmirateOpen && styles.arrowUp]}>
@@ -152,32 +160,32 @@ const FilterBar = () => {
 
       {/* Categories */}
 
-        <View style={styles.categoryContainer}>
-          {[
-            { label: "Off-Plan projects", value: "off-plan-projects" },
-            { label: "Off-Plan Resale", value: "off-plan-resale" },
-            { label: "Secondary", value: "off-plan-secondary" },
-            { label: "Land", value: "off-plan-land" },
-          ].map(({ label, value }) => {
-            const active = filters.projectTypeFirst === value;
-            return (
-              <TouchableOpacity
-                key={value}
-                onPress={() => dispatch(updateFilter({ key: 'projectTypeFirst', value }))}
-                style={[styles.categoryButton, active && styles.categoryButtonSelected]}
-              >
-                <Text style={[styles.categoryText, active && styles.categoryTextSelected]}>{label}</Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
+      <View style={styles.categoryContainer}>
+        {[
+          { label: "Off-Plan Projects", value: "off-plan-projects" },
+          { label: "Off-Plan Resale", value: "off-plan-resale" },
+          { label: "Secondary", value: "off-plan-secondary" },
+          { label: "Land", value: "off-plan-land" },
+        ].map(({ label, value }) => {
+          const active = filters.projectTypeFirst === value;
+          return (
+            <TouchableOpacity
+              key={value}
+              onPress={() => dispatch(updateFilter({ key: 'projectTypeFirst', value }))}
+              style={[styles.categoryButton, active && styles.categoryButtonSelected]}
+            >
+              <Text style={[styles.categoryText, active && styles.categoryTextSelected]}>{label}</Text>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
 
 
       {/* Type Tabs + Filter Icon */}
-      <View style={{ flex: 1, flexDirection: "row" }}>
+      <View style={{ flexDirection: "row"}}>
 
-      <View style={styles.typeContainer}>
-          {[{ label: "All", value: "all" },{ label: "Residential", value: "residential" },{ label: "Commercial ", value: "commercial" },].map(({ label, value }) => {
+        <View style={styles.typeContainer}>
+          {[{ label: "All", value: "all" }, { label: "Residential", value: "residential" }, { label: "Commercial ", value: "commercial" },].map(({ label, value }) => {
             const active = filters.projectTypeLast === value;
             return (
               <TouchableOpacity
@@ -193,7 +201,7 @@ const FilterBar = () => {
 
 
         <TouchableOpacity style={styles.filterIcon} onPress={() => navigation.navigate('FilterOption')}>
-          <View style={{ alignSelf: "center", top: 4 }}>
+          <View style={{ alignSelf: "center" }}>
             <FilterIcon />
           </View>
         </TouchableOpacity>
@@ -208,7 +216,8 @@ const styles = StyleSheet.create({
   filterRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: responsiveHeight(1),
+    // backgroundColor: "red",
+    // marginTop: responsiveHeight(1),
     height: responsiveHeight(5.5),
   },
   dropdownWrapper: {
@@ -218,18 +227,20 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   dropdown: {
-    height: 48,
+    height: "100%",
+    borderRadius: 4,
     paddingHorizontal: 10,
+    backgroundColor: "#fff",
   },
   customArrow: {
-  position: 'absolute',
-  right: 12,
-  top: 12,
-  zIndex: 2,
-},
-arrowUp: {
-  transform: [{ rotate: '180deg' }],
-},
+    position: 'absolute',
+    right: 12,
+    top: 12,
+    zIndex: 2,
+  },
+  arrowUp: {
+    transform: [{ rotate: '180deg' }],
+  },
   dropdownPlaceholder: {
     fontSize: 13,
     color: '#444',
@@ -247,45 +258,54 @@ arrowUp: {
   },
   categoryContainer: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
+    // flexWrap: 'wrap',
     backgroundColor: '#fff',
-    marginTop: responsiveHeight(0.5),
-    padding: responsiveWidth(1.3),
+    // marginTop: responsiveHeight(0.5),
+    // padding: responsiveWidth(1.3),
     justifyContent: 'space-between',
     borderWidth: 1,
     borderColor: '#ddd',
+
     borderRadius: 4,
+    paddingVertical:3,
+    paddingHorizontal:responsiveWidth(1),
   },
   categoryButton: {
     paddingVertical: responsiveHeight(1.3),
-    paddingHorizontal: responsiveWidth(2),
+    paddingLeft: responsiveWidth(1),
+    paddingRight: responsiveWidth(1),
+    width:"auto",
     height: responsiveHeight(5),
     borderRadius: 4,
     backgroundColor: 'transparent',
   },
   categoryButtonSelected: {
     backgroundColor: '#FFDDE5',
+    paddingLeft:responsiveWidth(4),
+    paddingRight:responsiveWidth(4),
   },
   categoryText: {
-    fontSize: 13,
+    fontSize: 12,
     color: '#444',
     fontFamily: fonts.PoppinsRegular,
   },
   categoryTextSelected: {
     color: '#ff1645',
-    fontSize: 13,
+    fontSize: 12,
     fontFamily: fonts.PoppinsRegular,
   },
   typeContainer: {
     flexDirection: "row",
     backgroundColor: '#fff',
-    marginTop: responsiveHeight(0.5),
+    // marginTop: responsiveHeight(0.5),
     borderRadius: 4,
-    padding: responsiveWidth(1.3),
+    // padding: responsiveWidth(1.3),
     borderWidth: 1,
+    paddingVertical:3,
     borderColor: '#ddd',
     borderRadius: 4,
-    height: responsiveHeight(6),
+    paddingHorizontal:responsiveWidth(1),
+    // height: responsiveHeight(5),
     width: "85%",
   },
   typeButton: {
@@ -293,7 +313,7 @@ arrowUp: {
     alignItems: 'center',
     padding: responsiveWidth(2.5),
     borderRadius: 4,
-    height: responsiveHeight(4.6),
+    height: responsiveHeight(5),
   },
   typeButtonSelected: {
     backgroundColor: '#FFDDE5',
@@ -307,16 +327,19 @@ arrowUp: {
     color: '#ff1645',
     fontSize: 13,
     fontFamily: fonts.PoppinsRegular,
- 
+
   },
   filterIcon: {
-    padding: responsiveWidth(2.5),
+    justifyContent:"center",
+    alignItems:"center",
+    // padding: responsiveWidth(2.5),
     backgroundColor: '#FFDDE5',
     borderRadius: 4,
+    flex:1,
     marginLeft: responsiveWidth(1.3),
-    height: responsiveHeight(6),
-    width: responsiveWidth(13),
-    top: responsiveHeight(0.5),
+    // height: responsiveHeight(6),
+    // width: responsiveWidth(13),
+    // top: responsiveHeight(0.5),
     borderWidth: 1,
     borderColor: '#ddd',
   },

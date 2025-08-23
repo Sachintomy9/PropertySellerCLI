@@ -9,6 +9,7 @@ import {
   Modal,
   FlatList,
   Dimensions,
+  Platform,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
@@ -25,7 +26,6 @@ const { width, height } = Dimensions.get('window');
 // Responsive sizing functions
 const responsiveWidth = (w) => (width * w) / 100;
 const responsiveHeight = (h) => (height * h) / 100;
-const moderateScale = (size, factor = 0.5) => size + (responsiveWidth(size) - size) * factor;
 
 const TopHeader = () => {
   const dispatch = useDispatch();
@@ -134,7 +134,9 @@ const TopHeader = () => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
-    paddingTop: responsiveHeight(1),
+    paddingTop: responsiveHeight(1.5),
+    
+    // paddingBottom: responsiveHeight(Platform.OS === "ios" ? 1 : 1),
     paddingHorizontal: responsiveWidth(2),
     borderBottomColor: '#e0e0e0',
   },
@@ -142,8 +144,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 8,
-    top: responsiveHeight(-0.3),
+    // marginBottom: 8,
+    // top: responsiveHeight(-0.3),
   },
   currencyButton: {
     flexDirection: 'row',
@@ -151,10 +153,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#E0E0E0',
     borderRadius: 4,
-    paddingVertical: responsiveHeight(0.7),
-    paddingHorizontal: responsiveWidth(3),
-    width: responsiveWidth(17),
-    height: responsiveHeight(4),
+    gap: 10,
+    paddingVertical: responsiveHeight(0.4),
+    paddingLeft: responsiveWidth(3),
+    paddingRight: responsiveWidth(2),
+    // width: responsiveWidth(17),
+    // height: responsiveHeight(4),
   },
   currencyText: {
     fontSize: 12,
@@ -162,7 +166,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     alignSelf: 'center',
-    right: responsiveWidth(3.5),
+    right: responsiveWidth(5),
   },
   notificationWrapper: {
     position: 'relative',

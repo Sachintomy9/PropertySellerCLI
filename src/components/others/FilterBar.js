@@ -90,11 +90,8 @@ const FilterBar = () => {
   return (
     <View style={{
       backgroundColor: 'transparent',
-      paddingHorizontal: 8,
-      // paddingBottom: responsiveHeight(2),
-      // paddingBottom: 67, 
-      // height:responsiveHeight(10),
-      gap:10,
+      paddingHorizontal: responsiveWidth(2),
+      gap:4,
       // paddingTop: 2
     }}>
       {/* Emirates & City Dropdown Row */}
@@ -258,16 +255,12 @@ const styles = StyleSheet.create({
   },
   categoryContainer: {
     flexDirection: 'row',
-    // flexWrap: 'wrap',
     backgroundColor: '#fff',
-    // marginTop: responsiveHeight(0.5),
-    // padding: responsiveWidth(1.3),
     justifyContent: 'space-between',
     borderWidth: 1,
     borderColor: '#ddd',
-
     borderRadius: 4,
-    paddingVertical:3,
+    paddingVertical:4,
     paddingHorizontal:responsiveWidth(1),
   },
   categoryButton: {
@@ -301,7 +294,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     // padding: responsiveWidth(1.3),
     borderWidth: 1,
-    paddingVertical:3,
+    paddingVertical:4,
     borderColor: '#ddd',
     borderRadius: 4,
     paddingHorizontal:responsiveWidth(1),
@@ -313,6 +306,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: responsiveWidth(2.5),
     borderRadius: 4,
+    justifyContent: 'center',
     height: responsiveHeight(5),
   },
   typeButtonSelected: {

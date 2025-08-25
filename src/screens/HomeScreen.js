@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { View, Animated, FlatList, StyleSheet, ActivityIndicator, TextInput, TouchableOpacity } from 'react-native';
+import { View, Animated, FlatList, StyleSheet, ActivityIndicator, TextInput, TouchableOpacity, Dimensions, StatusBar } from 'react-native';
 import { useSelector } from 'react-redux';
 import TopHeader from '../components/Headers/TopHeader';
 import FilterBar from '../components/others/FilterBar';
@@ -10,6 +10,13 @@ import SearchIcon from '../assets/svg/svgicons/Others/SearchIcon';
 import EmptyState from '../components/others/EmptyScreen';
 import CloseIcon from '../assets/svg/svgicons/ProfileScreen/CloseIcon';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+const { width } = Dimensions.get('window');
+
+// Responsive sizing functions
+const responsiveWidth = (w) => (width * w) / 100;
+const responsiveHeight = (h) => (height * h) / 100;
+
+
 
 const HomeScreen = () => {
   const filters = useSelector((state) => state.filters);
@@ -234,6 +241,7 @@ const HomeScreen = () => {
         floors={property.totalFloors}
         baths="–"
         area="–"
+        developerImageUrl={property.developerDetails?.image?.webp?.url}
         sqfeet={property.squareFeet}
         propertyId={property._id}
         location={property.address}
@@ -276,8 +284,11 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaProvider>
-
-      <SafeAreaView style={{ flex: 1, backgroundColor: '#279f5fff' }}>
+      <StatusBar
+        backgroundColor={"#000"}
+        barStyle={"dark-content"}
+      />
+      <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
         <View style={{ flex: 1, backgroundColor: '#fff' }}>
 
           <View style={styles.topHeaderWrapper}>
@@ -334,7 +345,6 @@ const HomeScreen = () => {
               [{ nativeEvent: { contentOffset: { y: scrollY } } }],
               {
                 useNativeDriver: false,
-                // listener: handleScroll, // This runs your filterBar animation logic
               }
             )}
             onEndReached={handleLoadMore}
@@ -370,31 +380,14 @@ const HomeScreen = () => {
 
 const styles = StyleSheet.create({
   topHeaderWrapper: {
-    // height: 144,
-    // paddingVertical: 10,
     backgroundColor: '#fff',
-    // paddingTop: 40,
     gap: 10,
     zIndex: 20,
-    elevation: 5,
-    shadowColor: '#fff',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  filterBarWrapper: {
-    // position: 'absolute',
-    // top: 133,
-    // left: 0,
-    // right: 0,
-    // height: 80,
-    // zIndex: 10,
-    // backgroundColor: '#fff',
   },
   scrollbarTrack: {
     position: 'absolute',
     right: 2,
-    top: 180, // same as paddingTop
+    top: 180,
     bottom: 0,
     width: 4,
     backgroundColor: '#f0f0f0',
@@ -412,7 +405,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#e0e0e0',
     borderRadius: 4,
-    paddingHorizontal: 12,
+    paddingHorizontal: responsiveWidth(2),
     width: "96%",
     justifyContent: "center",
     alignContent: "center",
@@ -420,26 +413,21 @@ const styles = StyleSheet.create({
     height: 48,
     zIndex: 22,
     backgroundColor: "#fff",
-    // top:-5,
-    // marginBottom:10,
   },
   searchIcon: {
     marginRight: 8,
-    // top: 14,
   },
   searchInput: {
     flex: 1,
     alignSelf: "center",
     fontSize: 16,
     color: '#000',
-    // backgroundColor:"red",
     width: "96%",
     paddingHorizontal: 0,
   },
   clearIcon: {
     marginLeft: 8,
     alignSelf: 'center',
-    // top: 15,
   },
 });
 

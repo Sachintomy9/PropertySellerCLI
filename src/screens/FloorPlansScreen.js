@@ -9,12 +9,16 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useSelector } from 'react-redux';
-import { useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets, SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import MultipleButton from '../components/buttons/MultipleButton';
 import ImageViewing from 'react-native-image-viewing';
 import HeaderTab from '../components/Headers/HeaderTab';
 import BackIcon from '../assets/svg/svgicons/Details/BackIcon';
+// Responsive sizing functions
+const responsiveWidth = (w) => (width * w) / 100;
+const responsiveHeight = (h) => (height * h) / 100;
+const { width } = Dimensions.get('window');
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -53,35 +57,37 @@ const FloorPlansScreen = () => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-        <HeaderTab activeTab="Layout" />
+        <View style={{ flex: 1, backgroundColor: "#fff" }}>
+          {/* <SafeAreaView style={styles.container}> */}
+            <HeaderTab activeTab="Layout" />
 
-        <Animated.ScrollView
-          contentContainerStyle={{ paddingBottom: 100 }}
-          showsVerticalScrollIndicator={false}
-          scrollEventThrottle={16}
-          onContentSizeChange={(w, h) => setContentHeight(h)}
-          onLayout={e => setScrollViewHeight(e.nativeEvent.layout.height)}
-          onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-            { useNativeDriver: false }
-          )}
-        >
-          <Text style={styles.title}>Floor Plans and Layouts</Text>
+            <Animated.ScrollView
+              contentContainerStyle={{ paddingBottom: 100 }}
+              showsVerticalScrollIndicator={false}
+              scrollEventThrottle={16}
+              onContentSizeChange={(w, h) => setContentHeight(h)}
+              onLayout={e => setScrollViewHeight(e.nativeEvent.layout.height)}
+              onScroll={Animated.event(
+                [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+                { useNativeDriver: false }
+              )}
+            >
+              {/* <Text style={styles.title}>Floor Plans and Layouts</Text> */}
 
-          {layoutImages?.map((item, index) => (
-            <TouchableOpacity key={index} onPress={() => openViewer(index)}>
-              <Image
-                source={{ uri: item.secure_url }}
-                style={styles.image}
-                resizeMode="cover"
-              />
-            </TouchableOpacity>
-          ))}
-        </Animated.ScrollView>
+              {layoutImages?.map((item, index) => (
+                <TouchableOpacity key={index} onPress={() => openViewer(index)}>
+                  <Image
+                    source={{ uri: item.secure_url }}
+                    style={styles.image}
+                    resizeMode="cover"
+                  />
+                </TouchableOpacity>
+              ))}
+            </Animated.ScrollView>
 
-        <View style={styles.scrollbarTrack}>
+            {/* <View style={styles.scrollbarTrack}>
           <Animated.View
             style={[
               styles.scrollbarThumb,
@@ -91,22 +97,25 @@ const FloorPlansScreen = () => {
               },
             ]}
           />
-        </View>
-        
-      </SafeAreaView>
-      
-      <MultipleButton />
+        </View> */}
 
-      {/* Image Zoom Modal */}
-      <ImageViewing
-        images={layoutImages.map(img => ({ uri: img.secure_url }))}
-        imageIndex={currentIndex}
-        visible={visible}
-        onRequestClose={() => setVisible(false)}
-        swipeToCloseEnabled
-        doubleTapToZoomEnabled
-      />
-    </View>
+          {/* </SafeAreaView> */}
+
+          <MultipleButton />
+
+          {/* Image Zoom Modal */}
+          <ImageViewing
+            images={layoutImages.map(img => ({ uri: img.secure_url }))}
+            imageIndex={currentIndex}
+            visible={visible}
+            onRequestClose={() => setVisible(false)}
+            swipeToCloseEnabled
+            doubleTapToZoomEnabled
+          />
+        </View>
+          </SafeAreaView >
+    </SafeAreaProvider>
+
   );
 };
 export default FloorPlansScreen;
@@ -115,20 +124,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingHorizontal: 16,
+    paddingHorizontal: responsiveWidth(2),
     paddingTop: 0,
   },
   title: {
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 16,
-    alignSelf: "center",
+    alignSelf: "center"
   },
   image: {
     width: '100%',
-    height: 250,
-    borderRadius: 10,
-    marginBottom: 16,
+    height: 220,
+    borderRadius: 8,
+    marginBottom: 8,
   },
 
   // Scrollbar styles
@@ -147,3 +156,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#FF1645',
   },
 });
+
+

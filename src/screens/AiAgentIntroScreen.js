@@ -1,12 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView,StatusBar, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet,StatusBar, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { fonts } from '../../styles/fonts';
 import { setSeenAiAgentIntro } from '../utils/IntroStorage';
 import AiAgentIntro from '../assets/svg/svgimages/AiAgentIntro';
-import IntroButton from '../components/buttons/IntroButton';
 import BackIcon from '../assets/svg/svgicons/Details/BackIcon';
 import IntroNextIcon from '../assets/svg/svgicons/Others/IntroNextIcon';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 const AiAgentIntroScreen = () => {
   const navigation = useNavigation();
@@ -18,12 +18,16 @@ const AiAgentIntroScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaProvider>
+
+    <SafeAreaView style={{
+      flex:1,
+    }}>
       <StatusBar barStyle="dark-content" />
       <View style={styles.container}>
-        <View style={{top:50}}>
+        <View style={{top:5}}>
             <TouchableOpacity onPress={() => navigation.goBack()} >
-                < BackIcon color="#000"/>
+                <BackIcon style={{width:20,height:20}} color="#000"/>
             </TouchableOpacity>
             </View>
         {/* This content container takes up all available space and centers its content */}
@@ -52,6 +56,8 @@ const AiAgentIntroScreen = () => {
         </TouchableOpacity>
       </View>
     </SafeAreaView>
+    </SafeAreaProvider>
+
   );
 };
 

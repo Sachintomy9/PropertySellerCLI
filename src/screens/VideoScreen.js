@@ -4,9 +4,11 @@ import YoutubePlayer from 'react-native-youtube-iframe';
 import { useSelector } from 'react-redux';
 import MultipleButton from '../components/buttons/MultipleButton';
 import HeaderTab from '../components/Headers/HeaderTab';
-import { SafeAreaView } from 'react-native-safe-area-context';
-const { width } = Dimensions.get('window');
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 const videoHeight = (width / 16) * 9;
+const responsiveWidth = (w) => (width * w) / 100;
+const responsiveHeight = (h) => (height * h) / 100;
+const { width } = Dimensions.get('window');
 
 const getYouTubeVideoId = (url) => {
   const match = url?.match(/(?:youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/);
@@ -19,26 +21,50 @@ const VideoScreen = () => {
   const videoId = getYouTubeVideoId(property.youtubeVideoLink);
 
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
-        <HeaderTab activeTab="Video" />
-          <View style={{ width, height: 220, backgroundColor: '#fff' ,marginTop: 200, }}>
+        <View
+          style={{
+            paddingHorizontal: responsiveWidth(2)
+          }}
+        >
+          <HeaderTab activeTab="Video" />
+        </View>
+        <View
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            height: "85%",
+          }}
+        >
+
+          <View
+            style={{
+              width: "100%",
+              // justifyContent:"center",
+              // alignItems:"center",
+              // flex: 1,
+              // height:"100%",
+              backgroundColor: "#fff",
+              overflow: "hidden", // 👈 important
+            }}
+          >
             <YoutubePlayer
-              height={220}
-              width={width}
+              height={250}
+              width={"100%"}
               videoId={videoId}
               play={false}
               webViewStyle={{
-                height: 220,
+                height: 250,
                 width: width,
-                backgroundColor: 'transparent',
+                backgroundColor: "transparent",
                 opacity: 0.99,
                 minHeight: 1,
               }}
               webViewProps={{
                 allowsInlineMediaPlayback: false,
                 allowsFullscreenVideo: true,
-                androidLayerType: 'hardware',
+                androidLayerType: "hardware",
               }}
               initialPlayerParams={{
                 modestbranding: true,
@@ -47,9 +73,10 @@ const VideoScreen = () => {
               }}
             />
           </View>
+        </View>
+
       </SafeAreaView>
-      <MultipleButton />
-    </View>
+    </SafeAreaProvider>
   );
 };
 
@@ -57,7 +84,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
+    // paddingHorizontal: responsiveWidth(2),
+    paddingTop: 0,
   },
   videoWrapper: {
     width: '100%',

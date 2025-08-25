@@ -1,15 +1,25 @@
 // components/BottomEnquireButton.js
-import React,{useState} from 'react';
-import { View, Text, TouchableOpacity,StyleSheet } from 'react-native';
-import EnquireIcon from '../../assets/svg/svgicons/Others/EnquireIcon'; // Replace with your actual SVG path
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import EnquireIcon from '../../assets/svg/svgicons/Others/EnquireIconWhite'; // Replace with your actual SVG path
 import { fonts } from '../../../styles/fonts';
 import EnquiryPrompt from '../popups/EnquiryPrompt';
 import EnquirySubmitted from '../popups/EnquirySubmitted';
 import EnquiryExists from '../popups/EnquiryExists';
-const BottomEnquireButton = ({propertyId}) => {
+
+const { width,height } = Dimensions.get('window');
+
+// Responsive sizing functions
+const responsiveWidth = (w) => (width * w) / 100;
+const responsiveHeight = (h) => (height * h) / 100;
+
+
+
+
+const BottomEnquireButton = ({ propertyId }) => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [enquiry,setEnquiry] = useState(false);
-  const [isSubmitted, setIsSubmitted] =useState(false);
+  const [enquiry, setEnquiry] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   return (
     <View style={styles.container}>
@@ -29,7 +39,7 @@ const BottomEnquireButton = ({propertyId}) => {
         />
       )}
       <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
-        <EnquireIcon style={{ fill: "#fff", width: 24, height: 24,}}/> 
+        <EnquireIcon style={{ fill: "#fff", width: 24, height: 24, }} />
         <Text style={styles.text}>Enquire Now</Text>
       </TouchableOpacity>
       <EnquiryPrompt
@@ -47,7 +57,9 @@ export default BottomEnquireButton;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
-    padding: 12,
+    // padding: 12,
+    marginVertical:10,
+    // paddingHorizontal: responsiveWidth(2),
     borderTopWidth: 0.5,
     borderColor: '#ddd',
   },
@@ -57,13 +69,13 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 14,
+    paddingVertical: 12,
   },
   text: {
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
     marginLeft: 8,
-    fontFamily:fonts.PoppinsMedium
+    fontFamily: fonts.PoppinsMedium
   },
 });

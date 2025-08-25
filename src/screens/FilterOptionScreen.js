@@ -1,4 +1,4 @@
-import React ,{useEffect,useState}from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -20,29 +20,29 @@ import { fonts } from '../../styles/fonts';
 import { Dropdown } from 'react-native-element-dropdown';
 
 const propertyTypes = [
-  { label: 'Apartment',value: "townhouse", icon: <ApartmentIcon /> },
-  { label: 'Penthouse',value: "penthouse", icon: <PenthHouseIcon /> },
-  { label: 'Townhouse',value: "apartment", icon: <TownhouseIcon /> },
-  { label: 'Villa',value: "villa", icon: <VillaIcon /> },
+  { label: 'Apartment', value: "townhouse", icon: <ApartmentIcon /> },
+  { label: 'Penthouse', value: "penthouse", icon: <PenthHouseIcon /> },
+  { label: 'Townhouse', value: "apartment", icon: <TownhouseIcon /> },
+  { label: 'Villa', value: "villa", icon: <VillaIcon /> },
 ];
 
 const completionStatuses = [
-    {
-        value: "all",
-        label: "All",
-    },
-    {
-        value: "just-launched",
-        label: "Just Launched",
-    },
-    {
-        value: "under-construction",
-        label: "Under Construction"
-    },
-    {
-        value: "ready",
-        label: "Ready"
-    },
+  {
+    value: "all",
+    label: "All",
+  },
+  {
+    value: "just-launched",
+    label: "Just Launched",
+  },
+  {
+    value: "under-construction",
+    label: "Under Construction"
+  },
+  {
+    value: "ready",
+    label: "Ready"
+  },
 ];
 const quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
 const bedsOptions = ['Studio', '1', '2', '3', '4', '5', '6', '7+'];
@@ -50,8 +50,8 @@ const bathsOptions = ['Studio', '1', '2', '3', '4', '5', '6+'];
 
 const PRIMARY_PINK = '#ff1645';
 const SOFT_PINK_BG = '#ffe6ea';
-const CARD_BORDER = '#f1f1f1';
-const MUTED_TEXT = '#6b6b6b';
+const CARD_BORDER = '#e0e0e0';
+const MUTED_TEXT = '#565656';
 
 const FilterOptionsScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -69,79 +69,79 @@ const FilterOptionsScreen = ({ navigation }) => {
 
   const [selectedEmirateId, setSelectedEmirateId] = useState(null);
 
-    useEffect(() => {
-      const fetchEmirates = async () => {
-        try {
-          setLoadingEmirates(true);
-          const res = await fetch('https://v1-api.propertyseller.com/api/v1/emirate/names');
-          const data = await res.json();
-          if (data.success) {
-            const formatted = data.data.map((item) => ({
-              label: item.name,
-              value: item._id,
-            }));
-            setEmirates(formatted);
-          }
-        } catch (error) {
-          console.error('Error fetching emirates:', error);
-        } finally {
-          setLoadingEmirates(false);
+  useEffect(() => {
+    const fetchEmirates = async () => {
+      try {
+        setLoadingEmirates(true);
+        const res = await fetch('https://v1-api.propertyseller.com/api/v1/emirate/names');
+        const data = await res.json();
+        if (data.success) {
+          const formatted = data.data.map((item) => ({
+            label: item.name,
+            value: item._id,
+          }));
+          setEmirates(formatted);
         }
-      };
-      fetchEmirates();
-    }, []);
-  
-    // Fetch cities when emirate changes
-    useEffect(() => {
-      if (!selectedEmirateId) return;
-      const fetchCities = async () => {
-        try {
-          setLoadingCities(true);
-          const res = await fetch(`https://v1-api.propertyseller.com/api/v1/city/names?emirate=${selectedEmirateId}`);
-          const data = await res.json();
-          if (data.success) {
-            const formatted = data.data.map((item) => ({
-              label: item.name,
-              value: item._id,
-            }));
-            setCities(formatted);
-          }
-        } catch (error) {
-          console.error('Error fetching cities:', error);
-        } finally {
-          setLoadingCities(false);
-        }
-      };
-      fetchCities();
-    }, [selectedEmirateId]);
-
-
-    const resetFilters = () => {
-      // Reset newly added filter fields to defaults (adapt if your slice uses different defaults)
-      setFilter('emirateId', '');
-      setFilter('cityId', '');
-      setFilter('emirateName', '');
-      setFilter('cityName', '');
-      setFilter('category', '');
-      setFilter('developers', '');
-      setFilter('facilities', '');
-      setFilter('propertyType', '');
-      setFilter('handoverYear', '');
-      setFilter('handoverQuarter', '');
-      setFilter('paymentPlan', '');
-      setFilter('completionType', 'all');
-      setFilter('projectTypeFirst', 'off-plan-projects');
-      setFilter('projectTypeLast', 'all');
-      setFilter('priceMin', '');
-      setFilter('priceMax', '');
-      setFilter('areaMin', '');
-      setFilter('areaMax', '');
-      setFilter('beds', '');
-      setFilter('baths', '');
-      setFilter('furnishType', 'all');
-      setFilter('discount', 'all');
-      // keep previous filters intact (or reset them too if desired)
+      } catch (error) {
+        console.error('Error fetching emirates:', error);
+      } finally {
+        setLoadingEmirates(false);
+      }
     };
+    fetchEmirates();
+  }, []);
+
+  // Fetch cities when emirate changes
+  useEffect(() => {
+    if (!selectedEmirateId) return;
+    const fetchCities = async () => {
+      try {
+        setLoadingCities(true);
+        const res = await fetch(`https://v1-api.propertyseller.com/api/v1/city/names?emirate=${selectedEmirateId}`);
+        const data = await res.json();
+        if (data.success) {
+          const formatted = data.data.map((item) => ({
+            label: item.name,
+            value: item._id,
+          }));
+          setCities(formatted);
+        }
+      } catch (error) {
+        console.error('Error fetching cities:', error);
+      } finally {
+        setLoadingCities(false);
+      }
+    };
+    fetchCities();
+  }, [selectedEmirateId]);
+
+
+  const resetFilters = () => {
+    // Reset newly added filter fields to defaults (adapt if your slice uses different defaults)
+    setFilter('emirateId', '');
+    setFilter('cityId', '');
+    setFilter('emirateName', '');
+    setFilter('cityName', '');
+    setFilter('category', '');
+    setFilter('developers', '');
+    setFilter('facilities', '');
+    setFilter('propertyType', '');
+    setFilter('handoverYear', '');
+    setFilter('handoverQuarter', '');
+    setFilter('paymentPlan', '');
+    setFilter('completionType', 'all');
+    setFilter('projectTypeFirst', 'off-plan-projects');
+    setFilter('projectTypeLast', 'all');
+    setFilter('priceMin', '');
+    setFilter('priceMax', '');
+    setFilter('areaMin', '');
+    setFilter('areaMax', '');
+    setFilter('beds', '');
+    setFilter('baths', '');
+    setFilter('furnishType', 'all');
+    setFilter('discount', 'all');
+    // keep previous filters intact (or reset them too if desired)
+  };
 
   const changeYear = (direction) => {
     const newYear = direction === 'prev' ? (filters.handoverYear || 2026) - 1 : (filters.handoverYear || 2026) + 1;
@@ -164,71 +164,71 @@ const FilterOptionsScreen = ({ navigation }) => {
         showsVerticalScrollIndicator={false}
       >
         {/* Emirates dropdown card */}
-          <View style={styles.dropdownWrapper}>
-            {loadingEmirates ? (
-              <ActivityIndicator size="small" color= "#ff1645" style={{ marginTop: 10 }} />
-            ) : (
-              <Dropdown
-                data={emirates}
-                labelField="label"
-                valueField="value"
-                placeholder="Emirates"
-                value={filters.emirateId || null}
-                onChange={(item) => {
-                  setSelectedEmirateId(item.value);
-                  dispatch(updateFilter({ key: 'emirateId', value: item.value }));
-                  dispatch(updateFilter({ key: 'emirateName', value: item.label }));
-                  setCities([]); // Clear old cities
-                }}
-                onFocus={() => setIsEmirateOpen(true)}
-                onBlur={() => setIsEmirateOpen(false)}
-                style={styles.dropdown}
-                placeholderStyle={styles.dropdownText}
-                selectedTextStyle={styles.dropdownText}
-                itemTextStyle={styles.dropdownItemText}
-                renderRightIcon={() => (
-                  <View>
-                    <DropDownIcon style={isEmirateOpen && { transform: [{ rotate: '180deg' }] }} />
-                  </View>
-                )}
-              />
-            )}
-          </View>
+        <View style={styles.dropdownWrapper}>
+          {loadingEmirates ? (
+            <ActivityIndicator size="small" color="#ff1645" style={{ marginTop: 10 }} />
+          ) : (
+            <Dropdown
+              data={emirates}
+              labelField="label"
+              valueField="value"
+              placeholder="Emirates"
+              value={filters.emirateId || null}
+              onChange={(item) => {
+                setSelectedEmirateId(item.value);
+                dispatch(updateFilter({ key: 'emirateId', value: item.value }));
+                dispatch(updateFilter({ key: 'emirateName', value: item.label }));
+                setCities([]); // Clear old cities
+              }}
+              onFocus={() => setIsEmirateOpen(true)}
+              onBlur={() => setIsEmirateOpen(false)}
+              style={styles.dropdown}
+              placeholderStyle={styles.dropdownText}
+              selectedTextStyle={styles.dropdownText}
+              itemTextStyle={styles.dropdownItemText}
+              renderRightIcon={() => (
+                <View>
+                  <DropDownIcon style={isEmirateOpen && { transform: [{ rotate: '180deg' }] }} />
+                </View>
+              )}
+            />
+          )}
+        </View>
 
         {/* City dropdown card */}
-          <View style={styles.dropdownWrapper}>
-            {loadingCities ? (
-              <ActivityIndicator size="small" color='#ff1645' style={{ marginTop: 10 }} />
-            ) : (
-              <Dropdown
-                data={cities}
-                labelField="label"
-                valueField="value"
-                placeholder="City"
-                value={filters.cityId || null}
-                onChange={(item) => {
-                  dispatch(updateFilter({ key: 'cityId', value: item.value }));
-                  dispatch(updateFilter({ key: 'cityName', value: item.label }));
-                }}
-                onFocus={() => setIsCityOpen(true)}
-                onBlur={() => setIsCityOpen(false)}
-                style={styles.dropdown}
-                placeholderStyle={styles.dropdownText}
-                selectedTextStyle={styles.dropdownText}
-                itemTextStyle={styles.dropdownItemText}
-                renderRightIcon={() => (
+        <View style={styles.dropdownWrapper}>
+          {loadingCities ? (
+            <ActivityIndicator size="small" color='#ff1645' style={{ marginTop: 10 }} />
+          ) : (
+            <Dropdown
+              data={cities}
+              labelField="label"
+              valueField="value"
+              placeholder="City"
+              value={filters.cityId || null}
+              onChange={(item) => {
+                dispatch(updateFilter({ key: 'cityId', value: item.value }));
+                dispatch(updateFilter({ key: 'cityName', value: item.label }));
+              }}
+              onFocus={() => setIsCityOpen(true)}
+              onBlur={() => setIsCityOpen(false)}
+              style={styles.dropdown}
+              placeholderStyle={styles.dropdownText}
+              selectedTextStyle={styles.dropdownText}
+              itemTextStyle={styles.dropdownItemText}
+              renderRightIcon={() => (
                 <DropDownIcon
                   style={isEmirateOpen ? { transform: [{ rotate: '180deg' }] } : {}}
                 />
               )}
-              />
-            )}
-          </View>
+            />
+          )}
+        </View>
 
         {/* Residential / Commercial group */}
         <View style={styles.card}>
           <View style={styles.segmentRow}>
-            {[{ label: "All", value: "all" },{ label: "Residential", value: "residential" },{ label: "Commercial", value: "commercial" },].map(({ label, value }) => {
+            {[{ label: "All", value: "all" }, { label: "Residential", value: "residential" }, { label: "Commercial", value: "commercial" },].map(({ label, value }) => {
               const active = filters.projectTypeLast === value;
               return (
                 <TouchableOpacity
@@ -247,11 +247,11 @@ const FilterOptionsScreen = ({ navigation }) => {
         <View style={styles.card}>
           <View style={styles.categoryWrap}>
             {[
-            { label: "Off-Plan projects", value: "off-plan-projects" },
-            { label: "Off-Plan Resale", value: "off-plan-resale" },
-            { label: "Secondary", value: "off-plan-secondary" },
-            { label: "Land", value: "off-plan-land" },
-          ].map(({ label, value }) => {
+              { label: "Off-Plan projects", value: "off-plan-projects" },
+              { label: "Off-Plan Resale", value: "off-plan-resale" },
+              { label: "Secondary", value: "off-plan-secondary" },
+              { label: "Land", value: "off-plan-land" },
+            ].map(({ label, value }) => {
               const active = filters.projectTypeFirst === value;
               return (
                 <TouchableOpacity
@@ -269,7 +269,7 @@ const FilterOptionsScreen = ({ navigation }) => {
         {/* Property Type */}
         <Text style={styles.sectionTitle}>Property Type</Text>
         <View style={styles.propertyTypeRow}>
-          {propertyTypes.map(({ label, value,icon }) => {
+          {propertyTypes.map(({ label, value, icon }) => {
             const active = filters.propertyType === value;
             return (
               <View key={value} style={styles.propertyTypeContainer}>
@@ -338,7 +338,7 @@ const FilterOptionsScreen = ({ navigation }) => {
         {/* Payment Plan */}
         <Text style={styles.sectionTitle}>Payment Plan</Text>
         <View style={styles.row}>
-          {[{value: "all",label: "All",}, {value: "on-handover", label: "On Handover",},{value: "post-handover",label: "Post Handover",},].map(({ value, label }) => {
+          {[{ value: "all", label: "All", }, { value: "on-handover", label: "On Handover", }, { value: "post-handover", label: "Post Handover", },].map(({ value, label }) => {
             const active = filters.paymentPlan === value;
             return (
               <TouchableOpacity
@@ -348,11 +348,12 @@ const FilterOptionsScreen = ({ navigation }) => {
               >
                 <Text style={[styles.segmentText, active && styles.segmentTextActive]}>{label}</Text>
               </TouchableOpacity>
-            );})}
+            );
+          })}
         </View>
 
-        <Text style={styles.sectionTitle}>Price(AED)</Text>
-        <View style={styles.rowTwo}>
+        {/* <Text style={styles.sectionTitle}>Price(AED)</Text> */}
+        {/* <View style={styles.rowTwo}>
           <View style={styles.inputBox}>
             <Text style={styles.inputLabel}>Min</Text>
             <TextInput
@@ -375,11 +376,11 @@ const FilterOptionsScreen = ({ navigation }) => {
               onChangeText={(t) => setFilter('maxPrice', t)}
             />
           </View>
-        </View>
+        </View> */}
 
         {/* Area inputs */}
-        <Text style={styles.sectionTitle}>Area(sqft)</Text>
-        <View style={styles.rowTwo}>
+        {/* <Text style={styles.sectionTitle}>Area(sqft)</Text> */}
+        {/* <View style={styles.rowTwo}>
           <View style={styles.inputBox}>
             <Text style={styles.inputLabel}>Min</Text>
             <TextInput
@@ -402,11 +403,11 @@ const FilterOptionsScreen = ({ navigation }) => {
               onChangeText={(t) => setFilter('maxArea', t)}
             />
           </View>
-        </View>
+        </View> */}
 
         {/* No of Beds */}
-        <Text style={styles.sectionTitle}>No of Beds</Text>
-        <View style={styles.btnWrap}>
+        {/* <Text style={styles.sectionTitle}>No of Beds</Text> */}
+        {/* <View style={styles.btnWrap}>
           {bedsOptions.map((b) => {
             const active = filters.beds === b;
             return (
@@ -419,11 +420,11 @@ const FilterOptionsScreen = ({ navigation }) => {
               </TouchableOpacity>
             );
           })}
-        </View>
+        </View> */}
 
         {/* No of Baths */}
-        <Text style={styles.sectionTitle}>No of Baths</Text>
-        <View style={styles.btnWrap}>
+        {/* <Text style={styles.sectionTitle}>No of Baths</Text> */}
+        {/* <View style={styles.btnWrap}>
           {bathsOptions.map((b) => {
             const active = filters.baths === b;
             return (
@@ -436,42 +437,42 @@ const FilterOptionsScreen = ({ navigation }) => {
               </TouchableOpacity>
             );
           })}
-        </View>
+        </View> */}
 
         {/* Furnish Type */}
         <Text style={styles.sectionTitle}>Furnish Type</Text>
         <View style={styles.row}>
           {[{
-                  value: "fully-furnished",
-                  label: "Fully Furnished",
-              },
-              {
-                  value: "semi-furnished",
-                  label: "Semi Furnished"
-              },
-              {
-                  value: "un-furnishing",
-                  label: "UnFurnished"
-              },
+            value: "fully-furnished",
+            label: "Fully Furnished",
+          },
+          {
+            value: "semi-furnished",
+            label: "Semi Furnished"
+          },
+          {
+            value: "un-furnishing",
+            label: "UnFurnished"
+          },
           ]
-          .map(({ value, label }) => {
-            const active = filters.furnishType === value;
-            return (
-              <TouchableOpacity
-                key={value}
-                onPress={() => setFilter('furnishType', active ? "all" : value)}
-                style={[styles.furnishBtn, active && styles.furnishBtnActive]}
-              >
-                <Text style={[styles.furnishText, active && styles.furnishTextActive]}>{label}</Text>
-              </TouchableOpacity>
-            );
-          })}
+            .map(({ value, label }) => {
+              const active = filters.furnishType === value;
+              return (
+                <TouchableOpacity
+                  key={value}
+                  onPress={() => setFilter('furnishType', active ? "all" : value)}
+                  style={[styles.furnishBtn, active && styles.furnishBtnActive]}
+                >
+                  <Text style={[styles.furnishText, active && styles.furnishTextActive]}>{label}</Text>
+                </TouchableOpacity>
+              );
+            })}
         </View>
 
         {/* Discount */}
         <Text style={styles.sectionTitle}>Discount</Text>
         <View style={styles.row}>
-          {[{value: "with-discount",label: "With Discount",},{value: "without-discount",label: "Without Discount",},].map(({ value, label }) => {
+          {[{ value: "with-discount", label: "With Discount", }, { value: "without-discount", label: "Without Discount", },].map(({ value, label }) => {
             const active = filters.discount === value;
             return (
               <TouchableOpacity
@@ -485,22 +486,22 @@ const FilterOptionsScreen = ({ navigation }) => {
           })}
         </View>
 
-          <View style={{ height: 10 }} />
+        <View style={{ height: 10 }} />
       </ScrollView>
       <View style={styles.bottomBar}>
-          <TouchableOpacity style={styles.resetBtn} onPress={resetFilters}>
-            <Text style={styles.resetText}>Reset</Text>
-          </TouchableOpacity>
+        <TouchableOpacity style={styles.resetBtn} onPress={resetFilters}>
+          <Text style={styles.resetText}>Reset</Text>
+        </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.applyBtn}
-            onPress={() => {
-              // possibly trigger a filter-apply action / fetch here
-              navigation.goBack();
-            }}
-          >
-            <Text style={styles.applyBtnText}>Apply Filters</Text>
-          </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.applyBtn}
+          onPress={() => {
+            // possibly trigger a filter-apply action / fetch here
+            navigation.goBack();
+          }}
+        >
+          <Text style={styles.applyBtnText}>Apply Filters</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -541,8 +542,8 @@ const styles = StyleSheet.create({
   card: {
     borderWidth: 1,
     borderColor: CARD_BORDER,
-    borderRadius: 5,
-    padding: 5,
+    borderRadius: 4,
+    paddingHorizontal: 8,
     marginBottom: 14,
     backgroundColor: '#fff',
   },
@@ -569,11 +570,12 @@ const styles = StyleSheet.create({
   segmentRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingVertical: 5,
   },
   segmentBtn: {
     flex: 1,
-    paddingVertical: 10,
-    borderRadius: 5,
+    paddingVertical: 8,
+    borderRadius: 4,
     backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
@@ -583,7 +585,7 @@ const styles = StyleSheet.create({
     borderColor: PRIMARY_PINK,
   },
   segmentText: {
-    fontSize: 14,
+    fontSize: 12,
     color: MUTED_TEXT,
     fontFamily: fonts.PoppinsRegular,
   },
@@ -597,16 +599,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
+    paddingVertical: 5,
   },
   categoryBtn: {
     paddingVertical: 8,
-    borderRadius: 5,
+    borderRadius: 4,
     justifyContent: 'center',
     width: '49.5%'
   },
   categoryBtnActive: {
     backgroundColor: SOFT_PINK_BG,
-    borderRadius: 5,
+    borderRadius: 4,
   },
   categoryText: {
     fontSize: 13,
@@ -629,12 +632,12 @@ const styles = StyleSheet.create({
   },
   propertyTypeContainer: {
     alignItems: 'center',
-    width: 72,
+    width: 80,
   },
   propertyTypeButton: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
+    width: 70,
+    height: 70,
+    borderRadius: 40,
     borderWidth: 1,
     borderColor: '#e8e8e8',
     alignItems: 'center',
@@ -677,19 +680,22 @@ const styles = StyleSheet.create({
   completionRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
+    // backgroundColor:"red",
+    // paddingHorizontal: 3,
   },
   smallPill: {
     paddingVertical: 8,
-    paddingHorizontal: 10,
-    borderRadius: 5,
+    // paddingHorizontal: 10,
+    borderRadius: 4,
     backgroundColor: 'transparent',
   },
   smallPillActive: {
     backgroundColor: SOFT_PINK_BG,
+    paddingHorizontal: 14,
   },
   smallPillText: {
-    fontSize: 13,
+    fontSize: 12,
     color: MUTED_TEXT,
     fontFamily: fonts.PoppinsRegular,
   },
@@ -712,7 +718,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   chevText: {
-    fontSize: 22,
+    fontSize: 32,
     color: PRIMARY_PINK,
     fontFamily: fonts.PoppinsMedium,
   },
@@ -733,12 +739,12 @@ const styles = StyleSheet.create({
   quarterBtn: {
     borderWidth: 1,
     borderColor: CARD_BORDER,
-    borderRadius: 5,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    borderRadius: 4,
+    // paddingVertical: 8,
+    // paddingHorizontal: 12,
     gap: 8,
-    height: 60,
-    width: 80,
+    height: 55,
+    width: 78,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'transparent',
@@ -747,9 +753,9 @@ const styles = StyleSheet.create({
     backgroundColor: SOFT_PINK_BG,
   },
   quarterText: {
-    fontSize: 14,
+    fontSize: 16,
     color: MUTED_TEXT,
-    fontFamily: fonts.PoppinsRegular,
+    fontFamily: fonts.PoppinsMedium,
   },
   quarterTextActive: {
     color: PRIMARY_PINK,
@@ -759,14 +765,14 @@ const styles = StyleSheet.create({
   /* Generic row */
   row: {
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-around',
     alignItems: 'center',
     marginBottom: 12,
-    padding:5,
+    padding: 5,
     flexWrap: 'wrap',
     borderWidth: 1,
     borderColor: CARD_BORDER,
-    borderRadius: 5,
+    borderRadius: 4,
   },
   rowTwo: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 },
   inputBox: { width: '48%' },
@@ -788,7 +794,7 @@ const styles = StyleSheet.create({
   smallSquare: {
     borderWidth: 1,
     borderColor: CARD_BORDER,
-    borderRadius: 5,
+    borderRadius: 4,
     paddingHorizontal: 10,
     paddingVertical: 10,
     marginRight: 10,
@@ -801,91 +807,95 @@ const styles = StyleSheet.create({
 
   /* Furnish & Discount buttons */
   furnishBtn: {
+    flex: 1, // each item takes equal space
     flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
+    alignItems: "center",
     paddingVertical: 10,
-    paddingHorizontal: 10,
-    borderRadius: 5,
-    backgroundColor: 'transparent',
+    borderRadius: 4,
+    // marginHorizontal: 4, // small gap between buttons
   },
-  furnishBtnActive: { backgroundColor: SOFT_PINK_BG },
-  furnishText: { fontSize: 14, color: MUTED_TEXT, fontFamily: fonts.PoppinsRegular },
+  furnishBtnActive: { backgroundColor: SOFT_PINK_BG, paddingHorizontal: 8 },
+  furnishText: { fontSize: 12, color: MUTED_TEXT, fontFamily: fonts.PoppinsRegular },
   furnishTextActive: { color: PRIMARY_PINK, fontFamily: fonts.PoppinsMedium },
 
   discountBtn: {
     flexDirection: 'row',
     width: '50%',
     justifyContent: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 10,
-    borderRadius: 5,
+    paddingVertical: 8,
+    // paddingHorizontal: 10,
+    borderRadius: 4,
     backgroundColor: 'transparent',
   },
   discountBtnActive: { backgroundColor: SOFT_PINK_BG },
-  discountText: { fontSize: 14, color: MUTED_TEXT, fontFamily: fonts.PoppinsRegular },
+  discountText: { fontSize: 12, color: MUTED_TEXT, fontFamily: fonts.PoppinsRegular },
   discountTextActive: { color: PRIMARY_PINK, fontFamily: fonts.PoppinsMedium },
 
-   bottomBar: {
+  bottomBar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: '#fff',
-    padding: 8,
-    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingBottom: 12,
+    paddingTop: 14,
+    borderTopEndRadius: 12,
+    borderTopStartRadius: 12,
     borderWidth: 1,
     borderColor: CARD_BORDER,
   },
   resetBtn: {
     flex: 1,
     backgroundColor: '#fff',
-    borderRadius: 5,
-    paddingVertical: 14,
+    borderRadius: 4,
+    paddingVertical: 10,
     alignItems: 'center',
     marginRight: 0,
     borderWidth: 1,
     borderColor: CARD_BORDER,
   },
-  resetText: { color: '#111', fontFamily: fonts.PoppinsRegular, fontSize: 15 },
+  resetText: { color: '#111', fontFamily: fonts.PoppinsRegular, fontSize: 14 },
 
   applyBtn: {
     flex: 1.2,
     backgroundColor: PRIMARY_PINK,
-    borderRadius: 5,
-    paddingVertical: 14,
+    borderRadius: 4,
+    paddingVertical: 10,
     alignItems: 'center',
     marginLeft: 8,
   },
-  applyBtnText: { color: '#fff', fontFamily: fonts.PoppinsMedium, fontSize: 15 },
+  applyBtnText: { color: '#fff', fontFamily: fonts.PoppinsMedium, fontSize: 14 },
 
   dropdownWrapper: {
     marginBottom: 14,
   },
-dropdown: {
-  height: 48,
-  paddingHorizontal: 16,
-  flexDirection: 'row',
-  justifyContent: 'center',
-  alignItems: 'center',
-  backgroundColor: '#fff',
-  borderWidth: 1,
-  borderColor: CARD_BORDER,
-  borderRadius: 5,
-},
+  dropdown: {
+    height: 48,
+    paddingHorizontal: 16,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: CARD_BORDER,
+    borderRadius: 4,
+  },
 
-dropdownText: {
-  fontSize: 14,
-  fontFamily: fonts.PoppinsRegular,
-  color: '#444',
-  textAlign: 'center',
-},
+  dropdownText: {
+    fontSize: 14,
+    fontFamily: fonts.PoppinsRegular,
+    color: '#444',
+    textAlign: 'center',
+  },
   dropdownItemText: {
     color: '#000', // Black text color for dropdown items
     fontFamily: fonts.PoppinsRegular,
     fontSize: 14,
   },
-iconWrapper: {
-  marginLeft: 6,
-  alignItems: "flex-start",
-  justifyContent: "flex-start",
-},
+  iconWrapper: {
+    marginLeft: 6,
+    alignItems: "flex-start",
+    justifyContent: "flex-start",
+  },
 });

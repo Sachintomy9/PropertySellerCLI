@@ -10,6 +10,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   Linking,
+  Dimensions,
+  StatusBar,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
@@ -18,7 +20,13 @@ import { fonts } from '../../styles/fonts';
 import BackIcon from '../assets/svg/svgicons/Details/BackIcon';
 import AiAgentIcon from '../assets/svg/svgicons/Others/AiAgentIcon';
 import SendIcon from '../assets/svg/svgicons/Others/SendIcon';
-import OptionIcon from '../assets/svg/svgicons/Others/OptionIcon'; 
+import OptionIcon from '../assets/svg/svgicons/Others/OptionIcon';
+import { SafeAreaFrameContext, SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+const { width, height } = Dimensions.get('window');
+
+// Responsive sizing functions
+const responsiveWidth = (w) => (width * w) / 100;
+const responsiveHeight = (h) => (height * h) / 100;
 
 const STORAGE_KEY = 'ai_agent_chats_v1'; // Versioned key for future migrations
 const MAX_CHATS = 3; // Maximum number of chats to store
@@ -32,57 +40,57 @@ const AiAgentMainScreen = () => {
   const flatRef = useRef(null);
 
   // Load chats from storage
-    const loadChats = async () => {
-        try {
-            const savedChats = await AsyncStorage.getItem(STORAGE_KEY);
-            if (savedChats) {
-            // Messages are already grouped by conversation in storage
-            setChats(JSON.parse(savedChats));
-            }
-        } catch (error) {
-            console.error('Failed to load chats:', error);
+  const loadChats = async () => {
+    try {
+      const savedChats = await AsyncStorage.getItem(STORAGE_KEY);
+      if (savedChats) {
+        // Messages are already grouped by conversation in storage
+        setChats(JSON.parse(savedChats));
+      }
+    } catch (error) {
+      console.error('Failed to load chats:', error);
+    }
+  };
+
+  // Save chats to storage
+  const saveChats = async (chatsToSave) => {
+    try {
+      // Group messages by conversation
+      const conversations = {};
+      chatsToSave.forEach(msg => {
+        if (!conversations[msg.conversationId]) {
+          conversations[msg.conversationId] = [];
         }
-        };
+        conversations[msg.conversationId].push(msg);
+      });
 
-    // Save chats to storage
-    const saveChats = async (chatsToSave) => {
-        try {
-            // Group messages by conversation
-            const conversations = {};
-            chatsToSave.forEach(msg => {
-            if (!conversations[msg.conversationId]) {
-                conversations[msg.conversationId] = [];
-            }
-            conversations[msg.conversationId].push(msg);
-            });
+      // Sort conversations by most recent (based on first message timestamp)
+      const sortedConversations = Object.values(conversations)
+        .sort((a, b) => new Date(b[0].timestamp) - new Date(a[0].timestamp))
+        .slice(0, MAX_CHATS); // Keep only 3 most recent conversations
 
-            // Sort conversations by most recent (based on first message timestamp)
-            const sortedConversations = Object.values(conversations)
-            .sort((a, b) => new Date(b[0].timestamp) - new Date(a[0].timestamp))
-            .slice(0, MAX_CHATS); // Keep only 3 most recent conversations
+      // Flatten back to array for storage
+      const chatsToStore = sortedConversations.flat();
 
-            // Flatten back to array for storage
-            const chatsToStore = sortedConversations.flat();
-            
-            await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(chatsToStore));
-        } catch (error) {
-            console.error('Failed to save chats:', error);
-        }
-        };
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(chatsToStore));
+    } catch (error) {
+      console.error('Failed to save chats:', error);
+    }
+  };
 
-    const clearChats = async () => {
-        try {
-            await AsyncStorage.removeItem(STORAGE_KEY);
-            setChats([]);
-            setShowDropdown(false);
-        } catch (error) {
-            console.error('Failed to clear chats:', error);
-        }
-        };
+  const clearChats = async () => {
+    try {
+      await AsyncStorage.removeItem(STORAGE_KEY);
+      setChats([]);
+      setShowDropdown(false);
+    } catch (error) {
+      console.error('Failed to clear chats:', error);
+    }
+  };
 
-    useEffect(() => {
-        loadChats();
-    }, []);
+  useEffect(() => {
+    loadChats();
+  }, []);
 
 
 
@@ -90,20 +98,20 @@ const AiAgentMainScreen = () => {
     if (!input.trim()) return;
 
     const conversationId = Date.now().toString();
-    
+
     const userMsg = {
       id: conversationId + '_user', // Use same conversation ID for grouping
-        conversationId,
+      conversationId,
       type: 'user',
       text: input.trim(),
       timestamp: new Date().toISOString()
     };
     const loadingMsg = {
-        id: conversationId + '_loading',
-            conversationId,
-        type: 'bot',
-        loading: true,  // This is what we'll check in renderMessage
-        timestamp: new Date().toISOString()
+      id: conversationId + '_loading',
+      conversationId,
+      type: 'bot',
+      loading: true,  // This is what we'll check in renderMessage
+      timestamp: new Date().toISOString()
     };
     const newChats = [loadingMsg, userMsg, ...chats];
     setChats(newChats);
@@ -122,47 +130,47 @@ const AiAgentMainScreen = () => {
 
       if (res.data?.success) {
         if (res.data?.data?.length > 0) {
-            // Handle successful response with data
-            const propertyMessages = res.data.data.map((project, index) => ({
+          // Handle successful response with data
+          const propertyMessages = res.data.data.map((project, index) => ({
             id: conversationId + '_bot_' + index,
-                conversationId,
+            conversationId,
             type: 'bot',
             loading: false,
             data: {
-                projectTitle: project.projectTitle,
-                priceInAED: project.priceInAED,
-                propertyTypes: project.propertyTypes?.join(', '),
-                metaDescription: project.metaDescription,
-                id: project._id,
+              projectTitle: project.projectTitle,
+              priceInAED: project.priceInAED,
+              propertyTypes: project.propertyTypes?.join(', '),
+              metaDescription: project.metaDescription,
+              id: project._id,
             },
             timestamp: new Date().toISOString()
-            }));
+          }));
 
-            console.log("propertyMessages", propertyMessages);
-            const updatedChats = [...propertyMessages, ...newChats.filter(msg => msg.id !== loadingMsg.id)];
-            setChats(updatedChats);
-            await saveChats(updatedChats);
+          console.log("propertyMessages", propertyMessages);
+          const updatedChats = [...propertyMessages, ...newChats.filter(msg => msg.id !== loadingMsg.id)];
+          setChats(updatedChats);
+          await saveChats(updatedChats);
 
         } else {
-            // Handle no results found
-            console.log("No data found");
-            const botMsg = {
+          // Handle no results found
+          console.log("No data found");
+          const botMsg = {
             id: conversationId + '_bot',
-                conversationId,
+            conversationId,
             type: 'bot',
             loading: false,
             data: {
-                message: "We couldn't find any properties matching your request. Please refine your search and try again.",
-                isError: true // Optional flag to style error messages differently
+              message: "We couldn't find any properties matching your request. Please refine your search and try again.",
+              isError: true // Optional flag to style error messages differently
             },
             timestamp: new Date().toISOString()
-            };
-            console.log("botMsg", botMsg);
-            const updatedChats = [botMsg, ...newChats.filter(msg => msg.id !== loadingMsg.id)];
-            setChats(updatedChats);
-            await saveChats(updatedChats);
+          };
+          console.log("botMsg", botMsg);
+          const updatedChats = [botMsg, ...newChats.filter(msg => msg.id !== loadingMsg.id)];
+          setChats(updatedChats);
+          await saveChats(updatedChats);
         }
-        }
+      }
     } catch (err) {
       console.error(err);
       const errorMsg = {
@@ -171,141 +179,162 @@ const AiAgentMainScreen = () => {
         loading: false,
         text: 'Oops! Something went wrong. Please try again.',
       };
-        const updatedChats = [errorMsg, ...newChats.filter(msg => msg.id !== loadingMsg.id)];
-        setChats(updatedChats);
-        await saveChats(updatedChats);
+      const updatedChats = [errorMsg, ...newChats.filter(msg => msg.id !== loadingMsg.id)];
+      setChats(updatedChats);
+      await saveChats(updatedChats);
     } finally {
       setIsSending(false);
     }
   };
 
   const renderMessage = ({ item }) => {
-  if (item.type === 'user') {
-    return (
-      <View style={styles.userMsg}>
-        <Text style={styles.userMsgText}>{item.text}</Text>
-      </View>
-    );
-  }
-  
-  if (item.type === 'bot') {
-    return (
-      <View style={styles.botMsg}>
-        {item.loading ? (
-          <View style={styles.loadingRow}>
-            <ActivityIndicator size="small" color="#ff1645" />
-            <Text style={styles.loadingText}>Thinking...</Text>
-          </View>
-        ) : item.text ? (
-          // Error or no results message
-          <Text style={styles.botText}>{item.text}</Text>
-        ) : (
-          // Property details (single property case)
-          <>
-            <Text style={[styles.botText, styles.spacing]}>
-              We’ve found a property that perfectly matches your preferences — take a look!
-            </Text>
-            <Text style={styles.botTitle}>{item.data.projectTitle}</Text>
-            <Text style={styles.botText}>
-              <Text style={styles.boldText}>Description: </Text> 
-              {item.data.metaDescription}
-            </Text>
-            <Text style={styles.botText}>
-              <Text style={styles.boldText}>Price: </Text> 
-              {item.data.priceInAED}
-            </Text>
-            <Text style={styles.botText}>
-              <Text style={styles.boldText}>Type: </Text> 
-              {item.data.propertyTypes}
-            </Text>
-            <TouchableOpacity 
-              onPress={() => navigation.navigate('PropDetails', { 
-                propertyId: item.data.id 
-              })}
-            >
-              <Text style={styles.viewDetailsLink}>View Property Details :</Text>
-            </TouchableOpacity>
-          </>
-        )}
-      </View>
-    );
-  }
-  
-  return null;
-};
+    if (item.type === 'user') {
+      return (
+        <View style={styles.userMsg}>
+          <Text style={styles.userMsgText}>{item.text}</Text>
+        </View>
+      );
+    }
+
+    if (item.type === 'bot') {
+      return (
+        <View style={styles.botMsg}>
+          {item.loading ? (
+            <View style={styles.loadingRow}>
+              <ActivityIndicator size="small" color="#ff1645" />
+              <Text style={styles.loadingText}>Thinking...</Text>
+            </View>
+          ) : item.text ? (
+            // Error or no results message
+            <Text style={styles.botText}>{item.text}</Text>
+          ) : (
+            // Property details (single property case)
+            <>
+              <Text style={[styles.botText, styles.spacing]}>
+                We’ve found a property that perfectly matches your preferences — take a look!
+              </Text>
+              <Text style={styles.botTitle}>{item.data.projectTitle}</Text>
+              <Text style={styles.botText}>
+                <Text style={styles.boldText}>Description: </Text>
+                {item.data.metaDescription}
+              </Text>
+              <Text style={styles.botText}>
+                <Text style={styles.boldText}>Price: </Text>
+                {item.data.priceInAED}
+              </Text>
+              <Text style={styles.botText}>
+                <Text style={styles.boldText}>Type: </Text>
+                {item.data.propertyTypes}
+              </Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('PropDetails', {
+                  propertyId: item.data.id
+                })}
+              >
+                <Text style={styles.viewDetailsLink}>View Property Details :</Text>
+              </TouchableOpacity>
+            </>
+          )}
+        </View>
+      );
+    }
+
+    return null;
+  };
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <View style={styles.header}>
+    <SafeAreaProvider>
+      <SafeAreaView
+      style={{
+        flex:1,
+        backgroundColor:"#fff"
+      }}
+      >
+
+        <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+          <View style={styles.header}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
-                <Text style={styles.backBtn}>{<BackIcon color='#ff1645'/>}</Text>
+              <Text style={styles.backBtn}>{<BackIcon color='#ff1645'
+                style={{
+                  width: 20,
+                  height: 20,
+                }}
+              />}</Text>
             </TouchableOpacity>
 
             <View style={styles.iconWrap}>
-                <AiAgentIcon size={22} color='#ff1645' />
+              <AiAgentIcon size={22} color='#ff1645' />
             </View>
             <Text style={styles.headerTitle}><Text style={{ color: '#ff1645' }}>Ai</Text> Agent</Text>
 
-            <TouchableOpacity 
-                style={styles.menuButton}
-                onPress={() => setShowDropdown(!showDropdown)}
+            <TouchableOpacity
+              style={styles.menuButton}
+              onPress={() => setShowDropdown(!showDropdown)}
             >
-                <OptionIcon color='#ff1645' />
+              <OptionIcon color='#ff1645' />
             </TouchableOpacity>
-            
+
             {/* Dropdown menu */}
             {showDropdown && (
-                <View style={styles.dropdown}>
-                <TouchableOpacity 
-                    style={styles.dropdownItem}
-                    onPress={clearChats}
+              <View style={styles.dropdown}>
+                <TouchableOpacity
+                  style={styles.dropdownItem}
+                  onPress={clearChats}
                 >
-                    <Text style={styles.dropdownText}>Clear History</Text>
+                  <Text style={styles.dropdownText}>Clear History</Text>
                 </TouchableOpacity>
-                </View>
+              </View>
             )}
-        </View>
+          </View>
 
-      <FlatList
-        ref={flatRef}
-        data={chats}
-        keyExtractor={item => item.id}
-        renderItem={renderMessage}
-        inverted // latest message at bottom
-        contentContainerStyle={{ padding: 16 }}
+          <FlatList
+            ref={flatRef}
+            data={chats}
+            keyExtractor={item => item.id}
+            renderItem={renderMessage}
+            inverted // latest message at bottom
+            contentContainerStyle={{ padding: 16 }}
+          />
+
+          <View style={styles.inputWrap}>
+            <TextInput
+              style={styles.input}
+              placeholder="Type your requirement"
+              placeholderTextColor="#ffb6c1"
+              value={input}
+              onChangeText={setInput}
+              returnKeyType="send"
+              onSubmitEditing={() => sendMessage()}
+            />
+            <TouchableOpacity style={styles.sendBtn} onPress={() => sendMessage()}>
+              {isSending ? <ActivityIndicator color="#fff" /> : <Text >{<SendIcon />}</Text>}
+            </TouchableOpacity>
+          </View>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+
+      <StatusBar
+      backgroundColor={"#000"}
+      barStyle={"dark-content"}
       />
 
-      <View style={styles.inputWrap}>
-        <TextInput
-          style={styles.input}
-          placeholder="Type your requirement"
-          placeholderTextColor="#ffb6c1"
-          value={input}
-          onChangeText={setInput}
-          returnKeyType="send"
-          onSubmitEditing={() => sendMessage()}
-        />
-        <TouchableOpacity style={styles.sendBtn} onPress={() => sendMessage()}>
-          {isSending ? <ActivityIndicator color="#fff" /> : <Text >{<SendIcon />}</Text>}
-        </TouchableOpacity>
-      </View>
-    </KeyboardAvoidingView>
+    </SafeAreaProvider>
   )
 }
 
 export default AiAgentMainScreen
 
 const styles = StyleSheet.create({
-    container: {
-    flex: 1, 
-    backgroundColor: '#fff' 
+  container: {
+    flex: 1,
+    backgroundColor: '#fff'
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: "space-between", // Changed from "flex-start"
-    paddingHorizontal: 16,
-    paddingTop: 45,
-    paddingBottom: 16,
+    paddingHorizontal: responsiveWidth(2),
+    // paddingTop: 45,
+    // paddingBottom: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
     position: 'relative', // Needed for dropdown positioning
@@ -452,13 +481,13 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   clearButton: {
-  alignSelf: 'center',
-  padding: 10,
-  marginTop: 10,
-},
-clearButtonText: {
-  color: '#ff1645',
-  fontFamily: fonts?.PoppinsMedium || undefined,
-},
+    alignSelf: 'center',
+    padding: 10,
+    marginTop: 10,
+  },
+  clearButtonText: {
+    color: '#ff1645',
+    fontFamily: fonts?.PoppinsMedium || undefined,
+  },
 
 })

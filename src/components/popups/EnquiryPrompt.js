@@ -8,6 +8,7 @@ import {
   TextInput,
   FlatList,
   ActivityIndicator,
+  Dimensions,
 } from 'react-native';
 import { useProfile } from '../../context/ProfileContext';
 import { fonts } from '../../../styles/fonts';
@@ -17,6 +18,12 @@ import CloseIcon from '../../assets/svg/svgicons/ProfileScreen/CloseIcon';
 import countries from 'world-countries';
 import axios from 'axios';
 const API_URL = 'https://api.propertyseller.com/api/v1';
+const { width,height } = Dimensions.get('window');
+
+// Responsive sizing functions
+const responsiveWidth = (w) => (width * w) / 100;
+const responsiveHeight = (h) => (height * h) / 100;
+
 
 const EnquiryPrompt = ({ projectId, visible, onClose,setEnquiry,setIsSubmitted }) => {
   const { profile } = useProfile();
@@ -229,13 +236,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     width: '85%',
     borderRadius: 6,
-    padding: 20,
+    padding: responsiveWidth(4),
     elevation: 10,
   },
   title: {
     color: '#000',
     fontSize: 18,
-    marginBottom: 15,
+    marginBottom: 10,
     textAlign: 'center',
     fontFamily: fonts.PoppinsMedium,
   },
@@ -246,7 +253,7 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     borderRadius: 6,
     paddingHorizontal: 10,
-    marginBottom: 15,
+    marginBottom: 10,
     height: 45,
   },
   phoneInputContainer: {
@@ -256,7 +263,7 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     borderRadius: 6,
     paddingHorizontal: 10,
-    marginBottom: 20,
+    marginBottom: 10,
     height: 45,
   },
   countryCodeWrapper: {
@@ -290,7 +297,7 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     backgroundColor: '#ff1645',
-    paddingVertical: 12,
+    paddingVertical: responsiveHeight(1),
     borderRadius: 4,
   },
   submitText: {

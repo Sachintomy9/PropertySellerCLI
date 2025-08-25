@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import AppNavigator from './src/navigation/AppNavigator'; 
+import AppNavigator from './src/navigation/AppNavigator';
 import { Provider } from 'react-redux';
 import { store } from './src/redux/store'
 import NetworkProvider from './src/components/others/NetworkChecker';
@@ -17,7 +17,7 @@ const App = () => {
           <AuthProvider>
             <MortgageProvider>
               <Provider store={store}>
-              <AppNavigator />
+                <AppNavigator />
               </Provider>
             </MortgageProvider>
           </AuthProvider>

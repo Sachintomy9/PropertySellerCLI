@@ -1,5 +1,5 @@
 // TopHeader.js
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -34,7 +34,7 @@ const TopHeader = () => {
   const { unreadCount } = useSelector((state) => state.notifications);
 
   const [showPicker, setShowPicker] = useState(false);
-  const [searchTerm, setSearchTerm] = useState(''); 
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     dispatch(fetchNotifications());
@@ -47,16 +47,16 @@ const TopHeader = () => {
   };
 
   const countryCurrencyList = countries
-  .map((country) => {
-    const currencyCode = Object.keys(country.currencies || {})[0];
-    return {
-      name: country.name.common,
-      flag: country.flag,
-      currency: currencyCode,
-    };
-  })
-  .filter(item => item.currency)  // Remove ones without currency
-  .sort((a, b) => a.name.localeCompare(b.name));
+    .map((country) => {
+      const currencyCode = Object.keys(country.currencies || {})[0];
+      return {
+        name: country.name.common,
+        flag: country.flag,
+        currency: currencyCode,
+      };
+    })
+    .filter(item => item.currency)  // Remove ones without currency
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   const filteredList = countryCurrencyList.filter((item) =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -134,8 +134,8 @@ const TopHeader = () => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
-    paddingTop: responsiveHeight(1.5),
-    
+    paddingTop: responsiveHeight(Platform.OS === "ios" ? 0 : 1.5),
+
     // paddingBottom: responsiveHeight(Platform.OS === "ios" ? 1 : 1),
     paddingHorizontal: responsiveWidth(2),
     borderBottomColor: '#e0e0e0',
@@ -195,6 +195,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#e0e0e0',
     borderRadius: 6,
+    paddingHorizontal:12,
+    paddingVertical:12,
   },
   modalOverlay: {
     flex: 1,

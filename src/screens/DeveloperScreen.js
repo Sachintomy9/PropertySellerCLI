@@ -33,7 +33,7 @@ const DeveloperScreen = () => {
     if (!hasMore && page !== 1) return;
 
     const searchParam = searchQuery ? `&search=${searchQuery}` : '';
-    const url = `https://api.propertyseller.com/api/v1/developers?page=${page}&limit=10${searchParam}`; 
+    const url = `https://v1-api.propertyseller.com/api/v1/developers?page=${page}&limit=10${searchParam}`; 
     try {
       if (page === 1) setLoading(true);
       else setLoadingMore(true);

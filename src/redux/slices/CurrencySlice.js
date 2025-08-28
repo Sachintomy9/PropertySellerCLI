@@ -5,7 +5,7 @@ import axios from 'axios';
 export const fetchCurrencyRates = createAsyncThunk(
   'currency/fetchCurrencyRates',
   async () => {
-    const response = await axios.get('https://api.propertyseller.com/api/v1/currency'); // Fetch full rates list
+    const response = await axios.get('https://v1-api.propertyseller.com/api/v1/currency'); // Fetch full rates list
     return response.data.data; // contains `rates` object
   }
 );

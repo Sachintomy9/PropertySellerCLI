@@ -9,7 +9,7 @@ const BlogScreen = () => {
 
   const fetchBlogs = async () => {
     try {
-      const res = await axios.get('https://api.propertyseller.com/api/v1/blogs');
+      const res = await axios.get('https://v1-api.propertyseller.com/api/v1/blogs');
       if (res.data.success) {
         setBlogs(res.data.data);
       }

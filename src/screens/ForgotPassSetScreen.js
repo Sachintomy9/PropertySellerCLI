@@ -14,7 +14,7 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { fonts } from '../../styles/fonts'; // Adjust the path as necessary
 import axios from 'axios';
-const API_URL = 'https://api.propertyseller.com/api/v1/';
+const API_URL = 'https://v1-api.propertyseller.com/api/v1/';
 
 import ShowPassIcon from '../assets/svg/svgicons/Others/ShowPassIcon';
 import HidePassIcon from '../assets/svg/svgicons/Others/HidePassIcon';

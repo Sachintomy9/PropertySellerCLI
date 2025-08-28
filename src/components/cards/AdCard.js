@@ -39,7 +39,7 @@ const AdCard = ({ ads }) => {
     <View style={styles.container}>
       {<Animated.View style={{ opacity: fadeAnim, flex: 1 }}>
         <Image
-          source={{ uri: currentAd?.mobileImage?.url }}
+          source={{ uri: currentAd?.mobileImage?.webp?.url }}
           style={styles.image}
           resizeMode="contain"  // Changed from 'cover' to 'contain'
         />

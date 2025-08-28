@@ -16,7 +16,7 @@ import { useProfile } from '../context/ProfileContext';
 import { fonts } from '../../styles/fonts'; // Adjust the path as necessary
 import BackIcon from '../assets/svg/svgicons/Details/BackIcon';
 import api from '../services/ApiClient';
-const API_URL = 'https://api.propertyseller.com/api/v1/';
+const API_URL = 'https://v1-api.propertyseller.com/api/v1/';
 
 import ShowPassIcon from '../assets/svg/svgicons/Others/ShowPassIcon';
 import HidePassIcon from '../assets/svg/svgicons/Others/HidePassIcon';

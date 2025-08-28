@@ -17,7 +17,7 @@ import DropDownIcon2 from '../../assets/svg/svgicons/Others/DropDownIcon2';
 import CloseIcon from '../../assets/svg/svgicons/ProfileScreen/CloseIcon';
 import countries from 'world-countries';
 import axios from 'axios';
-const API_URL = 'https://api.propertyseller.com/api/v1';
+const API_URL = 'https://v1-api.propertyseller.com/api/v1/';
 const { width,height } = Dimensions.get('window');
 
 // Responsive sizing functions

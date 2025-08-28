@@ -15,7 +15,7 @@ import axios from 'axios';
 import api from '../services/ApiClient';
 import InvalidOtp from '../components/popups/InvalidOtp';
 const CELL_COUNT = 6;
-const API_URL = 'https://api.propertyseller.com/api/v1';
+const API_URL = 'https://v1-api.propertyseller.com/api/v1/';
 
 const OtpChangePassScreen = () => {
   const navigation = useNavigation();

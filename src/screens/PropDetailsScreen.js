@@ -53,7 +53,7 @@ const RecommendedCard = ({ item, onPress }) => {
       style={styles.card}
       onPress={() => onPress(item._id)}
     >
-      <Image source={{ uri: item.mainImages?.[0]?.secure_url }} style={styles.cardImage} />
+      <Image source={{ uri: item.mainImages?.[0]?.webp?.url }} style={styles.cardImage} />
 
       <Text style={styles.cardPrice}>
         {parseFloat(item.priceInAED.replace(/,/g, '')).toLocaleString()} AED
@@ -84,7 +84,7 @@ const RecommendedCard = ({ item, onPress }) => {
 
       <View style={styles.cardLocation}>
         <LocationIcon
-          style={{ width: 20, height: 20 }}
+          style={{ width: 18, height: 18 }}
         />
         <Text numberOfLines={1} style={{ flexShrink: 1, color: '#000' }}>{item.address}</Text>
       </View>
@@ -129,7 +129,7 @@ const PropertyDetailScreen = () => {
         let hasMore = true;
 
         while (hasMore) {
-          const response = await axios.get(`https://api.propertyseller.com/api/v1/banners?page=${page}`);
+          const response = await axios.get(`https://v1-api.propertyseller.com/api/v1/banners?page=${page}`);
 
           if (
             response.data.success &&
@@ -166,7 +166,7 @@ const PropertyDetailScreen = () => {
     const fetchRecommended = async () => {
       setRecommendedLoading(true);
       try {
-        const response = await axios.get('https://api.propertyseller.com/api/v1/projects');
+        const response = await axios.get('https://v1-api.propertyseller.com/api/v1/projects');
 
         if (response.data.success) {
           const all = response.data.data;
@@ -304,7 +304,7 @@ const PropertyDetailScreen = () => {
     console.log('propertyId from route:', propertyId);
     const fetchProperty = async () => {
       try {
-        const res = await axios.get(`https://api.propertyseller.com/api/v1/projects/${propertyId}`);
+        const res = await axios.get(`https://v1-api.propertyseller.com/api/v1/projects/${propertyId}`);
         setProperty(res.data.data); // adjust if shape is different
         dispatch(setPropertyRed(res.data.data));
       } catch (err) {
@@ -486,7 +486,7 @@ const PropertyDetailScreen = () => {
         </View>
 
         <Animated.ScrollView
-          contentContainerStyle={{ paddingBottom: 100 }}
+          contentContainerStyle={{ paddingBottom: 10 }}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
           onContentSizeChange={(w, h) => setContentHeight(h)}
@@ -509,23 +509,25 @@ const PropertyDetailScreen = () => {
               }}
               pagingEnabled
               showsHorizontalScrollIndicator={false}
-              renderItem={({ item, index }) => (
-                <TouchableOpacity
-                  activeOpacity={0.9}
-                  style={{
-                    width: width - responsiveWidth(4),
-                    height: 230,
-                    borderRadius: 4,
-                  }}
-                  onPress={() => {
-                    navigation.navigate('ImageGallery')
-                  }}
-                >
-                  <Image source={{ uri: item?.secure_url }} style={styles.carouselImage} />
+              renderItem={({ item, index }) => {
+                return (
+                  <TouchableOpacity
+                    activeOpacity={0.9}
+                    style={{
+                      width: width - responsiveWidth(6),
+                      height: 230,
+                      borderRadius: 4,
+                    }}
+                    onPress={() => {
+                      navigation.navigate('ImageGallery')
+                    }}
+                  >
+                    <Image source={{ uri: item?.webp?.url }} style={styles.carouselImage} />
 
-                </TouchableOpacity>
+                  </TouchableOpacity>
 
-              )}
+                )
+              }}
               onViewableItemsChanged={onViewableItemsChanged}
               viewabilityConfig={viewabilityConfig}
             />
@@ -689,30 +691,30 @@ const PropertyDetailScreen = () => {
               </View>
             )}
 
-            {property.squareFeet && (
+            {/* {property.squareFeet && (
               <View style={styles.infoItem}>
                 <View style={{ top: -1 }}>
                   <AreaIcon size={23} />
                 </View>
                 <Text style={styles.infoText}> Area: {property.squareFeet} sqft</Text>
               </View>
-            )}
+            )} */}
           </View>
 
           {/* Description */}
           <Text style={styles.sectionTitle}>Description</Text>
           <Text style={styles.description}>
             {readMore
-              ? property.description
-              : (property.description?.slice(0, 200) || 'NA') + '...'}
+              ? property?.description?.text
+              : (property?.description?.text?.slice(0, 200) || 'NA') + '...'}
           </Text>
 
-          {property.description?.length > 200 && (
+          {property.description?.text?.length > 200 && (
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate('DescriptionRead', {
-                  description: property.description,
-                  descriptionInArabic: property.descriptionInArabic,
+                  description: property.description?.text,
+                  descriptionInArabic: property?.descriptionInArabic?.text,
                 })
               }
               style={styles.readMoreBtn}
@@ -756,7 +758,7 @@ const PropertyDetailScreen = () => {
             {property.layoutImages?.slice(0, 2).map((item, index) => (
               <Image
                 key={index}
-                source={{ uri: item.secure_url }}
+                source={{ uri: item.webp?.url }}
                 style={styles.floorPlanImageStyled}
               />
             ))}
@@ -783,12 +785,15 @@ const PropertyDetailScreen = () => {
           {/* Features / Amenities */}
           <Text style={styles.sectionTitle}>Features / Amenities</Text>
           <View style={styles.amenitiesRow}>
-            {property.facilitiesAmenitiesDetails.slice(0, 2).map((item, index) => (
+            {property.facilitiesAmenitiesDetails.slice(0, 2).map((item, index) =>{
+              console.log(item,"item")
+               return(
               <View key={index} style={styles.amenityCard}>
-                <Image source={{ uri: item.image.secure_url }} style={styles.amenityIcon} />
+                <Image source={{ uri: item?.image?.webp?.url }} style={styles.amenityIcon} />
                 <Text style={styles.amenityText}>{item.name}</Text>
               </View>
-            ))}
+            )
+            })}
 
             <TouchableOpacity style={styles.amenityCard} onPress={() => {
               navigation.navigate('AmenitiesInfo', { facilitiesAmenitiesDetails: property.facilitiesAmenitiesDetails, })
@@ -841,7 +846,7 @@ const PropertyDetailScreen = () => {
             alignItems: 'center'
           }}>
             {<Image
-              source={{ uri: property.qrCodeImage.url }}
+              source={{ uri: property.qrCodeImage?.webp?.url }}
               style={{
                 width: 200,  // Set appropriate dimensions
                 height: 200,
@@ -866,7 +871,7 @@ const PropertyDetailScreen = () => {
 
         </Animated.ScrollView>
 
-        <View style={styles.scrollbarTrack}>
+        {/* <View style={styles.scrollbarTrack}>
           <Animated.View
             style={[
               styles.scrollbarThumb,
@@ -876,7 +881,7 @@ const PropertyDetailScreen = () => {
               },
             ]}
           />
-        </View>
+        </View> */}
         <BottomEnquireButton propertyId={propertyId} />
       </SafeAreaView>
       <StatusBar
@@ -895,7 +900,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     position: "relative",
-    paddingHorizontal: responsiveWidth(2)
+    paddingHorizontal: responsiveWidth(3)
   },
   content: { paddingBottom: 60, paddingHorizontal: 16 },
   loaderContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
@@ -1158,7 +1163,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FF1645',
   },
   nearbyText: {
-    fontSize: 12,
+    fontSize: 14,
     color: '#111',
     marginVertical: 4,
     fontFamily: fonts.PoppinsRegular,
@@ -1264,7 +1269,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginVertical: 6,
     backgroundColor: "#fff",
-    rowGap: 14,
+    rowGap: 16,
   },
   card: {
     // width: '50%',
@@ -1282,7 +1287,7 @@ const styles = StyleSheet.create({
   },
   cardPrice: {
     color: '#000',
-    fontFamily: fonts.PoppinsMedium,
+    fontFamily: fonts.PoppinsSemiBold,
     fontSize: 18,
     fontWeight: '600',
     marginTop: 5,

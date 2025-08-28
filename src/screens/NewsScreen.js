@@ -24,7 +24,7 @@ const NewsScreen = () => {
       if (page === 1) setLoading(true);
       else setLoadingMore(true);
 
-      const res = await axios.get(`https://api.propertyseller.com/api/v1/news?page=${page}`);// similar code as the CitiesScreen, but there are minor changes
+      const res = await axios.get(`https://v1-api.propertyseller.com/api/v1/news?page=${page}`);// similar code as the CitiesScreen, but there are minor changes
       if (res.data.success) {
         const newCity = res.data.data || [];
         const pagination = res.data.pagination || {};

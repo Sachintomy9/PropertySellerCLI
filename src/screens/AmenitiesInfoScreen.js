@@ -74,7 +74,7 @@ const AmenitiesInfoScreen = () => {
               <View style={styles.amenitiesRow}>
                 {facilitiesAmenitiesDetails.map((item, index) => (
                   <View key={index} style={styles.amenityCard}>
-                    <Image source={{ uri: item.image.secure_url }} style={styles.amenityIcon} />
+                    <Image source={{ uri: item.image?.webp?.url }} style={styles.amenityIcon} />
                     <Text style={styles.amenityText}>{item.name}</Text>
                   </View>
                 ))}

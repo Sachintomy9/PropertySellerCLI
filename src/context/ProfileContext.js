@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import api from '../services/ApiClient';
 import * as Keychain from 'react-native-keychain';
-const API_URL = 'https://api.propertyseller.com/api/v1/';
+const API_URL = 'https://v1-api.propertyseller.com/api/v1/';
 
 // Sample data-fetching function (replace with real API call if needed)
 const fetchUserProfile = async () => {

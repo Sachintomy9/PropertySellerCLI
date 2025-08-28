@@ -21,7 +21,7 @@ import EmptyState from '../components/others/EmptyScreen';
 import EnquirySubmitted from '../components/popups/EnquirySubmitted';
 import DropDownIcon2 from '../assets/svg/svgicons/Others/DropDownIcon2';
 import countries from 'world-countries';
-const API_URL = 'https://api.propertyseller.com/api/v1'; 
+const API_URL = 'https://v1-api.propertyseller.com/api/v1/'; 
 
 const THUMB_MIN_HEIGHT = 30;
 

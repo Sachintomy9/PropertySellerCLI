@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Dimensions } from 'react-native';
 import SavedActive from '../../assets/svg/svgicons/BottomTabs/SavedActive';
 import ShareIcon from '../../assets/svg/svgicons/Details/ShareRed';
 import EnquireIcon from '../../assets/svg/svgicons/Others/EnquireIconRed';
@@ -17,6 +17,11 @@ import { useSelector } from 'react-redux';
 import Share from 'react-native-share';
 import api from '../../services/ApiClient';
 import HeartIcon from '../../assets/svg/svgicons/Others/HeartIcon';
+
+const { width,height } = Dimensions.get('window');
+const responsiveWidth = (w) => (width * w) / 100;
+const responsiveHeight = (h) => (height * h) / 100;
+
 const MultipleButton = ({ onSave, onShare, onEnquire }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
@@ -193,11 +198,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     backgroundColor: '#fff',
-    paddingVertical: 5,
+    paddingVertical: responsiveWidth(3),
     // borderTopWidth: 1,
     borderColor: '#f0f0f0',
     // position: 'absolute',
     // bottom: 0,
+    // paddingHorizontal: responsiveWidth(3),
     width: '100%',
     zIndex: 10,
   },

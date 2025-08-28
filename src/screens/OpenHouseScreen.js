@@ -15,7 +15,7 @@ import OpenHouseCard from '../components/cards/OpenHouseCard';
 import TopHeader2 from '../components/Headers/TopHeader2';
 import EmptyState from '../components/others/EmptyScreen';
 
-const API_URL = 'https://api.propertyseller.com/api/v1/open-houses';
+const API_URL = 'https://v1-api.propertyseller.com/api/v1/open-houses';
 const THUMB_MIN_HEIGHT = 30;
 
 const OpenHouseScreen = () => {

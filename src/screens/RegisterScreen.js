@@ -23,7 +23,7 @@ import DropDownIcon2 from '../assets/svg/svgicons/Others/DropDownIcon2';
 import HidePassIcon from '../assets/svg/svgicons/Others/HidePassIcon';
 import ShowPassIcon from '../assets/svg/svgicons/Others/ShowPassIcon';
 import CheckBox from '@react-native-community/checkbox';
-const API_URL = 'https://api.propertyseller.com/api/v1';
+const API_URL = 'https://v1-api.propertyseller.com/api/v1/';
 
 const RegisterScreen = () => {
   const navigation = useNavigation();

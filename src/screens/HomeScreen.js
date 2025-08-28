@@ -133,7 +133,7 @@ const HomeScreen = () => {
         setIsFetchingAdMore(true);
       }
 
-      const res = await axios.get(`https://api.propertyseller.com/api/v1/banners?page=${pageNum}&limit=10`); // Replace with real endpoint
+      const res = await axios.get(`https://v1-api.propertyseller.com/api/v1/banners?page=${pageNum}&limit=10`); // Replace with real endpoint
       if (res.data.success) {
         const newAds = res.data.data;
         const pagination = res.data.pagination;

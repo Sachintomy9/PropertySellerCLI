@@ -33,8 +33,9 @@ const AiAgentIntroScreen = () => {
         {/* This content container takes up all available space and centers its content */}
         <View style={styles.contentContainer}>
           <Text style={styles.heading}>
-            Meet Your New{'\n'} {/* Added a newline character for the line break */}
-            <Text style={styles.highlight}>Property Agent</Text>
+            Say hello to your {'\n'} {/* Added a newline character for the line break */}
+            <Text>new</Text>
+            <Text style={styles.highlight}> Ai Agent</Text>
           </Text>
 
           <Text style={styles.subText}>

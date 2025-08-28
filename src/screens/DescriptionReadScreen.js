@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingHorizontal: responsiveWidth(2),
+    paddingHorizontal: responsiveWidth(4),
     paddingTop: 50,
   },
   header: {
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     // paddingHorizontal: 20,
     justifyContent: 'space-between',
-    // marginBottom:5,
+    marginBottom:5,
   },
   backButton: {
     padding: 8,

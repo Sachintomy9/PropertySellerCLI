@@ -45,8 +45,8 @@ export default TopHeader2;
 const styles = StyleSheet.create({
   container: {
     // height: 10,
-    paddingHorizontal: responsiveWidth(2),
-    // paddingVertical: responsiveHeight(2),
+    paddingHorizontal: responsiveWidth(3),
+    paddingBottom: responsiveHeight(1),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

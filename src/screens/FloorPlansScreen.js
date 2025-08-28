@@ -79,7 +79,7 @@ const FloorPlansScreen = () => {
               {layoutImages?.map((item, index) => (
                 <TouchableOpacity key={index} onPress={() => openViewer(index)}>
                   <Image
-                    source={{ uri: item.secure_url }}
+                    source={{ uri: item?.webp?.url }}
                     style={styles.image}
                     resizeMode="cover"
                   />

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { refreshToken, getTokens } from './AuthService';
 
-const API_URL = 'https://api.propertyseller.com/api/v1/';
+const API_URL = 'https://v1-api.propertyseller.com/api/v1/';
 
 const api = axios.create({
   baseURL: API_URL,

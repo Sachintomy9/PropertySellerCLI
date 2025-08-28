@@ -20,7 +20,7 @@ import EmptyState from '../components/others/EmptyScreen';
 import EnquirySubmitted from '../components/popups/EnquirySubmitted';
 import DropDownIcon2 from '../assets/svg/svgicons/Others/DropDownIcon2';
 const THUMB_MIN_HEIGHT = 30;
-const API_URL = 'https://api.propertyseller.com/api/v1';
+const API_URL = 'https://v1-api.propertyseller.com/api/v1/';
 const CareersScreen = () => {
     const navigation = useNavigation();
     const {isGuest} = useAuth();

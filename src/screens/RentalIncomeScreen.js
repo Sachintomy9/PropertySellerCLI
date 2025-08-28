@@ -12,7 +12,7 @@ import TopHeader2 from '../components/Headers/TopHeader2';
 import TopSearchHeader from '../components/Headers/TopSearchHeader';
 
 
-const API_URL = 'https://api.propertyseller.com/api/v1';
+const API_URL = 'https://v1-api.propertyseller.com/api/v1/';
 
 const RentalIncomeScreen = () => {
   const [rentalData, setRentalData] = useState([]);

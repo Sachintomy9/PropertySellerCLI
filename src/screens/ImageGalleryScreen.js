@@ -75,7 +75,7 @@ const FloorPlansScreen = () => {
             {mainImages?.map((item, index) => (
               <TouchableOpacity key={index} onPress={() => openViewer(index)}>
                 <Image
-                  source={{ uri: item.secure_url }}
+                  source={{ uri: item?.webp?.url }}
                   style={styles.image}
                   resizeMode="cover"
                 />
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingHorizontal: responsiveWidth(2),
+    paddingHorizontal: responsiveWidth(3),
     paddingTop: 0,
   },
   title: {
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 220,
     borderRadius: 8,
-    marginBottom: 4,
+    marginBottom: 8,
   },
 
   // Scrollbar styles

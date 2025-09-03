@@ -28,7 +28,7 @@ const CitiesScreen = () => {
       else setLoadingMore(true);
 
       const searchParam = searchQuery ? `&search=${searchQuery}` : '';
-      const res = await axios.get(`https://v1-api.propertyseller.com/api/v1/city?page=${page}&limit=10${searchParam}`);
+      const res = await axios.get(`https://v1-api.propertyseller.com/api/v1/city/all-cities/property-type-count/?page=${page}&limit=10${searchParam}`);
       if (res.data.success) {
         const newCity = res.data.data || [];
         const pagination = res.data.pagination || {};

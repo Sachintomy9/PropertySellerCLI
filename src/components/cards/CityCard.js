@@ -19,15 +19,40 @@ const CityCard = ({ city, onPress }) => {
           <Text style={styles.placeholderText}>No Image</Text>
         </View>
       )}
-      <Text style={styles.title}>{city.name}</Text>
-      <View style={styles.tagWrapper}>
-        <View style={styles.tag}><Text style={styles.tagText}>Offplan Projects - 10</Text></View>
-        <View style={styles.tag}><Text style={styles.tagText}>Offplan Resale - 10</Text></View>
-        <View style={styles.tag}><Text style={styles.tagText}>Secondary - 10</Text></View>
-        <View style={styles.tag}><Text style={styles.tagText}>Land - 10</Text></View>
+      <View style={styles.titleWrapper}>
+        <Text style={styles.title}>{city.name}</Text>
+          <View style={styles.arrowContainer}>
+            <ForwardIcon width={25} height={25}/>
+          </View>
       </View>
-      <View style={styles.arrowContainer}>
-        <ForwardIcon width={25} height={25}/>
+      <View style={styles.tagWrapper}>
+        <View style={styles.tag}>
+          <Text style={styles.tagText}>Commercial Residential - {city.projectTypeCounts?.['Commercial-residential'] || 0}</Text>
+        </View>
+        <View style={styles.tag}>
+          <Text style={styles.tagText}>Project Commercial - {city.projectTypeCounts?.['Project-commercial'] || 0}</Text>
+        </View>
+        <View style={styles.tag}>
+          <Text style={styles.tagText}>Project Residential - {city.projectTypeCounts?.['Project-residential'] || 0}</Text>
+        </View>
+        <View style={styles.tag}>
+          <Text style={styles.tagText}>Resale Commercial - {city.projectTypeCounts?.['Resale-commercial'] || 0}</Text>
+        </View>
+        <View style={styles.tag}>
+          <Text style={styles.tagText}>Resale Residential - {city.projectTypeCounts?.['Resale-residential'] || 0}</Text>
+        </View>
+        <View style={styles.tag}>
+          <Text style={styles.tagText}>Secondary Residential - {city.projectTypeCounts?.['Secondary-residential'] || 0}</Text>
+        </View>
+        <View style={styles.tag}>
+          <Text style={styles.tagText}>Land-commercial - {city.projectTypeCounts?.['Land-commercial'] || 0}</Text>
+        </View>
+        <View style={styles.tag}>
+          <Text style={styles.tagText}>Land-residential - {city.projectTypeCounts?.['Land-residential'] || 0}</Text>
+        </View>
+        <View style={styles.tag}>
+          <Text style={styles.tagText}>Secondary-commercial - {city.projectTypeCounts?.['Secondary-commercial'] || 0}</Text>
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -75,7 +100,6 @@ const styles = StyleSheet.create({
   },
   arrowContainer: {
     position: 'absolute',
-    bottom: 12,
     right: 12,
     backgroundColor: '#767676',
     borderRadius: 20,
@@ -83,6 +107,11 @@ const styles = StyleSheet.create({
     height: 28,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  titleWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
 });
 

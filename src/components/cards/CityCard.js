@@ -3,9 +3,22 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { fonts } from '../../../styles/fonts';
 import ForwardIcon from '../../assets/svg/svgicons/Others/ForwardIcon';
 const CityCard = ({ city, onPress }) => {
+  // Get the image URL from the API response structure
+  const imageUrl = city.image?.webp?.url || city.image?.png?.url || null;
+
   return (
     <TouchableOpacity style={styles.card} onPress={onPress}>
-      <Image source={{ uri: city.image.secure_url }} style={styles.image} resizeMode="cover" />
+      {imageUrl ? (
+        <Image 
+          source={{ uri: imageUrl }} 
+          style={styles.image} 
+          resizeMode="cover" 
+        />
+      ) : (
+        <View style={[styles.image, styles.placeholder]}>
+          <Text style={styles.placeholderText}>No Image</Text>
+        </View>
+      )}
       <Text style={styles.title}>{city.name}</Text>
       <View style={styles.tagWrapper}>
         <View style={styles.tag}><Text style={styles.tagText}>Offplan Projects - 10</Text></View>
@@ -23,22 +36,19 @@ const CityCard = ({ city, onPress }) => {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#fff',
-    borderRadius: 6,
+    borderRadius: 4,
     marginVertical: 10,
-    marginHorizontal: 16,
+    marginHorizontal: 8,
     padding: 12,
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowRadius: 5,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 3,
+    borderWidth: 1,
+    borderColor: '#ddd',
     position: 'relative',
     
   },
   image: {
     width: '100%',
-    height: 150,
-    borderRadius: 8,
+    height: 200,
+    borderRadius: 5,
   },
   title: {
     marginTop: 10,

@@ -38,7 +38,7 @@ const PrivacyPolicyScreen = () => {
   });
 
   return (
-    <View style={{flex:1}}>
+    <View style={{flex:1,backgroundColor:"#fff"}}>
         <TopHeader2 title={"Privacy Policy"} />
     <View style={styles.container}>
       <View style={styles.scrollContainer}>

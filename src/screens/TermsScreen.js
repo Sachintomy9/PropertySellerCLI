@@ -38,7 +38,7 @@ const TermsScreen = () => {
   });
 
   return (
-    <View style={{flex:1}}>
+    <View style={{flex:1,backgroundColor:"#fff"}}>
         <TopHeader2 title={"Terms and Conditions"} />
     <View style={styles.container}>
       <View style={styles.scrollContainer}>

@@ -6,7 +6,7 @@ import CalenderIcon from '../../assets/svg/svgicons/Others/CalenderIcon'; // Ens
 
 const NewsCard = ({ news }) => {
   const navigation = useNavigation();
-
+  const imageUrl = news.image?.webp?.url || news.image?.png?.url || null;
   // Updated function to format date as DD-MM-YY
   const formatBlogDate = (isoDateString) => {
     if (!isoDateString) return "N/A";
@@ -28,7 +28,7 @@ const NewsCard = ({ news }) => {
       {/* Image stays the same */}
       <View style={styles.imageWrapper}>
         <Image
-          source={{ uri: news?.image?.secure_url }}
+          source={{ uri: imageUrl }}
           style={styles.image}
           resizeMode="cover"
         />

@@ -91,10 +91,7 @@ const DeveloperScreen = () => {
     extrapolate: 'clamp',
   });
 
-  if (loading && currentPage === 1) {
-    return <ActivityIndicator size="large" style={{ marginTop: 50 }} color={"#ff1645"}/>;
-  }
-
+ 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <TopHeader2 title="Developers" />
@@ -118,6 +115,11 @@ const DeveloperScreen = () => {
       </View>
       <TopSearchHeader/>
 
+      {loading && currentPage === 1 ? (
+        <View style={styles.centerLoading}>
+            <ActivityIndicator size="large" color="#ff1645" />
+          </View>
+        ) : (
       <View style={{ flex: 1 }}>
         <Animated.FlatList
           data={developers}
@@ -160,6 +162,7 @@ const DeveloperScreen = () => {
           />
         </View>
       </View>
+        )}
     </SafeAreaView>
   );
 };
@@ -205,4 +208,9 @@ const styles = StyleSheet.create({
   alignSelf: 'center',
   top:12,
 },
+  centerLoading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });

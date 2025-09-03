@@ -17,7 +17,7 @@ const THUMB_MIN_HEIGHT = 30;
 const BlogReadScreen = () => {
   const route = useRoute();
   const { blog } = route.params;
-
+  const imageUrl = blog.image?.webp?.url || blog.image?.png?.url || null;
   const scrollY = useRef(new Animated.Value(0)).current;
   const [contentHeight, setContentHeight] = useState(1);
   const [scrollViewHeight, setScrollViewHeight] = useState(0);
@@ -62,7 +62,7 @@ const BlogReadScreen = () => {
         >
           <View style={styles.imageWrapper}>
             <Image
-              source={{ uri: blog.image?.secure_url }}
+              source={{ uri: imageUrl }}
               style={styles.image}
               resizeMode="cover"
             />
@@ -79,7 +79,7 @@ const BlogReadScreen = () => {
       <Text style={styles.title}>{blog.blogTitle}</Text>
 
 
-          <Text style={styles.blogContent}>{blog.blogBody}</Text>
+          <Text style={styles.blogContent}>{blog.blogBody.text}</Text>
         </Animated.ScrollView>
 
         {/* Custom Scrollbar */}

@@ -74,14 +74,15 @@ export const refreshToken = async () => {
 
     console.log('🔁 Attempting to refresh token...');
 
-    const response = await axios.post(`${API_URL}auth/user/refresh-token`, {
-      refreshToken: tokens.refreshToken,
+    const response = await axios.post(`${API_URL}auth/user/refresh-token`, {}, {
+      headers: {
+        Authorization: `Bearer ${tokens.refreshToken}`,
+      },
     });
 
     const { token: accessToken, refreshToken: newRefreshToken } = response.data;
 
-    console.log("New tokens:", response.data);
-    console.log("New Access Token:", accessToken);
+    console.log('🔁 Token refreshed successfully in AuthService.');
     await Keychain.setGenericPassword('tokens', JSON.stringify({
       accessToken,
       refreshToken: newRefreshToken,

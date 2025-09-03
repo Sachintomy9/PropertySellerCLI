@@ -5,13 +5,15 @@ import { fonts } from '../../../styles/fonts';
 
 
 const DeveloperCard = ({ developer, onPress }) => {
+  const imageUrl = developer.image?.webp?.url || developer.image?.png?.url || null;
+
   return (
     <View>
     <TouchableOpacity style={styles.card} onPress={onPress}>
       <View style={styles.logoWrapper}>
-        {developer?.image?.url ? (
+        {imageUrl ? (
         <Image
-          source={{ uri: developer.image.url }}
+          source={{ uri: imageUrl }}
           style={styles.logo}
           resizeMode="contain"
         />
@@ -35,21 +37,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
     padding: 12,
-    marginHorizontal: 16,
+    marginHorizontal: 8,
     marginBottom: 12,
-    borderRadius: 6,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOpacity: 0.06,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    width: "92%",
-    height:160,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    width: "95%",
+    height:120,
   },
   logoWrapper: {
-    width: 130,
-    height: 120,
-    marginLeft:10,
+    width: 120,
+    height: 95,
+    marginLeft:0,
     backgroundColor: '#f9f9f9',
     borderRadius: 6,
     justifyContent: 'center',

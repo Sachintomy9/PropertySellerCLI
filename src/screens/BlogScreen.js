@@ -24,20 +24,22 @@ const BlogScreen = () => {
     fetchBlogs();
   }, []);
 
-  if (loading) {
-    return <ActivityIndicator style={{ marginTop: 50 }} size="large" />;
-  }
-
   return (
 
     <View style={{flex:1, backgroundColor: "#fff"}}> 
         <TopHeader2 title={"Blogs"}/>
+        {loading ? (
+          <View style={styles.centerLoading}>
+                    <ActivityIndicator size="large" color="#ff1645" />
+                  </View>
+                ) : (
         <FlatList
         data={blogs}
         keyExtractor={(item) => item._id}
         renderItem={({ item }) => <BlogCard blog={item} />}
         contentContainerStyle={styles.container}
         />
+                )}
     </View>
   );
 };
@@ -46,6 +48,11 @@ const styles = StyleSheet.create({
   container: {
     paddingTop: 16,
     paddingBottom: 40,
+  },
+    centerLoading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   TextInput,
   Alert,
-  SafeAreaView,
 } from 'react-native';
 import { logout,isGuestUser } from '../services/AuthService'; // Assuming you have a logout function in AuthService
 import { useProfile } from '../context/ProfileContext';
@@ -14,8 +13,9 @@ import LogoutIcon from '../assets/svg/svgicons/ProfileScreen/LogoutIcon';
 import EnqPropIcon from '../assets/svg/svgicons/ProfileScreen/EnqPropIcon';
 import SavedPropIcon from '../assets/svg/svgicons/ProfileScreen/SavedPropIcon';
 import PurHistoryIcon from '../assets/svg/svgicons/ProfileScreen/PurHistoryIcon';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import CloseIcon from '../assets/svg/svgicons/ProfileScreen/CloseIcon';
-import BackIcon from '../assets/svg/svgicons/Details/BackIcon';
+import GoBackIcon from '../assets/svg/svgicons/Others/GoBackIcon';
 import LogoutPrompt from '../components/popups/LogoutPrompt';
 import { fonts } from '../../styles/fonts';
 import { useNavigation } from '@react-navigation/native';
@@ -47,14 +47,14 @@ const ProfileScreen = () => {
 
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['right', 'left', 'bottom']}>
 
       <LogoutPrompt
         visible={showLogout}
         onClose={() => setShowLogout(false)}
         />
         <TouchableOpacity style={styles.crossButton} onPress={() => navigation.goBack()}>
-            <BackIcon />
+            <GoBackIcon color='#000'/>
         </TouchableOpacity>
       <Text style={styles.heading}>Your Profile</Text>
 
@@ -81,14 +81,14 @@ const ProfileScreen = () => {
           <Text style={styles.buttonText}>Saved Properties</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.secondaryButton}>
+        <TouchableOpacity style={styles.secondaryButton} onPress={() => navigation.navigate("EnquiredProperties")}>
           <EnqPropIcon />
           <Text style={styles.buttonText}>Enquired Properties</Text>
         </TouchableOpacity>
       </View>
 
 
-      <TouchableOpacity style={styles.fullButton}>
+      <TouchableOpacity style={styles.fullButton} onPress={() => navigation.navigate("PurchaseHistory")}>
         <PurHistoryIcon />
         <Text style={styles.buttonText}>Purchase History</Text>
       </TouchableOpacity>
@@ -250,10 +250,9 @@ const styles = StyleSheet.create({
     fontFamily: fonts.PoppinsSemiBold,
   },
   crossButton: {
-  position: 'absolute',
-  marginTop: 70,
-  left: 30,
-  backgroundColor: '#fff',
+    position: 'absolute',
+    marginTop: 70,
+    left: 20,
 },
 });
 

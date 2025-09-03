@@ -24,7 +24,7 @@ const helpTopics = [
 const HelpCenterScreen = () => {
     const [faqExpanded, setFaqExpanded] = useState(true);
   return (
-    <View style={{flex:1}}>
+    <View style={{flex:1,backgroundColor:'#fff'}}>
         <TopHeader2 title={"Help Center"} />
     <ScrollView style={styles.container}>
       {/* Header */}

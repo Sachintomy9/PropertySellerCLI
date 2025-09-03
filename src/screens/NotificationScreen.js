@@ -77,6 +77,7 @@ const NotificationScreen = () => {
         flex:1,
         backgroundColor:"#fff"
       }}
+      edges={['right', 'left','bottom']}
       >
         <View style={styles.container}>
           <TopHeader2 title="Notifications" showNotification={false} />

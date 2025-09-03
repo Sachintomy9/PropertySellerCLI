@@ -95,6 +95,10 @@ const MoreScreen = () => {
 
     // Sample logic — update as per your routes
     switch (screenName) {
+      case 'Login':
+         await loginUser();
+        navigation.navigate('Login');
+        break;
       case 'Profile':
         navigation.navigate('Profile');
         break;
@@ -110,7 +114,25 @@ const MoreScreen = () => {
       case 'Developers':
         navigation.navigate('Developer');
         break;
-
+      case 'Enquired Properties':
+        navigation.navigate('EnquiredProperties');
+        break;
+      case 'Purchase History':
+        navigation.navigate('PurchaseHistory');
+        break;
+      case 'Rental Income':
+         await loginUser();
+        navigation.navigate('Rental');
+        break;
+      case 'Blog':
+        navigation.navigate('Blogs');
+        break;
+      case 'Property Talks':
+        navigation.navigate('PropertyTalks');
+        break;
+      case 'News':
+        navigation.navigate('News');
+        break;
       case 'Freelance Registration':
         navigation.navigate('FreelanceReg');
         break;
@@ -122,20 +144,6 @@ const MoreScreen = () => {
         break;
       case 'Careers':
         navigation.navigate('Careers');
-        break;
-      case 'Blog':
-        navigation.navigate('Blogs');
-        break;
-      case 'News':
-        navigation.navigate('News');
-        break;
-      case 'Login':
-         await loginUser();
-        navigation.navigate('Login');
-        break;
-      case 'Rental Income':
-         await loginUser();
-        navigation.navigate('Rental');
         break;
       case 'Privacy Policy':
         navigation.navigate('Privacy');

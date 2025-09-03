@@ -71,6 +71,7 @@ const SavedScreen = () => {
         flex:1,
         backgroundColor:"#fff"
       }}
+      edges={['right', 'left', 'bottom']}
       >
         <View style={{ flex: 1, backgroundColor: '#fff' }}>
           <TopHeader2 title="Saved Properties" />

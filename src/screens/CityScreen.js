@@ -60,10 +60,6 @@ const CitiesScreen = () => {
       return () => clearTimeout(delayDebounce); // cleanup timeout
     }, [searchQuery]);
 
-  if (loading) {
-    return <ActivityIndicator size="large" style={{ marginTop: 50 }} color={"#ff1645"} />;
-  }
-
   const loadMore = () => {
       if (!loadingMore && hasMore) {
         fetchCities(currentPage + 1);
@@ -85,11 +81,6 @@ const CitiesScreen = () => {
       outputRange: [0, scrollViewHeight - THUMB_MIN_HEIGHT],
       extrapolate: 'clamp',
     });
-  
-    if (loading && currentPage === 1) {
-      return <ActivityIndicator size="large" style={{ marginTop: 50 }} color={"#ff1645"} />;
-    }
-
 
 
   return (
@@ -114,31 +105,36 @@ const CitiesScreen = () => {
               )}
           </View>
         <TopSearchHeader/>
-      <View style={{ flex: 1 }}>
-        <Animated.FlatList
-          data={cities}
-          keyExtractor={(item) => item._id}
-          renderItem={({ item }) => (
+        {loading && currentPage === 1 ? (
+        <View style={styles.centerLoading}>
+          <ActivityIndicator size="large" color="#ff1645" />
+        </View>
+      ) : (
+        <View style={{ flex: 1 }}>
+          <Animated.FlatList
+            data={cities}
+            keyExtractor={(item) => item._id}
+            renderItem={({ item }) => (
               <CityCard city={item} onPress={() => console.log('Navigate to city', item.slug)} />
-          )}
-          showsVerticalScrollIndicator={false}
-          scrollEventThrottle={16}
-          onContentSizeChange={(w, h) => setContentHeight(h)}
-          onLayout={(e) => setScrollViewHeight(e.nativeEvent.layout.height)}
-          onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-            { useNativeDriver: false }
-          )}
-          onEndReached={loadMore}
-          onEndReachedThreshold={0.5}
-          ListFooterComponent={
-            loadingMore ? (
-              <View style={{ paddingVertical: 20 }}>
-                <ActivityIndicator size="small" color="#FF1645" />
-              </View>
-            ) : null
-          }
-        />
+            )}
+            showsVerticalScrollIndicator={false}
+            scrollEventThrottle={16}
+            onContentSizeChange={(w, h) => setContentHeight(h)}
+            onLayout={(e) => setScrollViewHeight(e.nativeEvent.layout.height)}
+            onScroll={Animated.event(
+              [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+              { useNativeDriver: false }
+            )}
+            onEndReached={loadMore}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={
+              loadingMore ? (
+                <View style={{ paddingVertical: 20 }}>
+                  <ActivityIndicator size="small" color="#FF1645" />
+                </View>
+              ) : null
+            }
+          />
 
         <View style={styles.scrollbarTrack}>
           <Animated.View
@@ -152,7 +148,7 @@ const CitiesScreen = () => {
           />
         </View>    
        </View>       
-
+      )}
     </SafeAreaView>
   );
 };
@@ -198,4 +194,9 @@ export default CitiesScreen;
   alignSelf: 'center',
   top:12,
 },
+  centerLoading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });

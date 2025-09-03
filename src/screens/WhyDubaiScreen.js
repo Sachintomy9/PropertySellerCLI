@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import BackIcon from '../assets/svg/svgicons/Details/BackIcon';  // left top
+import GoBackIcon from '../assets/svg/svgicons/Others/GoBackIcon'; // left top
 import BellIcon from '../assets/svg/svgicons/Others/BellIcon';// right top
 import PropertySellerWhite from '../assets/svg/svgimages/PropertySellerWhite';
 import { useNavigation } from '@react-navigation/native';
@@ -46,7 +46,7 @@ const WhyDubaiScreen = () => {
 
             <View style={styles.topRow}>
                 <TouchableOpacity onPress={() => navigation.goBack()} >
-                    < BackIcon color="#fff"/>
+                    < GoBackIcon color="#fff"/>
                 </TouchableOpacity>
 
                 <PropertySellerWhite/>
@@ -296,7 +296,6 @@ const styles = StyleSheet.create({
   topRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
     marginTop: 50,
   },
   contentBox: {

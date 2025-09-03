@@ -3,25 +3,26 @@ import { View, Text, Image, StyleSheet,TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 const BlogCard = ({ blog }) => {
     const navigation=useNavigation();
+    const imageUrl = blog.image?.webp?.url || blog.image?.png?.url || null;
     const formatBlogDate = (isoDateString) => {
     const date = new Date(isoDateString);
-    
-    // Options for toLocaleDateString()
-    const options = { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    };
 
-    return date.toLocaleDateString('en-US', options);
-};
+      // Options for toLocaleDateString()
+      const options = { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+      };
+
+      return date.toLocaleDateString('en-US', options);
+  };
   return (
     <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('BlogRead', { blog })}>
       <View style={styles.imageWrapper}>
         <Image
-          source={{ uri: blog.image?.secure_url }}
+          source={{ uri: imageUrl }}
           style={styles.image}
           resizeMode="cover"
         />

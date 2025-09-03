@@ -4,7 +4,6 @@ import { fonts } from '../../../styles/fonts';
 
 const CategoryBlock = ({ title, items, city }) => {
   if (!items || items.length === 0) return null;
-  console.log("Data: ",items);
 
   return (
     <View style={styles.categoryBlock}>
@@ -30,43 +29,49 @@ const RentalIncomeCard = ({ emirate, city, townhouses, villas, apartments }) => 
   const [contentHeight, setContentHeight] = useState(0);
   const [containerHeight, setContainerHeight] = useState(0);
 
+  // Transform the array of strings into objects with id and value
+  const transformData = (dataArray) => {
+    if (!dataArray || !Array.isArray(dataArray)) return [];
+    
+    return dataArray.map((item, index) => ({
+      id: `${index}-${item}`, // Create a unique ID using index and content
+      value: item
+    }));
+  };
+
+  const transformedTownhouses = transformData(townhouses);
+  const transformedVillas = transformData(villas);
+  const transformedApartments = transformData(apartments);
+
   if (
-  (!townhouses || townhouses.length === 0) &&
-  (!villas || villas.length === 0) &&
-  (!apartments || apartments.length === 0)
-) {
-  return null;
-}
+    transformedTownhouses.length === 0 &&
+    transformedVillas.length === 0 &&
+    transformedApartments.length === 0
+  ) {
+    return null;
+  }
 
   const thumbHeight = contentHeight > 0
-  ? Animated.multiply(
-      containerHeight,
-      Animated.divide(containerHeight, contentHeight)
-    ).interpolate({
-      inputRange: [0, 1000],
-      outputRange: [0, 1000],
-      extrapolate: 'clamp',
-    })
-  : new Animated.Value(0).interpolate({
-    inputRange: [0, 1000],
-    outputRange: [0, 1000],
-    extrapolate: 'clamp'
-  });
+    ? Animated.multiply(
+        containerHeight,
+        Animated.divide(containerHeight, contentHeight)
+      ).interpolate({
+        inputRange: [0, 1000],
+        outputRange: [0, 1000],
+        extrapolate: 'clamp',
+      })
+    : new Animated.Value(0);
 
   const translateY = contentHeight > 0
-  ? Animated.multiply(
-      scrollY,
-      Animated.divide(containerHeight, contentHeight)
-    ).interpolate({
-      inputRange: [0, 1000],
-      outputRange: [0, 1000],
-      extrapolate: 'clamp',
-    })
-  : new Animated.Value(0).interpolate({
-    inputRange: [0, 1000],
-    outputRange: [0, 1000],
-    extrapolate: 'clamp'
-  });
+    ? Animated.multiply(
+        scrollY,
+        Animated.divide(containerHeight, contentHeight)
+      ).interpolate({
+        inputRange: [0, 1000],
+        outputRange: [0, 1000],
+        extrapolate: 'clamp',
+      })
+    : new Animated.Value(0);
 
   return (
     <View style={styles.card}>
@@ -82,9 +87,9 @@ const RentalIncomeCard = ({ emirate, city, townhouses, villas, apartments }) => 
         onContentSizeChange={(w, h) => setContentHeight(h)}
         onLayout={(e) => setContainerHeight(e.nativeEvent.layout.height)}
       >
-        <CategoryBlock title="Town House" items={townhouses} city={city} />
-        <CategoryBlock title="Villa" items={villas} city={city}/>
-        <CategoryBlock title="Apartment" items={apartments} city={city}/>
+        <CategoryBlock title="Town House" items={transformedTownhouses} city={city} />
+        <CategoryBlock title="Villa" items={transformedVillas} city={city}/>
+        <CategoryBlock title="Apartment" items={transformedApartments} city={city}/>
       </ScrollView>
       
       {contentHeight > containerHeight && (
@@ -107,16 +112,12 @@ const RentalIncomeCard = ({ emirate, city, townhouses, villas, apartments }) => 
 const styles = StyleSheet.create({
   card: {
     height: 200,
-    borderRadius: 10,
+    borderRadius: 4,
     backgroundColor: '#fff',
     padding: 14,
     marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#ddd',
   },
   scrollContent: {
     paddingBottom: 10,
@@ -157,7 +158,7 @@ const styles = StyleSheet.create({
     top: 14,
     bottom: 14,
     width: 4,
-    backgroundColor: "fff",
+    backgroundColor: "#fff",
     borderRadius: 2,
   },
   customScrollbarThumb: {

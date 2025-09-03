@@ -48,10 +48,6 @@ const NewsScreen = () => {
     fetchCities();
   }, []);
 
-  if (loading) {
-    return <ActivityIndicator size="large" style={{ marginTop: 50 }} />;
-  }
-
   const loadMore = () => {
       if (!loadingMore && hasMore) {
         fetchCities(currentPage + 1);
@@ -74,20 +70,22 @@ const NewsScreen = () => {
       extrapolate: 'clamp',
     });
   
-    if (loading && currentPage === 1) {
-      return <ActivityIndicator size="large" style={{ marginTop: 50 }} />;
-    }
-
 
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
           <TopHeader2 title={"News"}/>
-      <View style={{ flex: 1 }}>
-        <Animated.FlatList
-          data={cities}
-          keyExtractor={(item) => item._id}
-          renderItem={({ item }) => (
+
+      {loading && currentPage === 1 ? (
+        <View style={styles.centerLoading}>
+          <ActivityIndicator size="large" color="#ff1645" />
+        </View>
+      ) : (
+        <View style={{ flex: 1 }}>
+          <Animated.FlatList
+            data={cities}
+            keyExtractor={(item) => item._id}
+            renderItem={({ item }) => (
               <NewsCard news={item} onPress={() => console.log('Navigate to city', item.slug)} />
           )}
           showsVerticalScrollIndicator={false}
@@ -121,7 +119,7 @@ const NewsScreen = () => {
           />
         </View>    
        </View>       
-
+      )}
     </SafeAreaView>
   );
 };
@@ -142,5 +140,10 @@ export default NewsScreen;
     width: 4,
     backgroundColor: '#FF1645',
     borderRadius: 2,
+  },
+  centerLoading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

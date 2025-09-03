@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Image, Dimensions } from 'rea
 import { useNavigation } from '@react-navigation/native';
 import BackIcon from '../../assets/svg/svgicons/Details/BackIcon';
 import BellIcon from '../../assets/svg/svgicons/Others/BellIcon';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { fonts } from '../../../styles/fonts';
 const { width, height } = Dimensions.get('window');
 
@@ -15,11 +16,12 @@ const TopHeader2 = ({ title, showBack = true, showNotification = true }) => {
   const navigation = useNavigation();
 
   return (
-    <View style={styles.container}>
-      {/* Back Button */}
-      {showBack ? (
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.leftIcon}>
-          < BackIcon
+    <SafeAreaView edges={['right', 'left','top']}>
+      <View style={styles.container}>
+        {/* Back Button */}
+        {showBack ? (
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.leftIcon}>
+            <BackIcon
             style={{ width: 20, height: 20 }}
             color="#ff1645" />
         </TouchableOpacity>
@@ -37,6 +39,7 @@ const TopHeader2 = ({ title, showBack = true, showNotification = true }) => {
         </TouchableOpacity>
       ) : null}
     </View>
+    </SafeAreaView>
   );
 };
 

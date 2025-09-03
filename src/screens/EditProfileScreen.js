@@ -6,17 +6,18 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  SafeAreaView,
   Alert,
 } from 'react-native';
 import { fonts } from '../../styles/fonts';
 import api from '../services/ApiClient';
 import { useNavigation } from '@react-navigation/native';
 import { useProfile } from '../context/ProfileContext';
-import BackIcon from '../assets/svg/svgicons/Details/BackIcon';
+import GoBackIcon from '../assets/svg/svgicons/Others/GoBackIcon';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const EditProfileScreen = () => {
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
   const { profile } = useProfile();
   const [name, setName] = useState(profile.name || '');
   const [nationality, setNationality] = useState(''); // still static
@@ -47,9 +48,14 @@ const EditProfileScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <TouchableOpacity style={{position:'absolute',top:50,left:20,zIndex:10}} onPress={() => navigation.goBack()}>
-        <BackIcon />
-      </TouchableOpacity>
+      <View style={styles.header}>
+        <TouchableOpacity 
+          style={styles.backButton} 
+          onPress={() => navigation.goBack()}
+        >
+          <GoBackIcon color='#000'/>
+        </TouchableOpacity>
+      </View>
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>Edit Profile</Text>
         <Text style={styles.subtitle}>Personal Details</Text>
@@ -106,6 +112,20 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  header: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 100,
+    zIndex: 1000,
+    backgroundColor: 'transparent',
+  },
+  backButton: {
+    position: 'absolute',
+    top: 50,
+    left: 20,
   },
   container: {
     padding: 20,

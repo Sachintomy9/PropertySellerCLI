@@ -56,9 +56,6 @@ const RentalIncomeScreen = () => {
     }
   };
 
-  if (loading) {
-      return <ActivityIndicator size="large" style={{ marginTop: 50 }} color={"#ff1645"}/>;
-    }
   
     const loadMore = () => {
         if (!loadingMore && hasMore) {
@@ -82,9 +79,6 @@ const RentalIncomeScreen = () => {
         extrapolate: 'clamp',
       });
     
-      if (loading && currentPage === 1) {
-        return <ActivityIndicator size="large" style={{ marginTop: 50 }} color={"#ff1645"}/>;
-      }
 
       const hasValidData = (item) => {
         const { townhouses, villas, apartments } = item;
@@ -110,8 +104,12 @@ const RentalIncomeScreen = () => {
         <TopHeader2 title={"Rental Income"}/>
         <TopSearchHeader/>
 
+        {loading && currentPage === 1 ? (
+                <View style={styles.centerLoading}>
+                  <ActivityIndicator size="large" color="#ff1645" />
+                </View>
+              ) : (
         <View style={{ flex: 1 }}>
-
             <Animated.FlatList
             data={rentalData.filter(hasValidData)}
             keyExtractor={(item, index) => item._id || `rental-${index}`}
@@ -148,6 +146,7 @@ const RentalIncomeScreen = () => {
                 />
             </View>    
         </View>
+              )}
     </View>
   );
 };
@@ -176,5 +175,10 @@ const styles = StyleSheet.create({
     width: 4,
     backgroundColor: '#FF1645',
     borderRadius: 2,
+  },
+    centerLoading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

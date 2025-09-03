@@ -101,7 +101,9 @@ const AppNavigator = () => {
         <Stack.Screen name="Privacy" component={require('../screens/PrivacyPolicyScreen').default} />
         <Stack.Screen name="HelpCenter" component={require('../screens/HelpCenterScreen').default} />
         <Stack.Screen name="Notification" component={require('../screens/NotificationScreen').default} />
-
+        <Stack.Screen name="EnquiredProperties" component={require('../screens/EnquiredPropScreen').default} />
+        <Stack.Screen name="PropertyTalks" component={require('../screens/PropertyTalksScreen').default} />
+        <Stack.Screen name="PurchaseHistory" component={require('../screens/PurchaseHistoryScreen').default} />
 
       </Stack.Navigator>
     </NavigationContainer>

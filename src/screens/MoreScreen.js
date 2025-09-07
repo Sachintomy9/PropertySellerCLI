@@ -298,8 +298,8 @@ const styles = StyleSheet.create({
   },
 section: {
     backgroundColor: '#fff',
-    marginVertical: 10,
-    marginHorizontal: 20,
+    marginVertical: responsiveHeight(1.5),
+        marginHorizontal: responsiveWidth(3),
     borderRadius: 8,
     overflow: 'hidden',
     elevation: 1,
@@ -307,7 +307,8 @@ section: {
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 15,
+    paddingVertical: responsiveHeight(1.4),
+    paddingHorizontal: responsiveWidth(4),
   },
   divider: {
     height: 1,

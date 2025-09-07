@@ -272,13 +272,13 @@ const styles = StyleSheet.create({
   },
   MainText:{
     color: "#000",
-    fontSize: 24, 
-    paddingBottom: 20, 
+    fontSize: 20, 
+    paddingBottom: 4, 
     fontFamily: fonts.PoppinsMedium
   },
   SubText: {
     color: "#444",
-    fontSize:16, 
+    fontSize:14, 
     fontFamily: fonts.PoppinsRegular, 
     textAlign: "justify"
   },  

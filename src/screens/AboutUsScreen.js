@@ -77,10 +77,10 @@ const AboutUsScreen = () => {
                       here to guide you every step of the way.PropertySeller operates under EMIRAAZ, its parent company, which provides
                        the foundation and vision to drive innovation in the real estate industry.</Text>
 
-            <Text style={{fontSize: 22,fontFamily: fonts.PoppinsSemiBold, alignSelf: "center",paddingHorizontal: 12,paddingTop: 10,color: '#000'}}>Meet the Founder - </Text>
-            <Text style={{fontSize: 22,fontFamily: fonts.PoppinsSemiBold, alignSelf: "center",paddingHorizontal: 12,paddingBottom: 40,color: '#000'}}>Ashiq Emiraaz </Text>
+            <Text style={{fontSize: 20,fontFamily: fonts.PoppinsSemiBold, alignSelf: "center",paddingHorizontal: 12,paddingTop: 10,color: '#000'}}>Meet the Founder - </Text>
+            <Text style={{fontSize: 20,fontFamily: fonts.PoppinsSemiBold, alignSelf: "center",paddingHorizontal: 12,paddingBottom: 20,color: '#000'}}>Ashiq Emiraaz </Text>
 
-            <Text style={{fontFamily: fonts.PoppinsRegular, color: '#000', fontSize: 17, paddingHorizontal: 12, paddingBottom: 50, textAlign: "center"}} >Ashiq Emiraaz is the driving force behind PropertySeller. With years of experience in real estate
+            <Text style={{fontFamily: fonts.PoppinsRegular, color: '#000', fontSize: 14, paddingHorizontal: 12, paddingBottom: 50, textAlign: "center"}} >Ashiq Emiraaz is the driving force behind PropertySeller. With years of experience in real estate
                  and business development, he understood the challenges that buyers and investors face when navigating the market. 
                  His vision was to create a tech-driven, customer-focused platform that removes uncertainty and makes property transactions
                   effortless.From launching startups to building industry connections, Ashiq’s journey has been fueled by innovation, 
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     top: 17,
   },
   title: {
-    fontSize: 22,
+    fontSize: 20,
     fontFamily: fonts.PoppinsSemiBold,
     alignSelf: "center",
     paddingHorizontal: 12,
@@ -158,9 +158,9 @@ const styles = StyleSheet.create({
   blogContent: {
     color: '#000',
     fontFamily: fonts.PoppinsRegular,
-    fontSize: 17,
+    fontSize: 14,
     paddingHorizontal: 12,
-    paddingBottom: 50,
+    paddingBottom: 25,
     textAlign: "justify"
   },
   scrollContainer: {

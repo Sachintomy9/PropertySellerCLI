@@ -1,0 +1,1 @@
+In Xcode, go to File → New → File → User Interface → Storyboard, name it LaunchScreen.storyboard.
